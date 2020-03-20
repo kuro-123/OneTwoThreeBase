@@ -25,13 +25,13 @@ public class TwitterPlugin {
             final String TWITTER_CONSUMER_SECRET = plugin.getConfig().getString("Twitter.ConsumerSecret");
             final String TWITTER_ACCESS_TOKEN = plugin.getConfig().getString("Twitter.AccessToken");
             final String TWITTER_ACCESS_TOKEN_SECRET = plugin.getConfig().getString("Twitter.AccessTokenSecret");
-            final long  TWITTER_BROADCAST_ID = plugin.getConfig().getLong("Twitter.BroadcastID");
+            final String TWITTER_BROADCAST_ID = plugin.getConfig().getString("Twitter.BroadcastID");
 
             if (TWITTER_CONSUMER_KEY.length() <= 0 ||
                 TWITTER_CONSUMER_SECRET.length() <= 0 ||
                 TWITTER_ACCESS_TOKEN.length() <= 0 ||
                 TWITTER_ACCESS_TOKEN_SECRET.length() <= 0 ||
-                TWITTER_BROADCAST_ID <= 0) {
+                TWITTER_BROADCAST_ID.length() <= 0) {
                 return false;
             }
 
@@ -48,7 +48,8 @@ public class TwitterPlugin {
             twitterStream.addListener(new TweetListener(plugin));
             //フィルターを設定する
             FilterQuery filter = new FilterQuery();
-            filter.follow(new long[]{TWITTER_BROADCAST_ID});
+            long val = Long.parseLong(TWITTER_BROADCAST_ID);
+            filter.follow(new long[]{val});
             twitterStream.filter(filter);
 
             // ツイッタータスク起動

@@ -1,9 +1,14 @@
 package host.kuro.onetwothree;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.block.BlockBreakEvent;
+import cn.nukkit.event.block.BlockPlaceEvent;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.TextFormat;
@@ -43,32 +48,16 @@ public class EventListener implements Listener {
             return;
         }
 
-        // ネットワーク取得
-        String ip = player.getAddress();
-        String host = api.GetHostInfo(ip);
+        try {
+            // ネットワーク取得
+            String ip = player.getAddress();
+            String host = api.GetHostInfo(ip);
 
-        // SQL
-        ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
-        args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
-        args.add(new DatabaseArgs("i", "0"));     // rank
-        args.add(new DatabaseArgs("c", player.getLoginChainData().getUsername()));         // xname
-        args.add(new DatabaseArgs("c", host));      // host
-        args.add(new DatabaseArgs("c", ip));      // ip
-        args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientId()));  // cid
-        args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientUUID()));  // uuid
-        args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceId()));         // devid
-        args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceModel()));         // devmodel
-        args.add(new DatabaseArgs("i", ""+player.getLoginChainData().getDeviceOS()));   // devos
-        args.add(new DatabaseArgs("c", player.getLoginChainData().getGameVersion()));       // version
-        args.add(new DatabaseArgs("c", ""));  // play_status
-        int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0004"), args);
-        // CLEAR
-        args.clear();
-        args = null;
-
-        if (ret == DatabaseManager.DUPLICATE) {
-            // 既に登録済み
-            args = new ArrayList<DatabaseArgs>();
+            // SQL
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
+            args.add(new DatabaseArgs("i", "0"));     // rank
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getUsername()));         // xname
             args.add(new DatabaseArgs("c", host));      // host
             args.add(new DatabaseArgs("c", ip));      // ip
             args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientId()));  // cid
@@ -77,25 +66,70 @@ public class EventListener implements Listener {
             args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceModel()));         // devmodel
             args.add(new DatabaseArgs("i", ""+player.getLoginChainData().getDeviceOS()));   // devos
             args.add(new DatabaseArgs("c", player.getLoginChainData().getGameVersion()));       // version
-            args.add(new DatabaseArgs("c", ""));       // play_status
-            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
-            ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0005"), args);
+            args.add(new DatabaseArgs("c", ""));  // play_status
+            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0004"), args);
             args.clear();
             args = null;
-        }
+            if (ret == DatabaseManager.DUPLICATE) {
+                // 既に登録済み
+                args = new ArrayList<DatabaseArgs>();
+                args.add(new DatabaseArgs("c", host));      // host
+                args.add(new DatabaseArgs("c", ip));      // ip
+                args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientId()));  // cid
+                args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientUUID()));  // uuid
+                args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceId()));         // devid
+                args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceModel()));         // devmodel
+                args.add(new DatabaseArgs("i", ""+player.getLoginChainData().getDeviceOS()));   // devos
+                args.add(new DatabaseArgs("c", player.getLoginChainData().getGameVersion()));       // version
+                args.add(new DatabaseArgs("c", ""));       // play_status
+                args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
+                ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0005"), args);
+                args.clear();
+                args = null;
+            }
 
-        // ニックネーム取得
-        String nickname = "";
-        try {
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0009"));
-            ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
-            xargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-            ResultSet rs_name = api.getDB().ExecuteQuery(ps, xargs);
-            xargs.clear();
-            xargs = null;
-            if (rs_name != null) {
-                while(rs_name.next()){
-                    nickname = rs_name.getString("name");
+            // ニックネーム取得
+            String nickname = "";
+            try {
+                PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0009"));
+                ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
+                xargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+                ResultSet rs_name = api.getDB().ExecuteQuery(ps, xargs);
+                xargs.clear();
+                xargs = null;
+                if (rs_name != null) {
+                    while(rs_name.next()){
+                        nickname = rs_name.getString("name");
+                        break;
+                    }
+                }
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (rs_name != null) {
+                    rs_name.close();
+                    rs_name = null;
+                }
+            } catch (Exception e) {
+                event.setCancelled();
+            }
+            if (nickname.length() > 0) {
+                player.setDisplayName(nickname);
+                player.setDataProperty(new StringEntityData(4, nickname), false); // 4 = DATA_NAMETAG
+            }
+
+            // プレイヤー情報チェック
+            boolean hit = false;
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0019"));
+            ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
+            pargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);
+            pargs.clear();
+            pargs = null;
+            if (rs != null) {
+                while(rs.next()){
+                    hit = true;
                     break;
                 }
             }
@@ -103,16 +137,28 @@ public class EventListener implements Listener {
                 ps.close();
                 ps = null;
             }
-            if (rs_name != null) {
-                rs_name.close();
-                rs_name = null;
+            if (rs != null) {
+                rs.close();
+                rs = null;
             }
+            if (!hit) {
+                // なければ登録
+                ArrayList<DatabaseArgs> iargs = new ArrayList<DatabaseArgs>();
+                iargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+                iargs.add(new DatabaseArgs("i", "0"));
+                iargs.add(new DatabaseArgs("i", "0"));
+                iargs.add(new DatabaseArgs("i", "0"));
+                iargs.add(new DatabaseArgs("i", "0"));
+                iargs.add(new DatabaseArgs("i", "0"));
+                iargs.add(new DatabaseArgs("i", "0"));
+                iargs.add(new DatabaseArgs("i", "0"));
+                ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0018"), iargs);
+                iargs.clear();
+                iargs = null;
+            }
+
         } catch (Exception e) {
-            event.setCancelled();
-        }
-        if (nickname.length() > 0) {
-            player.setDisplayName(nickname);
-            player.setDataProperty(new StringEntityData(4, nickname), false); // 4 = DATA_NAMETAG
+            e.printStackTrace();
         }
 
         // スキンタスク起動
@@ -171,6 +217,13 @@ public class EventListener implements Listener {
             }, 200, true);
         }
 
+        // プレイヤー情報更新(LOGIN)
+        ArrayList<DatabaseArgs> largs = new ArrayList<DatabaseArgs>();
+        largs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+        ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0020"), largs);
+        largs.clear();
+        largs = null;
+
         // 経過時間計測開始
         playtime.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());
     }
@@ -204,7 +257,93 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        try {
+            // プレイヤー情報更新(BREAK)
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
+            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0012"), args);
+            args.clear();
+            args = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        try {
+            // プレイヤー情報更新(PLACE)
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
+            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0013"), args);
+            args.clear();
+            args = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerKick(PlayerKickEvent event) {
+        try {
+            // プレイヤー情報更新(KICK)
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
+            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0014"), args);
+            args.clear();
+            args = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerKickEvent event) {
+        try {
+            // プレイヤー情報更新(DEATH)
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
+            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0016"), args);
+            args.clear();
+            args = null;
+
+            Entity entity = event.getPlayer();
+            EntityDamageEvent cause = entity.getLastDamageCause();
+            if (cause instanceof EntityDamageByEntityEvent) {
+                Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
+                if (damager instanceof Player) {
+                    Player killer = (Player)damager;
+                    // プレイヤー情報更新(KILL)
+                    ArrayList<DatabaseArgs> kargs = new ArrayList<DatabaseArgs>();
+                    args.add(new DatabaseArgs("c", killer.getLoginChainData().getXUID()));          // xuid
+                    ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0015"), kargs);
+                    kargs.clear();
+                    kargs = null;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
+        try {
+            // プレイヤー情報更新(CHAT)
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
+            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0017"), args);
+            args.clear();
+            args = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @EventHandler

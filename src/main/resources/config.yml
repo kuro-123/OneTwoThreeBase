@@ -33,5 +33,14 @@ SqlStatement:
   Sql0009: "SELECT name FROM player_display WHERE xuid = ?"
   Sql0010: "SELECT * FROM version ORDER BY add_date DESC limit 5 offset 0"
   Sql0011: "SELECT xuid FROM (SELECT xuid, xname as name FROM player UNION SELECT xuid, name FROM player_display ) TGT WHERE LOWER(TGT.name) = ?"
+  Sql0012: "UPDATE player_info SET break=break+1, upd_date=current_timestamp WHERE xuid=?"
+  Sql0013: "UPDATE player_info SET place=place+1, upd_date=current_timestamp WHERE xuid=?"
+  Sql0014: "UPDATE player_info SET kick=kick+1, upd_date=current_timestamp WHERE xuid=?"
+  Sql0015: "UPDATE player_info SET kill=kill+1, upd_date=current_timestamp WHERE xuid=?"
+  Sql0016: "UPDATE player_info SET death=death+1, upd_date=current_timestamp WHERE xuid=?"
+  Sql0017: "UPDATE player_info SET chat=chat+1, upd_date=current_timestamp WHERE xuid=?"
+  Sql0018: "INSERT INTO player_info VALUES(?,?,?,?,?,?,?,?,current_timestamp,current_timestamp)"
+  Sql0019: "SELECT xuid FROM player_info WHERE xuid=?"
+  Sql0020: "UPDATE player_info SET login=login+1, upd_date=current_timestamp WHERE xuid=?"
 
 ConfigVersion: 1
