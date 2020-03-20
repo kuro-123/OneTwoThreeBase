@@ -1,5 +1,7 @@
 package host.kuro.onetwothree;
 
+import cn.nukkit.IPlayer;
+import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
@@ -105,5 +107,19 @@ public class OneTwoThreeAPI {
     public boolean isHankakuEisu(String target) {
         target.replace("_", "");    // _はセーフ
         return Pattern.matches("^[0-9a-zA-Z]+$", target);
+    }
+
+    public String AmbiguousSearch(String name) {
+        String ret = "";
+        Player target = Server.getInstance().getPlayer(name);
+        if (target == null) {
+            IPlayer itarget = Server.getInstance().getOfflinePlayer(name);
+            if (itarget != null) {
+                ret = itarget.getName();
+            }
+        } else {
+            ret = target.getName();
+        }
+        return ret;
     }
 }

@@ -32,5 +32,6 @@ SqlStatement:
   Sql0008: "UPDATE player SET play_status='' WHERE xuid=?"
   Sql0009: "SELECT name FROM player_display WHERE xuid = ?"
   Sql0010: "SELECT * FROM version ORDER BY add_date DESC limit 5 offset 0"
+  Sql0011: "SELECT xuid FROM (SELECT xuid, xname as name FROM player UNION SELECT xuid, name FROM player_display ) TGT WHERE LOWER(TGT.name) = ?"
 
 ConfigVersion: 1

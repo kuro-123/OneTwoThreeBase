@@ -15,3 +15,8 @@ permissions:
     default: true
   onetwothree.name.others:
     default: op
+
+  onetwothree.xbox:
+    default: true
+  onetwothree.xbox.others:
+    default: op
