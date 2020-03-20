@@ -1,0 +1,17 @@
+name: OneTwoThreeBase
+version: ${project.version}
+api: ["1.0.8"]
+author: kuro
+description: OneTwoThreeBase
+main: host.kuro.onetwothree.BasePlugin
+
+permissions:
+  onetwothree.warp:
+    default: true
+  onetwothree.warp.others:
+    default: op
+
+  onetwothree.name:
+    default: true
+  onetwothree.name.others:
+    default: op

@@ -1,0 +1,36 @@
+Provider: Yaml
+
+Database:
+  Host: "127.0.0.1"
+  Port: "5432"
+  Database: "mcbe"
+  User: "kuro"
+  Pass: "********"
+
+Web:
+  DataPath: "/var/www/html/mcbe/data/"
+  SkinDays: 7
+
+Twitter:
+  ConsumerKey: ""
+  ConsumerSecret: ""
+  AccessToken: ""
+  AccessTokenSecret: ""
+  BroadcastID: 0
+
+NameCommand:
+  AllowDays: 3
+
+SqlStatement:
+  Sql0001: "SELECT upd_date FROM player_display WHERE xuid = ?"
+  Sql0002: "INSERT INTO player_display (xuid, name, tag, com, add_date, upd_date) VALUES (?, ?, null, null, current_timestamp, current_timestamp) ON CONFLICT (xuid) DO UPDATE SET name=?, upd_date = current_timestamp"
+  Sql0003: "SELECT * FROM (SELECT xname as name FROM player UNION SELECT name FROM player_display ) TGT WHERE TGT.name = ?"
+  Sql0004: "INSERT INTO player VALUES(?,?,?,?,?,?,?,?,?,?,?,current_timestamp,current_timestamp, 0, ?)"
+  Sql0005: "UPDATE player SET host=?, ip=?, cid=?, uuid=?, device_id=?, device_model=?, device_os=?, game_version=?, upd_date=current_timestamp, play_status=? WHERE xuid=?"
+  Sql0006: "UPDATE player SET play_status='ﾛｸﾞｲﾝ' WHERE xuid=?"
+  Sql0007: "UPDATE player SET play_time=play_time+?, play_status='' WHERE xuid=?"
+  Sql0008: "UPDATE player SET play_status='' WHERE xuid=?"
+  Sql0009: "SELECT name FROM player_display WHERE xuid = ?"
+  Sql0010: "SELECT * FROM version ORDER BY add_date DESC limit 5 offset 0"
+
+ConfigVersion: 1
