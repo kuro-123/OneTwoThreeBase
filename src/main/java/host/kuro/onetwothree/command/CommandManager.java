@@ -13,7 +13,7 @@ public class CommandManager {
 
     public static void registerAll(OneTwoThreeAPI api) {
         try {
-            // 無効か
+            // 無効化
             String disableCommands = api.getConfig().getString("Command.Disable");
             if (disableCommands.length() > 0) {
                 String[] cmds = disableCommands.split(",", 0);

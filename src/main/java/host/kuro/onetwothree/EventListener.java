@@ -4,16 +4,30 @@ import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.*;
+import cn.nukkit.form.response.FormResponse;
+import cn.nukkit.form.response.FormResponseCustom;
+import cn.nukkit.form.response.FormResponseModal;
+import cn.nukkit.form.response.FormResponseSimple;
+import cn.nukkit.form.window.FormWindow;
+import cn.nukkit.form.window.FormWindowCustom;
+import cn.nukkit.form.window.FormWindowModal;
+import cn.nukkit.form.window.FormWindowSimple;
+import cn.nukkit.item.Item;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
+import host.kuro.onetwothree.forms.CustomFormResponse;
+import host.kuro.onetwothree.forms.Form;
+import host.kuro.onetwothree.forms.ModalFormResponse;
+import host.kuro.onetwothree.forms.SimpleFormResponse;
 import host.kuro.onetwothree.task.SkinTask;
 
 import java.net.InetAddress;
@@ -21,10 +35,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class EventListener implements Listener {
 
@@ -180,42 +191,7 @@ public class EventListener implements Listener {
         args = null;
 
         // バージョン情報表示
-        StringBuilder sb = new StringBuilder();
-        try {
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0010"));
-            ResultSet rs = api.getDB().ExecuteQuery(ps, null);
-            if (rs != null) {
-                while(rs.next()){
-                    sb.append(TextFormat.GOLD);
-                    sb.append("VER: ");
-                    sb.append(rs.getString("version"));
-                    sb.append(" (");
-                    sb.append(rs.getString("add_date"));
-                    sb.append(" ) -> ");
-                    sb.append(TextFormat.WHITE);
-                    sb.append(rs.getString("name"));
-                    sb.append("\n");
-                }
-            }
-            if (ps != null) {
-                ps.close();
-                ps = null;
-            }
-            if (rs != null) {
-                rs.close();
-                rs = null;
-            }
-        } catch (Exception e) {
-        }
-        if (sb.length() > 0) {
-            // ログイン中は画面が見えないためディレイ送信
-            api.getServer().getInstance().getScheduler().scheduleDelayedTask(new Task() {
-                @Override
-                public void onRun(int currentTick) {
-                    player.sendMessage(new String(sb));
-                }
-            }, 200, true);
-        }
+        api.ShowUpdateWindow(player);
 
         // プレイヤー情報更新(LOGIN)
         ArrayList<DatabaseArgs> largs = new ArrayList<DatabaseArgs>();
@@ -348,5 +324,55 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void formResponded(PlayerFormRespondedEvent event) {
+        Player player = event.getPlayer();
+        FormWindow window = event.getWindow();
+        FormResponse response = window.getResponse();
+
+        if (Form.playersForm.containsKey(player.getName())) {
+            host.kuro.onetwothree.forms.FormResponse temp = Form.playersForm.get(player.getName());
+            Form.playersForm.remove(player.getName());
+
+            Object data;
+
+            if (response == null || event.wasClosed()) {
+                if(temp instanceof CustomFormResponse){
+                    ((CustomFormResponse) temp).handle(player, window, null);
+
+                }else if(temp instanceof ModalFormResponse) {
+                    ((ModalFormResponse) temp).handle(player, window, -1);
+
+                }else if(temp instanceof SimpleFormResponse){
+                    ((SimpleFormResponse) temp).handle(player, window, -1);
+                }
+                return;
+            }
+
+            if (window instanceof FormWindowSimple) {
+                data = ((FormResponseSimple) response).getClickedButtonId();
+                ((SimpleFormResponse) temp).handle(player, window, (int) data);
+                return;
+            }
+
+            if (window instanceof FormWindowCustom) {
+                data = new ArrayList<>(((FormResponseCustom) response).getResponses().values());
+                ((CustomFormResponse) temp).handle(player, window, (List<Object>)data);
+                return;
+            }
+
+            if (window instanceof FormWindowModal) {
+                data = ((FormResponseModal) response).getClickedButtonId();
+                ((ModalFormResponse) temp).handle(player, window, (int) data);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void playerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        Form.playersForm.remove(player.getName());
     }
 }

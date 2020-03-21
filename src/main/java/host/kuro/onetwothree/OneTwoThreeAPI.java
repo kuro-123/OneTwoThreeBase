@@ -4,12 +4,16 @@ import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.plugin.PluginLogger;
+import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseManager;
+import host.kuro.onetwothree.forms.elements.SimpleForm;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -109,6 +113,7 @@ public class OneTwoThreeAPI {
         return Pattern.matches("^[0-9a-zA-Z]+$", target);
     }
 
+    // あいまいプレイヤー検索
     public String AmbiguousSearch(String name) {
         String ret = "";
         Player target = Server.getInstance().getPlayer(name);
@@ -121,5 +126,50 @@ public class OneTwoThreeAPI {
             ret = target.getName();
         }
         return ret;
+    }
+
+    // 更新情報ウィンドウ通知
+    public void ShowUpdateWindow(Player player) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0010"));
+            ResultSet rs = getDB().ExecuteQuery(ps, null);
+            if (rs != null) {
+                while(rs.next()){
+                    sb.append(TextFormat.GOLD);
+                    sb.append("VER: ");
+                    sb.append(rs.getString("version"));
+                    sb.append(" (");
+                    sb.append(rs.getString("add_date"));
+                    sb.append(" ) -> ");
+                    sb.append(TextFormat.WHITE);
+                    sb.append(rs.getString("name"));
+                    sb.append("\n");
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+
+            if (sb.length() > 0) {
+                // ログイン中は画面が見えないためディレイ送信
+                getServer().getInstance().getScheduler().scheduleDelayedTask(new Task() {
+                    @Override
+                    public void onRun(int currentTick) {
+                        SimpleForm form = new SimpleForm("更新情報", new String(sb));
+                        form.send(player, (targetPlayer, targetForm, data) -> {
+                            if(data == -1) return;
+                        });
+                    }
+                }, 240, true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
