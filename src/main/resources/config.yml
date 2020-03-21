@@ -10,6 +10,7 @@ Database:
 Web:
   DataPath: "/var/www/html/mcbe/data/"
   SkinDays: 7
+  SkinMake: ""
 
 Twitter:
   ConsumerKey: ""

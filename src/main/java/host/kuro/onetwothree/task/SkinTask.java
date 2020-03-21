@@ -2,18 +2,16 @@ package host.kuro.onetwothree.task;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.data.Skin;
-import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.SerializedImage;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import utils.DateUtil;
 
 import javax.imageio.ImageIO;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class SkinTask extends Thread {
 
@@ -70,6 +68,36 @@ public class SkinTask extends Thread {
             }
             skinBuffer = null;
 
+            // 2Dスキン保存対応(WEB PHP必須)
+            String make_path = api.getConfig().getString("Web.SkinMake");
+            if (make_path.length() > 0) {
+                HttpURLConnection con = null;
+                StringBuffer result = new StringBuffer();
+                URL url = new URL(make_path + "?show=body&side=front&cloak=hd&file_name="+player.getDisplayName().toLowerCase());
+                con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                con.connect();
+                if (con != null) {
+                    final int status = con.getResponseCode();
+                    if (status == HttpURLConnection.HTTP_OK) {
+                        final InputStream in = con.getInputStream();
+                        String encoding = con.getContentEncoding();
+                        if(null == encoding){
+                            encoding = "UTF-8";
+                        }
+                        final InputStreamReader inReader = new InputStreamReader(in, encoding);
+                        final BufferedReader bufReader = new BufferedReader(inReader);
+                        String line = null;
+                        while((line = bufReader.readLine()) != null) {
+                            result.append(line);
+                        }
+                        bufReader.close();
+                        inReader.close();
+                        in.close();
+                    }
+                    con.disconnect();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
