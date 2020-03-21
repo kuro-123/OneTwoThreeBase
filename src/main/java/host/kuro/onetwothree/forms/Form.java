@@ -14,16 +14,19 @@ public abstract class Form {
     }
 
     public static void sendForm(Player player, FormWindow form, ModalFormResponse response){
+        playersForm.remove(player.getName());
         playersForm.put(player.getName(), response);
         player.showFormWindow(form);
     }
 
     public static void sendForm(Player player, FormWindow form, CustomFormResponse response){
+        playersForm.remove(player.getName());
         playersForm.put(player.getName(), response);
         player.showFormWindow(form);
     }
 
     public static void sendForm(Player player, FormWindow form, SimpleFormResponse response){
+        playersForm.remove(player.getName());
         playersForm.put(player.getName(), response);
         player.showFormWindow(form);
     }

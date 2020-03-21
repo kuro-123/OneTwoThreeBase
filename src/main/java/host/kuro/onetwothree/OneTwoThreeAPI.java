@@ -73,7 +73,7 @@ public class OneTwoThreeAPI {
     // プラグインタイトルメッセージ
     public String GetMessageTitle() {
         StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.DARK_GREEN);
+        sb.append(TextFormat.GREEN);
         sb.append("[");
         sb.append(Language.translate("onetwothree.name"));
         sb.append("] ");
@@ -166,7 +166,7 @@ public class OneTwoThreeAPI {
                             if(data == -1) return;
                         });
                     }
-                }, 240, true);
+                }, 200, true);
             }
         } catch (Exception e) {
             e.printStackTrace();

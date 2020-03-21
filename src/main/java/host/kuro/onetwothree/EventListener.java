@@ -71,11 +71,11 @@ public class EventListener implements Listener {
             args.add(new DatabaseArgs("c", player.getLoginChainData().getUsername()));         // xname
             args.add(new DatabaseArgs("c", host));      // host
             args.add(new DatabaseArgs("c", ip));      // ip
-            args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientId()));  // cid
-            args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientUUID()));  // uuid
+            args.add(new DatabaseArgs("c", "" + player.getLoginChainData().getClientId()));  // cid
+            args.add(new DatabaseArgs("c", "" + player.getLoginChainData().getClientUUID()));  // uuid
             args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceId()));         // devid
             args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceModel()));         // devmodel
-            args.add(new DatabaseArgs("i", ""+player.getLoginChainData().getDeviceOS()));   // devos
+            args.add(new DatabaseArgs("i", "" + player.getLoginChainData().getDeviceOS()));   // devos
             args.add(new DatabaseArgs("c", player.getLoginChainData().getGameVersion()));       // version
             args.add(new DatabaseArgs("c", ""));  // play_status
             int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0004"), args);
@@ -86,11 +86,11 @@ public class EventListener implements Listener {
                 args = new ArrayList<DatabaseArgs>();
                 args.add(new DatabaseArgs("c", host));      // host
                 args.add(new DatabaseArgs("c", ip));      // ip
-                args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientId()));  // cid
-                args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientUUID()));  // uuid
+                args.add(new DatabaseArgs("c", "" + player.getLoginChainData().getClientId()));  // cid
+                args.add(new DatabaseArgs("c", "" + player.getLoginChainData().getClientUUID()));  // uuid
                 args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceId()));         // devid
                 args.add(new DatabaseArgs("c", player.getLoginChainData().getDeviceModel()));         // devmodel
-                args.add(new DatabaseArgs("i", ""+player.getLoginChainData().getDeviceOS()));   // devos
+                args.add(new DatabaseArgs("i", "" + player.getLoginChainData().getDeviceOS()));   // devos
                 args.add(new DatabaseArgs("c", player.getLoginChainData().getGameVersion()));       // version
                 args.add(new DatabaseArgs("c", ""));       // play_status
                 args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
@@ -109,7 +109,7 @@ public class EventListener implements Listener {
                 xargs.clear();
                 xargs = null;
                 if (rs_name != null) {
-                    while(rs_name.next()){
+                    while (rs_name.next()) {
                         nickname = rs_name.getString("name");
                         break;
                     }
@@ -139,7 +139,7 @@ public class EventListener implements Listener {
             pargs.clear();
             pargs = null;
             if (rs != null) {
-                while(rs.next()){
+                while (rs.next()) {
                     hit = true;
                     break;
                 }
@@ -179,9 +179,9 @@ public class EventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
-    	Player player = event.getPlayer();
-    	player.setOp(true);
-    	player.setGamemode(1);
+        Player player = event.getPlayer();
+        player.setOp(true);
+        player.setGamemode(1);
 
         // ステータス更新
         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
@@ -204,10 +204,11 @@ public class EventListener implements Listener {
         playtime.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-
+        // フォーム削除
+        Form.playersForm.remove(player.getName());
         // 経過時間計測
         int ptime = 0;
         String xuid = player.getLoginChainData().getXUID();
@@ -221,7 +222,7 @@ public class EventListener implements Listener {
         // プレイ時間,ステータス更新
         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
         if (ptime > 0) {
-            args.add(new DatabaseArgs("i", ""+ptime));
+            args.add(new DatabaseArgs("i", "" + ptime));
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
             int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0007"), args);
         } else {
@@ -292,7 +293,7 @@ public class EventListener implements Listener {
             if (cause instanceof EntityDamageByEntityEvent) {
                 Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
                 if (damager instanceof Player) {
-                    Player killer = (Player)damager;
+                    Player killer = (Player) damager;
                     // プレイヤー情報更新(KILL)
                     ArrayList<DatabaseArgs> kargs = new ArrayList<DatabaseArgs>();
                     args.add(new DatabaseArgs("c", killer.getLoginChainData().getXUID()));          // xuid
@@ -339,13 +340,13 @@ public class EventListener implements Listener {
             Object data;
 
             if (response == null || event.wasClosed()) {
-                if(temp instanceof CustomFormResponse){
+                if (temp instanceof CustomFormResponse) {
                     ((CustomFormResponse) temp).handle(player, window, null);
 
-                }else if(temp instanceof ModalFormResponse) {
+                } else if (temp instanceof ModalFormResponse) {
                     ((ModalFormResponse) temp).handle(player, window, -1);
 
-                }else if(temp instanceof SimpleFormResponse){
+                } else if (temp instanceof SimpleFormResponse) {
                     ((SimpleFormResponse) temp).handle(player, window, -1);
                 }
                 return;
@@ -359,7 +360,7 @@ public class EventListener implements Listener {
 
             if (window instanceof FormWindowCustom) {
                 data = new ArrayList<>(((FormResponseCustom) response).getResponses().values());
-                ((CustomFormResponse) temp).handle(player, window, (List<Object>)data);
+                ((CustomFormResponse) temp).handle(player, window, (List<Object>) data);
                 return;
             }
 
@@ -368,11 +369,5 @@ public class EventListener implements Listener {
                 ((ModalFormResponse) temp).handle(player, window, (int) data);
             }
         }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void playerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        Form.playersForm.remove(player.getName());
     }
 }

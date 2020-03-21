@@ -46,5 +46,6 @@ SqlStatement:
   Sql0018: "INSERT INTO player_info VALUES(?,?,?,?,?,?,?,?,current_timestamp,current_timestamp)"
   Sql0019: "SELECT xuid FROM player_info WHERE xuid=?"
   Sql0020: "UPDATE player_info SET login=login+1, upd_date=current_timestamp WHERE xuid=?"
+  Sql0021: "SELECT D.name, P.xname FROM (SELECT xuid, xname FROM player) P INNER JOIN (SELECT xuid, name FROM player_display) D ON P.xuid = D.XUID WHERE LOWER(D.name) = ?"
 
 ConfigVersion: 1
