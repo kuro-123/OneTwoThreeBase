@@ -47,7 +47,7 @@ public class BasePlugin extends PluginBase {
         this.getLogger().info("IP: " + this.api.GetIpInfo());
 
         // TwitterPlugin
-        TwitterPlugin tw = new TwitterPlugin(this);
+        TwitterPlugin tw = new TwitterPlugin(this, api);
     }
 
     @Override

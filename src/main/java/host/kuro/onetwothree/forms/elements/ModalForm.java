@@ -32,6 +32,7 @@ public class ModalForm extends Form {
     }
 
     public void send(Player player, ModalFormResponse response){
+        playersForm.remove(player.getName());
         playersForm.put(player.getName(), response);
         player.showFormWindow(form);
     }

@@ -17,10 +17,12 @@ import java.util.List;
 public class TwitterTask extends Task {
 
     private final BasePlugin plugin;
+    private final OneTwoThreeAPI api;
     private final Twitter tw;
 
-    public TwitterTask(BasePlugin plugin, Twitter tw) {
+    public TwitterTask(BasePlugin plugin, OneTwoThreeAPI api, Twitter tw) {
         this.plugin = plugin;
+        this.api = api;
         this.tw = tw;
     }
 
@@ -63,6 +65,8 @@ public class TwitterTask extends Task {
                 count++;
             }
             plugin.getServer().broadcastMessage(new String(sb));
+            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin015, 0, false); // INFO
+
         } catch (Exception e) {
             e.printStackTrace();
         }

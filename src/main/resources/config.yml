@@ -1,5 +1,8 @@
 Provider: Yaml
 
+Sound:
+  Volume: 0.9
+
 Database:
   Host: "127.0.0.1"
   Port: "5432"

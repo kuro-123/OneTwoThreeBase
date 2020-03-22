@@ -30,6 +30,7 @@ import host.kuro.onetwothree.forms.Form;
 import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
 import host.kuro.onetwothree.task.SkinTask;
+import host.kuro.onetwothree.task.SoundTask;
 
 import java.net.InetAddress;
 import java.sql.Connection;
@@ -179,6 +180,8 @@ public class EventListener implements Listener {
         player.setOp(true);
         player.setGamemode(1);
 
+        api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin014, 0, false); // ドアノック
+
         // ステータス更新
         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
         args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
@@ -232,6 +235,8 @@ public class EventListener implements Listener {
         }
         args.clear();
         args = null;
+
+        api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin061, 0, false); // ドアクローズ
     }
 
     @EventHandler

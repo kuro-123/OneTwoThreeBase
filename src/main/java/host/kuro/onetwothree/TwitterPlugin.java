@@ -2,6 +2,7 @@ package host.kuro.onetwothree;
 
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseManager;
+import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.task.TwitterTask;
 import twitter4j.*;
 import twitter4j.auth.AccessToken;
@@ -13,9 +14,11 @@ import java.util.List;
 public class TwitterPlugin {
     // メンバー
     private BasePlugin plugin;
+    private OneTwoThreeAPI api;
 
-    public TwitterPlugin(BasePlugin plugin) {
+    public TwitterPlugin(BasePlugin plugin, OneTwoThreeAPI api) {
         this.plugin = plugin;
+        this.api = api;
         Register();
     }
 
@@ -45,7 +48,7 @@ public class TwitterPlugin {
             // TwitterStreamのインスタンス作成
             TwitterStream twitterStream = new TwitterStreamFactory(conf).getInstance();
             // Listenerを登録
-            twitterStream.addListener(new TweetListener(plugin));
+            twitterStream.addListener(new TweetListener(plugin, api));
             //フィルターを設定する
             FilterQuery filter = new FilterQuery();
             long val = Long.parseLong(TWITTER_BROADCAST_ID);
@@ -54,7 +57,7 @@ public class TwitterPlugin {
 
             // ツイッタータスク起動
             Twitter twitter = new TwitterFactory(conf).getInstance();
-            plugin.getServer().getScheduler().scheduleRepeatingTask(plugin, new TwitterTask(plugin, twitter), 20*60*30);
+            plugin.getServer().getScheduler().scheduleRepeatingTask(plugin, new TwitterTask(plugin, api, twitter), 20*60*60); // 1時間おき
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,10 +69,11 @@ public class TwitterPlugin {
 /** Tweetを出力するだけのListener */
 class TweetListener extends StatusAdapter {
     private BasePlugin plugin;
-    public TweetListener(BasePlugin plugin) {
+    private OneTwoThreeAPI api;
+    public TweetListener(BasePlugin plugin, OneTwoThreeAPI api) {
         this.plugin = plugin;
+        this.api = api;
     }
-
     public void onStatus(Status status) {
         StringBuilder sb = new StringBuilder();
         sb.append(TextFormat.GOLD);
@@ -83,5 +87,7 @@ class TweetListener extends StatusAdapter {
         }
         sb.append(mes);
         plugin.getServer().broadcastMessage(new String(sb));
+        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin015, 0, false); // INFO
+
     }
 }

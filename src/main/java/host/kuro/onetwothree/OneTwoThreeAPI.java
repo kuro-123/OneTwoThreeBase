@@ -220,6 +220,7 @@ public class OneTwoThreeAPI {
                 getServer().getInstance().getScheduler().scheduleDelayedTask(new Task() {
                     @Override
                     public void onRun(int currentTick) {
+                        PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
                         SimpleForm form = new SimpleForm("更新情報", new String(sb));
                         form.send(player, (targetPlayer, targetForm, data) -> {
                             if(data == -1) return;

@@ -15,6 +15,7 @@ import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
+import host.kuro.onetwothree.task.SoundTask;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,6 +52,7 @@ public class NameCommand extends CommandBase {
         }
         if (player == null) {
             this.sendUsage(sender);
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
 
@@ -59,12 +61,14 @@ public class NameCommand extends CommandBase {
             int len =args[0].length();
             if (len < 3 || len > 16) {
                 player.sendMessage(api.GetWarningMessage("commands.name.err_len"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 return false;
             }
 
             // 半角英数チェック(_のみOK)
             if (!api.isHankakuEisu(args[0])) {
                 player.sendMessage(api.GetWarningMessage("commands.name.err_eisu"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 return false;
             }
 
@@ -94,6 +98,7 @@ public class NameCommand extends CommandBase {
             }
             if (hit) {
                 player.sendMessage(api.GetWarningMessage("commands.name.err_dupli"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 return false;
             }
 
@@ -141,6 +146,7 @@ public class NameCommand extends CommandBase {
                     mes.append(allow_days);
                     mes.append(")");
                     player.sendMessage(new String(mes));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return false;
                 }
             }
@@ -159,14 +165,17 @@ public class NameCommand extends CommandBase {
                 String mes = TextFormat.RED + Language.translate("commands.name.err_regist");
                 player.sendMessage(mes);
                 this.api.getServer().getLogger().warning(mes);
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 return false;
             }
             player.sendMessage(api.GetInfoMessage("commands.name.success"));
 
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
+        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
         return true;
     }
 }

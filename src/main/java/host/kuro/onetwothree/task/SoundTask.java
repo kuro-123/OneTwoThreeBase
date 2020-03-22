@@ -7,45 +7,45 @@ import host.kuro.onetwothree.OneTwoThreeAPI;
 
 public class SoundTask extends Thread {
     // サウンド一覧（リソースパック内 sound_definitions設定）
-    public static final String bgm007 = "music.bgm007";
-    public static final String jin001 = "music.jin001";
-    public static final String jin002 = "music.jin002";
-    public static final String jin003 = "music.jin003";
-    public static final String jin004 = "music.jin004";
-    public static final String jin005 = "music.jin005";
-    public static final String jin006 = "music.jin006";
-    public static final String jin007 = "music.jin007";
-    public static final String jin008 = "music.jin008";
-    public static final String jin009 = "music.jin009";
-    public static final String jin010 = "music.jin010";
-    public static final String jin011 = "music.jin011";
-    public static final String jin012 = "music.jin012";
-    public static final String jin013 = "music.jin013";
-    public static final String jin014 = "music.jin014";
-    public static final String jin015 = "music.jin015";
-    public static final String jin016 = "music.jin016";
-    public static final String jin017 = "music.jin017";
-    public static final String jin018 = "music.jin018";
-    public static final String jin019 = "music.jin019";
-    public static final String jin020 = "music.jin020";
-    public static final String jin021 = "music.jin021";
-    public static final String jin024 = "music.jin024";
-    public static final String jin025 = "music.jin025";
-    public static final String jin027 = "music.jin027";
-    public static final String jin050 = "music.jin050";
-    public static final String jin052 = "music.jin052";
-    public static final String jin053 = "music.jin053";
-    public static final String jin054 = "music.jin054";
-    public static final String jin055 = "music.jin055";
-    public static final String jin060 = "music.jin060";
-    public static final String jin061 = "music.jin061";
-    public static final String jin071 = "music.jin071";
-    public static final String voi044 = "music.voi044";
-    public static final String voi045 = "music.voi045";
-    public static final String voi046 = "music.voi046";
-    public static final String voi047 = "music.voi047";
-    public static final String voi048 = "music.voi048";
-    public static final String voi050 = "music.voi050";
+    public static final String bgm007 = "music.bgm007"; // ガルちゃん
+    public static final String jin001 = "music.jin001"; // ブブー
+    public static final String jin002 = "music.jin002"; // ボンッ！
+    public static final String jin003 = "music.jin003"; // ドアクローズ
+    public static final String jin004 = "music.jin004"; // チュドーン！
+    public static final String jin005 = "music.jin005"; // フェードイン
+    public static final String jin006 = "music.jin006"; // レベルアップ
+    public static final String jin007 = "music.jin007"; // FAIL
+    public static final String jin008 = "music.jin008"; // SUCCESS
+    public static final String jin009 = "music.jin009"; // 斬
+    public static final String jin010 = "music.jin010"; // REGIST
+    public static final String jin011 = "music.jin011"; // 水滴
+    public static final String jin012 = "music.jin012"; // ピンポン
+    public static final String jin013 = "music.jin013"; // kuro音
+    public static final String jin014 = "music.jin014"; // ドアノック
+    public static final String jin015 = "music.jin015"; // INFO
+    public static final String jin016 = "music.jin016"; // ハープ
+    public static final String jin017 = "music.jin017"; // GET
+    public static final String jin018 = "music.jin018"; // ジャン
+    public static final String jin019 = "music.jin019"; // 落下
+    public static final String jin020 = "music.jin020"; // WARP
+    public static final String jin021 = "music.jin021"; // はずれ
+    public static final String jin024 = "music.jin024"; // 資源ワールドIN
+    public static final String jin025 = "music.jin025"; // 街ワールドIN
+    public static final String jin027 = "music.jin027"; // 荷物を置く
+    public static final String jin050 = "music.jin050"; // GET2
+    public static final String jin052 = "music.jin052"; // アイテムを置く
+    public static final String jin053 = "music.jin053"; // クリック1
+    public static final String jin054 = "music.jin054"; // ウィンドウ
+    public static final String jin055 = "music.jin055"; // GET3
+    public static final String jin060 = "music.jin060"; // 爆発
+    public static final String jin061 = "music.jin061"; // ドアクローズ
+    public static final String jin071 = "music.jin071"; // レジスター
+    public static final String voi044 = "music.voi044"; // いらっしゃい(男)
+    public static final String voi045 = "music.voi045"; // 買い取れない（男）
+    public static final String voi046 = "music.voi046"; // 売れない（男）
+    public static final String voi047 = "music.voi047"; // ボーナスGET
+    public static final String voi048 = "music.voi048"; // 注文催促（女）
+    public static final String voi050 = "music.voi050"; // いらっしゃいませ(女)
 
     // 再生モード
     public static final int MODE_STOP = 0;      // 停止
@@ -58,6 +58,7 @@ public class SoundTask extends Thread {
     private String sound;
     private int wait;
     private boolean stop;
+    private float volume = 0.9F;
 
     OneTwoThreeAPI api;
 
@@ -68,6 +69,16 @@ public class SoundTask extends Thread {
         this.sound = sound;
         this.wait = wait;
         this.stop = stop;
+
+        // ボリューム
+        try {
+            String sVol = api.getConfig().getString("Sound.Volume");
+            volume = Float.parseFloat(sVol);
+
+        } catch (Exception e) {
+            volume = 0.9F;
+            e.printStackTrace();
+        }
     }
 
     public void run() {
@@ -134,7 +145,7 @@ public class SoundTask extends Thread {
             pk.x = player.getPosition().getFloorX();
             pk.y = player.getPosition().getFloorY();
             pk.z = player.getPosition().getFloorZ();
-            player.dataPacket(pk);
+            p.dataPacket(pk);
         }
         pk = null;
     }

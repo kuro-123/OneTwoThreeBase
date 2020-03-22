@@ -18,6 +18,7 @@ import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.forms.FormResponse;
 import host.kuro.onetwothree.forms.elements.CustomForm;
+import host.kuro.onetwothree.task.SoundTask;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,6 +49,7 @@ public class WarpCommand extends CommandBase {
         }
         if (player == null) {
             this.sendUsage(sender);
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
 
@@ -81,7 +83,8 @@ public class WarpCommand extends CommandBase {
                 }
             }
         }
-        return true;
+        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+        return false;
     }
 
     private boolean WarpWindow(Player player) {
@@ -111,9 +114,11 @@ public class WarpCommand extends CommandBase {
                     .addDropDown("ワールドリスト", lvList)
                     .addDropDown("プレイヤーリスト", pList);
 
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
             form.send(player, (targetPlayer, targetForm, data) -> {
                 if(data == null) {
                     this.sendUsage(targetPlayer);
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return;
                 }
 
@@ -185,6 +190,7 @@ public class WarpCommand extends CommandBase {
                 OneTwoThreeAPI.wp_player.remove(targetPlayer);
             });
         } catch (Exception e) {
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             e.printStackTrace();
             return false;
         }
@@ -205,5 +211,6 @@ public class WarpCommand extends CommandBase {
         sb.append(TextFormat.LIGHT_PURPLE);
         sb.append(" ]");
         api.getServer().broadcastMessage(new String(sb));
+        api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin020, 0, false); // WARP
     }
 }

@@ -15,6 +15,7 @@ import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
+import host.kuro.onetwothree.task.SoundTask;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,6 +52,7 @@ public class XboxCommand extends CommandBase {
         }
         if (player == null) {
             this.sendUsage(sender);
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
 
@@ -86,6 +88,7 @@ public class XboxCommand extends CommandBase {
             }
             if (xuid.length() <= 0) {
                 player.sendMessage(api.GetWarningMessage("commands.xbox.err_nothing"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 return false;
             } else {
                 player.showXboxProfile(xuid);
@@ -93,8 +96,10 @@ public class XboxCommand extends CommandBase {
 
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
+        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
         return true;
     }
 }

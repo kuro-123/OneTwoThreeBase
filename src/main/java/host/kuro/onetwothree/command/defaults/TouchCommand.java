@@ -53,6 +53,7 @@ public class TouchCommand extends CommandBase {
         }
         if (player == null) {
             this.sendUsage(sender);
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
 
@@ -73,8 +74,10 @@ public class TouchCommand extends CommandBase {
 
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
+        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
         return true;
     }
 }

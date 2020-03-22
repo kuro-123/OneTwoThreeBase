@@ -5,6 +5,7 @@ import cn.nukkit.form.element.*;
 import cn.nukkit.form.window.FormWindowCustom;
 import host.kuro.onetwothree.forms.CustomFormResponse;
 import host.kuro.onetwothree.forms.Form;
+import host.kuro.onetwothree.task.SoundTask;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class CustomForm extends Form {
     }
 
     public void send(Player player, CustomFormResponse response){
+        playersForm.remove(player.getName());
         playersForm.put(player.getName(), response);
         player.showFormWindow(form);
     }
