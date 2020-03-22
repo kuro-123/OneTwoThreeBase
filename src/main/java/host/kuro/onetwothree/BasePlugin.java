@@ -1,6 +1,7 @@
 package host.kuro.onetwothree;
 
 import cn.nukkit.Player;
+import cn.nukkit.item.Item;
 import cn.nukkit.plugin.PluginBase;
 import host.kuro.onetwothree.command.CommandManager;
 import host.kuro.onetwothree.task.TwitterTask;
@@ -46,6 +47,10 @@ public class BasePlugin extends PluginBase {
         this.getLogger().info(Language.translate("onetwothree.loaded"));
         this.getLogger().info("IP: " + this.api.GetIpInfo());
 
+        // アイテムデータセットアップ
+        this.getLogger().info(Language.translate("onetwothree.datasetup"));
+        api.SetupNukkitItems();
+
         // TwitterPlugin
         TwitterPlugin tw = new TwitterPlugin(this, api);
     }
@@ -56,6 +61,7 @@ public class BasePlugin extends PluginBase {
         OneTwoThreeAPI.wp_world.clear();
         OneTwoThreeAPI.wp_player.clear();
         OneTwoThreeAPI.touch_mode.clear();
+        OneTwoThreeAPI.item_price.clear();
         this.getLogger().info(Language.translate("onetwothree.unloaded"));
     }
 

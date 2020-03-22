@@ -4,13 +4,16 @@ import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
+import host.kuro.onetwothree.item.ItemPrice;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
 
@@ -18,8 +21,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +62,7 @@ public class OneTwoThreeAPI {
     public static HashMap<Player, Boolean> touch_mode = new HashMap<>();
     public static HashMap<Player, List<String>> wp_world = new HashMap<>();
     public static HashMap<Player, List<String>> wp_player = new HashMap<>();
+    public static HashMap<Integer, ItemPrice> item_price = new HashMap<>();
 
     // IPアドレスを取得
     public String GetIpInfo() {
@@ -194,4 +200,48 @@ public class OneTwoThreeAPI {
         task.start();
     }
 
+    public void SetupNukkitItems() {
+        try {
+            for (Class c : Item.list) {
+                if (c != null) {
+                    String name = c.getSimpleName();
+                    name = name.replace("Block", "");
+                    name = name.replace("Item", "");
+                    Item item = Item.fromString(name);
+                    if (item != null) {
+                        int id = item.getId();
+                        // ステータス更新
+                        ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+                        args.add(new DatabaseArgs("i", ""+id));
+                        args.add(new DatabaseArgs("c", name));
+                        int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0022"), args);
+                        args.clear();
+                        args = null;
+                    }
+                }
+            }
+            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0023"));
+            ResultSet rs = getDB().ExecuteQuery(ps, null);
+            if (rs != null) {
+                int i = 0;
+                while(rs.next()){
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    int price = rs.getInt("price");
+                    item_price.put(id, new ItemPrice(i, id, name, price));
+                    i++;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

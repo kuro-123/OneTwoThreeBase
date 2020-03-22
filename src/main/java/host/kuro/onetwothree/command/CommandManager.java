@@ -28,6 +28,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new XboxCommand(api));
             map.register("OneTwoThreeBase", new TouchCommand(api));
             map.register("OneTwoThreeBase", new VersionCommand(api));
+            map.register("OneTwoThreeBase", new PriceCommand(api));
         } catch (Exception e) {
             e.printStackTrace();
         }

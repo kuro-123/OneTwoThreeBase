@@ -25,3 +25,8 @@ permissions:
     default: true
   onetwothree.touch.others:
     default: op
+
+  onetwothree.price:
+    default: op
+  onetwothree.price.others:
+    default: op
