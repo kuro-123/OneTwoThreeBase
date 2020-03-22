@@ -26,9 +26,6 @@ import java.util.*;
 
 public class WarpCommand extends CommandBase {
 
-    public static HashMap<Player, List<String>> wp_world = new HashMap<>();
-    public static HashMap<Player, List<String>> wp_player = new HashMap<>();
-
     public WarpCommand(OneTwoThreeAPI api) {
         super("warp", api);
         this.setAliases(new String[]{"wp", "w"});
@@ -71,13 +68,17 @@ public class WarpCommand extends CommandBase {
             }
         }
         target = api.AmbiguousSearch(target);
-        for (Player p : api.getServer().getOnlinePlayers().values()) {
-            if (target.equals(p.getDisplayName().toLowerCase()) || target.equals(p.getName().toLowerCase())) {
-                Location pos = p.getLocation();
-                if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                    TeleportMessage(player, p.getDisplayName());
+        if (target.equalsIgnoreCase(player.getDisplayName())) {
+            player.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
+        } else {
+            for (Player p : api.getServer().getOnlinePlayers().values()) {
+                if (target.equals(p.getDisplayName().toLowerCase()) || target.equals(p.getName().toLowerCase())) {
+                    Location pos = p.getLocation();
+                    if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
+                        TeleportMessage(player, p.getDisplayName());
+                    }
+                    return true;
                 }
-                return true;
             }
         }
         return true;
@@ -90,20 +91,20 @@ public class WarpCommand extends CommandBase {
             for (Level lv : api.getServer().getLevels().values()) {
                 lvList.add(lv.getName());
             }
-            if (wp_world.containsKey(player)) {
-                wp_world.remove(player);
+            if (OneTwoThreeAPI.wp_world.containsKey(player)) {
+                OneTwoThreeAPI.wp_world.remove(player);
             }
-            wp_world.put(player, lvList);
+            OneTwoThreeAPI.wp_world.put(player, lvList);
 
             List<String> pList = new ArrayList<String>();
             pList.add("指定なし");
             for (Player p : api.getServer().getOnlinePlayers().values()) {
                 pList.add(p.getDisplayName());
             }
-            if (wp_player.containsKey(player)) {
-                wp_player.remove(player);
+            if (OneTwoThreeAPI.wp_player.containsKey(player)) {
+                OneTwoThreeAPI.wp_player.remove(player);
             }
-            wp_player.put(player, pList);
+            OneTwoThreeAPI.wp_player.put(player, pList);
 
             CustomForm form = new CustomForm("ワープウィンドウ")
                     .addLabel("下記のいずれかを指定しワープします")
@@ -122,7 +123,7 @@ public class WarpCommand extends CommandBase {
                 String world_idx = data.get(1).toString();
                 int widx = Integer.parseInt(world_idx);
                 if (widx > 0) {
-                    List<String> worlds = wp_world.get(targetPlayer);
+                    List<String> worlds = OneTwoThreeAPI.wp_world.get(targetPlayer);
                     String world = worlds.get(widx);
                     Position pos = api.getServer().getLevelByName(world).getSpawnLocation();
                     if (pos != null) {
@@ -130,16 +131,16 @@ public class WarpCommand extends CommandBase {
                             TeleportMessage(player, world);
                         }
                     }
-                    wp_world.remove(targetPlayer);
+                    OneTwoThreeAPI.wp_world.remove(targetPlayer);
                     return;
                 }
-                wp_world.remove(targetPlayer);
+                OneTwoThreeAPI.wp_world.remove(targetPlayer);
 
                 // プレイヤー指定
                 String player_idx = data.get(2).toString();
                 int pidx = Integer.parseInt(player_idx);
                 if (pidx > 0) {
-                    List<String> players = wp_player.get(targetPlayer);
+                    List<String> players = OneTwoThreeAPI.wp_player.get(targetPlayer);
                     String pname = players.get(pidx);
                     if (pname.length() > 0) {
                         try {
@@ -178,10 +179,10 @@ public class WarpCommand extends CommandBase {
                             }
                         }
                     }
-                    wp_player.remove(targetPlayer);
+                    OneTwoThreeAPI.wp_player.remove(targetPlayer);
                     return;
                 }
-                wp_player.remove(targetPlayer);
+                OneTwoThreeAPI.wp_player.remove(targetPlayer);
             });
         } catch (Exception e) {
             e.printStackTrace();

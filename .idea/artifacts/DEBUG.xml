@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="DEBUG">
+    <output-path>$PROJECT_DIR$/../Nukkit/target/plugins</output-path>
+    <root id="root">
+      <element id="archive" name="OneTwoThreeBase.jar">
+        <element id="module-output" name="OneTwoThreeBase" />
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

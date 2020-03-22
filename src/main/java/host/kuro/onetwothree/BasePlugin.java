@@ -1,5 +1,6 @@
 package host.kuro.onetwothree;
 
+import cn.nukkit.Player;
 import cn.nukkit.plugin.PluginBase;
 import host.kuro.onetwothree.command.CommandManager;
 import host.kuro.onetwothree.task.TwitterTask;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
 public class BasePlugin extends PluginBase {
@@ -51,6 +53,9 @@ public class BasePlugin extends PluginBase {
     @Override
     public void onDisable() {
         this.api.getDB().DisConnect();
+        OneTwoThreeAPI.wp_world.clear();
+        OneTwoThreeAPI.wp_player.clear();
+        OneTwoThreeAPI.touch_mode.clear();
         this.getLogger().info(Language.translate("onetwothree.unloaded"));
     }
 

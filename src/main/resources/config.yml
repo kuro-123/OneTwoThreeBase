@@ -20,7 +20,7 @@ Twitter:
   BroadcastID: 0
 
 Command:
-  Disable: "version,plugins,seed,defaultgamemode,me,difficulty,op,deop,whitelist,save-on,save-off,save-all,give,effect,enchant,particle,gamerule,title,reload,weather,xp,status,gc,timings,debugpaste"
+  Disable: "version,plugins,seed,defaultgamemode,me,difficulty,op,deop,whitelist,save-on,save-off,save-all,give,effect,enchant,particle,gamerule,title,reload,xp,status,gc,timings,debugpaste"
 
 NameCommand:
   AllowDays: 3

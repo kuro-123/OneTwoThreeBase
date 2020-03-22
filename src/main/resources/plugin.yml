@@ -20,3 +20,8 @@ permissions:
     default: true
   onetwothree.xbox.others:
     default: op
+
+  onetwothree.touch:
+    default: true
+  onetwothree.touch.others:
+    default: op

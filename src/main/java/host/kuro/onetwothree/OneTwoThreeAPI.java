@@ -3,6 +3,7 @@ package host.kuro.onetwothree;
 import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
+import cn.nukkit.block.Block;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
@@ -14,6 +15,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +49,11 @@ public class OneTwoThreeAPI {
         return this.plugin.getDescription().getVersion();
     }
     public PluginLogger getLogger() { return this.plugin.getLogger(); }
+
+    // 各種メモリデータ
+    public static HashMap<Player, Boolean> touch_mode = new HashMap<>();
+    public static HashMap<Player, List<String>> wp_world = new HashMap<>();
+    public static HashMap<Player, List<String>> wp_player = new HashMap<>();
 
     // IPアドレスを取得
     public String GetIpInfo() {
@@ -126,6 +134,38 @@ public class OneTwoThreeAPI {
             ret = target.getName();
         }
         return ret;
+    }
+
+    public boolean IsTouchmode(Player player) {
+        if (!touch_mode.containsKey(player)) {
+            return false;
+        }
+        return touch_mode.get(player);
+    }
+
+    public String GetBlockInfoMessage(Block block) {
+        if (block == null) return "";
+
+        String id = ((Integer)block.getId()).toString();
+        String meta = ((Integer)block.getDamage()).toString();
+        String name = block.getName();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(TextFormat.WHITE);
+        sb.append(name);
+        sb.append(" -> ");
+        sb.append(TextFormat.GREEN);
+        sb.append(id);
+        sb.append(":");
+        sb.append(meta);
+        sb.append(TextFormat.YELLOW);
+        sb.append(") - ");
+        sb.append("位置(");
+        sb.append(" X:" + block.getFloorX());
+        sb.append(" Y:" + block.getFloorY());
+        sb.append(" Z:" + block.getFloorZ());
+        sb.append(")");
+        return new String(sb);
     }
 
     // 更新情報ウィンドウ通知

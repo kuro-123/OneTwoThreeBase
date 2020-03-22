@@ -4,6 +4,7 @@ import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandMap;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.defaults.NameCommand;
+import host.kuro.onetwothree.command.defaults.TouchCommand;
 import host.kuro.onetwothree.command.defaults.WarpCommand;
 import host.kuro.onetwothree.command.defaults.XboxCommand;
 
@@ -28,6 +29,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new WarpCommand(api));
             map.register("OneTwoThreeBase", new NameCommand(api));
             map.register("OneTwoThreeBase", new XboxCommand(api));
+            map.register("OneTwoThreeBase", new TouchCommand(api));
         } catch (Exception e) {
             e.printStackTrace();
         }

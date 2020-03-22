@@ -1,6 +1,7 @@
 package host.kuro.onetwothree;
 
 import cn.nukkit.Player;
+import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.event.EventHandler;
@@ -41,13 +42,8 @@ public class EventListener implements Listener {
 
     private final OneTwoThreeAPI api;
     private final Map<String, Long> playtime = new HashMap<>();
-
     public EventListener(OneTwoThreeAPI api) {
         this.api = api;
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerTeleport(PlayerTeleportEvent event) {
     }
 
     @EventHandler
@@ -207,8 +203,13 @@ public class EventListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        // フォーム削除
+
+        // メモリ関連削除
         Form.playersForm.remove(player.getName());
+        OneTwoThreeAPI.wp_world.remove(player);
+        OneTwoThreeAPI.wp_player.remove(player);
+        OneTwoThreeAPI.touch_mode.remove(player);
+
         // 経過時間計測
         int ptime = 0;
         String xuid = player.getLoginChainData().getXUID();
@@ -234,11 +235,37 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        try {
+            Player player = event.getPlayer();
+            // タッチモード
+            if (OneTwoThreeAPI.touch_mode.containsKey(player)) {
+                if (OneTwoThreeAPI.touch_mode.get(player)) {
+                    Block block = event.getBlock();
+                    player.sendMessage(api.GetInfoMessage(api.GetBlockInfoMessage(block)));
+                    event.setCancelled();
+                    return;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         try {
+            Player player = event.getPlayer();
+            if (api.IsTouchmode(player)) {
+                api.GetWarningMessage(Language.translate("onetwothree.othermode"));
+                event.setCancelled();
+                return;
+            }
+
             // プレイヤー情報更新(BREAK)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
-            args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
             int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0012"), args);
             args.clear();
             args = null;
@@ -251,9 +278,16 @@ public class EventListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         try {
+            Player player = event.getPlayer();
+            if (api.IsTouchmode(player)) {
+                api.GetWarningMessage(Language.translate("onetwothree.othermode"));
+                event.setCancelled();
+                return;
+            }
+
             // プレイヤー情報更新(PLACE)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
-            args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
             int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0013"), args);
             args.clear();
             args = null;
@@ -321,10 +355,6 @@ public class EventListener implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @EventHandler
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
