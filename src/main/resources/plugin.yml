@@ -30,3 +30,8 @@ permissions:
     default: op
   onetwothree.price.others:
     default: op
+
+  onetwothree.rank:
+    default: op
+  onetwothree.rank.others:
+    default: op

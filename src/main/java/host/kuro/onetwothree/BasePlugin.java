@@ -62,6 +62,7 @@ public class BasePlugin extends PluginBase {
         OneTwoThreeAPI.wp_player.clear();
         OneTwoThreeAPI.touch_mode.clear();
         OneTwoThreeAPI.item_price.clear();
+        OneTwoThreeAPI.player_list.clear();
         this.getLogger().info(Language.translate("onetwothree.unloaded"));
     }
 

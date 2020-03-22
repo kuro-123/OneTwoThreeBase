@@ -56,5 +56,9 @@ SqlStatement:
   Sql0022: "INSERT INTO item (id, meta, name, price, add_date, updater, upd_date) VALUES (?, 0, ?, 0, current_timestamp, '', current_timestamp)"
   Sql0023: "SELECT id,name,price FROM item ORDER BY id"
   Sql0024: "UPDATE item SET price=?, updater=?, upd_date=current_timestamp WHERE id=? AND meta=0"
+  Sql0025: "SELECT 名前, 元名, 権限 FROM v_player ORDER BY LOWER(名前)"
+  Sql0026: "SELECT 元名 FROM v_player WHERE 名前=?"
+  Sql0027: "UPDATE player SET rank=? WHERE xname=?"
+  Sql0028: "SELECT rank FROM player WHERE xuid=?"
 
 ConfigVersion: 1
