@@ -180,8 +180,17 @@ public class EventListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        player.setOp(true);
-        player.setGamemode(1);
+
+        // 権限設定
+        player.setOp(false);
+        player.setGamemode(Player.SURVIVAL);
+        int rank = api.GetRank(player);
+        if (rank > 1) {
+            player.setOp(true);
+        }
+        if (rank > 3) {
+            player.setGamemode(Player.CREATIVE);
+        }
 
         String allowname = api.getConfig().getString("GameSettings.AllowCreative");
         Level lv = api.getServer().getLevelByName(allowname);
@@ -266,10 +275,22 @@ public class EventListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         try {
             Player player = event.getPlayer();
+
             if (api.IsTouchmode(player)) {
                 api.GetWarningMessage(Language.translate("onetwothree.othermode"));
                 event.setCancelled();
                 return;
+            }
+
+            // 一時しのぎ
+            if (player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city")) {
+                int rank = api.GetRank(player);
+                if (rank < 3) {
+                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    event.setCancelled();
+                    return;
+                }
             }
 
             // プレイヤー情報更新(BREAK)
@@ -288,10 +309,22 @@ public class EventListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         try {
             Player player = event.getPlayer();
+
             if (api.IsTouchmode(player)) {
                 api.GetWarningMessage(Language.translate("onetwothree.othermode"));
                 event.setCancelled();
                 return;
+            }
+
+            // 一時しのぎ
+            if (player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city")) {
+                int rank = api.GetRank(player);
+                if (rank < 3) {
+                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    event.setCancelled();
+                    return;
+                }
             }
 
             // プレイヤー情報更新(PLACE)
@@ -374,7 +407,8 @@ public class EventListener implements Listener {
             String sTo = event.getTo().getLevel().getName();
             if (sFrom.equals(sTo)) return;
             String allowname = api.getConfig().getString("GameSettings.AllowCreative");
-            if (!sTo.equals(allowname)) {
+            if (!event.getTo().getLevel().getName().equals("lobby") && !event.getTo().getLevel().getName().equals("city")) {
+                //if (!sTo.equals(allowname)) {
                 player.setGamemode(Player.SURVIVAL);
                 player.sendMessage(api.GetWarningMessage(Language.translate("onetwothree.forceSurvival")));
                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin005, 0, false); // forcemode
@@ -408,10 +442,20 @@ public class EventListener implements Listener {
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
         try {
             Player player = event.getPlayer();
+
+            // 一時しのぎ
+            int rank = api.GetRank(player);
+            if (rank < 3) {
+                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                event.setCancelled();
+                return;
+            }
+
             int newmode = event.getNewGamemode();
             String lvname = player.getLevel().getName();
             String allowname = api.getConfig().getString("GameSettings.AllowCreative");
-            if (!lvname.equals(allowname)) {
+            if (!lvname.equals("lobby") && !lvname.equals("city")) {
                 if (newmode != Player.SURVIVAL) {
                     player.sendMessage(api.GetWarningMessage(Language.translate("onetwothree.gamemod_err")));
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
