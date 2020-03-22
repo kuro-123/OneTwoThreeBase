@@ -142,9 +142,9 @@ public class SoundTask extends Thread {
         pk.volume = 0.9F;
         pk.pitch = 1.0F;
         for (Player p : api.getServer().getInstance().getOnlinePlayers().values()) {
-            pk.x = player.getPosition().getFloorX();
-            pk.y = player.getPosition().getFloorY();
-            pk.z = player.getPosition().getFloorZ();
+            pk.x = p.getPosition().getFloorX();
+            pk.y = p.getPosition().getFloorY();
+            pk.z = p.getPosition().getFloorZ();
             p.dataPacket(pk);
         }
         pk = null;

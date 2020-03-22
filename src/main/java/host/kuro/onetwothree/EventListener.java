@@ -180,7 +180,7 @@ public class EventListener implements Listener {
         player.setOp(true);
         player.setGamemode(1);
 
-        api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin014, 0, false); // ドアノック
+        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin014, 0, false); // ドアノック
 
         // ステータス更新
         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
@@ -236,7 +236,7 @@ public class EventListener implements Listener {
         args.clear();
         args = null;
 
-        api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin061, 0, false); // ドアクローズ
+        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin061, 0, false); // ドアクローズ
     }
 
     @EventHandler
