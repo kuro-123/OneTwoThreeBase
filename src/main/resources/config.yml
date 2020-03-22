@@ -1,5 +1,8 @@
 Provider: Yaml
 
+GameSettings:
+  AllowCreative : "lobby"
+
 Sound:
   Volume: 0.9
 

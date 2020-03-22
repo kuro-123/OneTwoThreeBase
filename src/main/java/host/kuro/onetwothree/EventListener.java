@@ -21,6 +21,9 @@ import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowModal;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -180,6 +183,10 @@ public class EventListener implements Listener {
         player.setOp(true);
         player.setGamemode(1);
 
+        String allowname = api.getConfig().getString("GameSettings.AllowCreative");
+        Level lv = api.getServer().getLevelByName(allowname);
+        player.setSpawn(lv.getSpawnLocation());
+
         api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin014, 0, false); // ドアノック
 
         // ステータス更新
@@ -188,9 +195,6 @@ public class EventListener implements Listener {
         int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0006"), args);
         args.clear();
         args = null;
-
-        // バージョン情報表示
-        api.ShowUpdateWindow(player);
 
         // プレイヤー情報更新(LOGIN)
         ArrayList<DatabaseArgs> largs = new ArrayList<DatabaseArgs>();
@@ -362,47 +366,110 @@ public class EventListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        try {
+            Player player = event.getPlayer();
+            String sFrom = event.getFrom().getLevel().getName();
+            String sTo = event.getTo().getLevel().getName();
+            if (sFrom.equals(sTo)) return;
+            String allowname = api.getConfig().getString("GameSettings.AllowCreative");
+            if (!sTo.equals(allowname)) {
+                player.setGamemode(Player.SURVIVAL);
+                player.sendMessage(api.GetWarningMessage(Language.translate("onetwothree.forceSurvival")));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin005, 0, false); // forcemode
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        try {
+            Player player = event.getPlayer();
+            String sRespawn = event.getRespawnPosition().getLevel().getName();
+            String allowname = api.getConfig().getString("GameSettings.AllowCreative");
+            if (!sRespawn.equals(allowname)) {
+                Level lv = api.getServer().getLevelByName(allowname);
+                if (lv != null) {
+                    event.setRespawnPosition(lv.getSpawnLocation());
+                    player.setSpawn(lv.getSpawnLocation());
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
+        try {
+            Player player = event.getPlayer();
+            int newmode = event.getNewGamemode();
+            String lvname = player.getLevel().getName();
+            String allowname = api.getConfig().getString("GameSettings.AllowCreative");
+            if (!lvname.equals(allowname)) {
+                if (newmode != Player.SURVIVAL) {
+                    player.sendMessage(api.GetWarningMessage(Language.translate("onetwothree.gamemod_err")));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    event.setCancelled();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void formResponded(PlayerFormRespondedEvent event) {
-        Player player = event.getPlayer();
-        FormWindow window = event.getWindow();
-        FormResponse response = window.getResponse();
+        try {
+            Player player = event.getPlayer();
+            FormWindow window = event.getWindow();
+            FormResponse response = window.getResponse();
 
-        if (Form.playersForm.containsKey(player.getName())) {
-            host.kuro.onetwothree.forms.FormResponse temp = Form.playersForm.get(player.getName());
-            Form.playersForm.remove(player.getName());
+            if (Form.playersForm.containsKey(player.getName())) {
+                host.kuro.onetwothree.forms.FormResponse temp = Form.playersForm.get(player.getName());
+                Form.playersForm.remove(player.getName());
 
-            Object data;
+                Object data;
 
-            if (response == null || event.wasClosed()) {
-                if (temp instanceof CustomFormResponse) {
-                    ((CustomFormResponse) temp).handle(player, window, null);
+                if (response == null || event.wasClosed()) {
+                    if (temp instanceof CustomFormResponse) {
+                        ((CustomFormResponse) temp).handle(player, window, null);
 
-                } else if (temp instanceof ModalFormResponse) {
-                    ((ModalFormResponse) temp).handle(player, window, -1);
+                    } else if (temp instanceof ModalFormResponse) {
+                        ((ModalFormResponse) temp).handle(player, window, -1);
 
-                } else if (temp instanceof SimpleFormResponse) {
-                    ((SimpleFormResponse) temp).handle(player, window, -1);
+                    } else if (temp instanceof SimpleFormResponse) {
+                        ((SimpleFormResponse) temp).handle(player, window, -1);
+                    }
+                    return;
                 }
-                return;
+
+                if (window instanceof FormWindowSimple) {
+                    data = ((FormResponseSimple) response).getClickedButtonId();
+                    ((SimpleFormResponse) temp).handle(player, window, (int) data);
+                    return;
+                }
+
+                if (window instanceof FormWindowCustom) {
+                    data = new ArrayList<>(((FormResponseCustom) response).getResponses().values());
+                    ((CustomFormResponse) temp).handle(player, window, (List<Object>) data);
+                    return;
+                }
+
+                if (window instanceof FormWindowModal) {
+                    data = ((FormResponseModal) response).getClickedButtonId();
+                    ((ModalFormResponse) temp).handle(player, window, (int) data);
+                }
             }
 
-            if (window instanceof FormWindowSimple) {
-                data = ((FormResponseSimple) response).getClickedButtonId();
-                ((SimpleFormResponse) temp).handle(player, window, (int) data);
-                return;
-            }
-
-            if (window instanceof FormWindowCustom) {
-                data = new ArrayList<>(((FormResponseCustom) response).getResponses().values());
-                ((CustomFormResponse) temp).handle(player, window, (List<Object>) data);
-                return;
-            }
-
-            if (window instanceof FormWindowModal) {
-                data = ((FormResponseModal) response).getClickedButtonId();
-                ((ModalFormResponse) temp).handle(player, window, (int) data);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -4,6 +4,7 @@ import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.level.Location;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
@@ -185,52 +186,6 @@ public class OneTwoThreeAPI {
         sb.append(" Z:" + block.getFloorZ());
         sb.append(")");
         return new String(sb);
-    }
-
-    // 更新情報ウィンドウ通知
-    public void ShowUpdateWindow(Player player) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0010"));
-            ResultSet rs = getDB().ExecuteQuery(ps, null);
-            if (rs != null) {
-                while(rs.next()){
-                    sb.append(TextFormat.GOLD);
-                    sb.append("VER: ");
-                    sb.append(rs.getString("version"));
-                    sb.append(" (");
-                    sb.append(rs.getString("add_date"));
-                    sb.append(" ) -> ");
-                    sb.append(TextFormat.WHITE);
-                    sb.append(rs.getString("name"));
-                    sb.append("\n");
-                }
-            }
-            if (ps != null) {
-                ps.close();
-                ps = null;
-            }
-            if (rs != null) {
-                rs.close();
-                rs = null;
-            }
-
-            if (sb.length() > 0) {
-                // ログイン中は画面が見えないためディレイ送信
-                getServer().getInstance().getScheduler().scheduleDelayedTask(new Task() {
-                    @Override
-                    public void onRun(int currentTick) {
-                        PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
-                        SimpleForm form = new SimpleForm("更新情報", new String(sb));
-                        form.send(player, (targetPlayer, targetForm, data) -> {
-                            if(data == -1) return;
-                        });
-                    }
-                }, 200, true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     // サウンド再生
