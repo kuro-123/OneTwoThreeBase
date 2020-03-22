@@ -10,6 +10,8 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
+import host.kuro.onetwothree.task.SkinTask;
+import host.kuro.onetwothree.task.SoundTask;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -136,6 +138,23 @@ public class OneTwoThreeAPI {
         return ret;
     }
 
+    // 一定期間スリープする
+    public void Sleep(int millsec) {
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime;
+        while(true) {
+            endTime = System.currentTimeMillis();
+            if ((endTime - startTime) > millsec) {
+                break;
+            }
+            Thread.yield();
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
     public boolean IsTouchmode(Player player) {
         if (!touch_mode.containsKey(player)) {
             return false;
@@ -212,4 +231,11 @@ public class OneTwoThreeAPI {
             e.printStackTrace();
         }
     }
+
+    // サウンド再生
+    public void PlaySound(Player player, int mode, String sound, int wait, boolean stop) {
+        SoundTask task = new SoundTask(this, player, mode, sound, wait, stop);
+        task.start();
+    }
+
 }

@@ -19,6 +19,7 @@ import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
+import host.kuro.onetwothree.task.SoundTask;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,6 +60,7 @@ public class TouchCommand extends CommandBase {
             if (!OneTwoThreeAPI.touch_mode.containsKey(player)) {
                 OneTwoThreeAPI.touch_mode.put(player, true);
                 player.sendMessage(api.GetInfoMessage(Language.translate("commands.touch.modeon")));;
+
             } else {
                 if (OneTwoThreeAPI.touch_mode.get(player)) {
                     OneTwoThreeAPI.touch_mode.put(player, false);
