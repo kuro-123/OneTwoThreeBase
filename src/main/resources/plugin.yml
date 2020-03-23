@@ -35,3 +35,8 @@ permissions:
     default: op
   onetwothree.rank.others:
     default: op
+
+  onetwothree.sell:
+    default: op
+  onetwothree.sell.others:
+    default: op

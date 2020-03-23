@@ -94,20 +94,12 @@ public class WarpCommand extends CommandBase {
             for (Level lv : api.getServer().getLevels().values()) {
                 lvList.add(lv.getName());
             }
-            if (OneTwoThreeAPI.wp_world.containsKey(player)) {
-                OneTwoThreeAPI.wp_world.remove(player);
-            }
-            OneTwoThreeAPI.wp_world.put(player, lvList);
 
             List<String> pList = new ArrayList<String>();
             pList.add("指定なし");
             for (Player p : api.getServer().getOnlinePlayers().values()) {
                 pList.add(p.getDisplayName());
             }
-            if (OneTwoThreeAPI.wp_player.containsKey(player)) {
-                OneTwoThreeAPI.wp_player.remove(player);
-            }
-            OneTwoThreeAPI.wp_player.put(player, pList);
 
             CustomForm form = new CustomForm("ワープウィンドウ")
                     .addLabel("下記のいずれかを指定しワープします")
@@ -122,73 +114,60 @@ public class WarpCommand extends CommandBase {
                     return;
                 }
 
-                int cnt;
-
                 // ワールド指定
-                String world_idx = data.get(1).toString();
-                int widx = Integer.parseInt(world_idx);
-                if (widx > 0) {
-                    List<String> worlds = OneTwoThreeAPI.wp_world.get(targetPlayer);
-                    String world = worlds.get(widx);
-                    Position pos = api.getServer().getLevelByName(world).getSpawnLocation();
-                    if (pos != null) {
-                        if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                            TeleportMessage(player, world);
-                        }
+                String sworld = data.get(1).toString();
+                Position pos = api.getServer().getLevelByName(sworld).getSpawnLocation();
+                if (pos != null) {
+                    if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
+                        TeleportMessage(player, sworld);
+                        return;
                     }
-                    OneTwoThreeAPI.wp_world.remove(targetPlayer);
-                    return;
                 }
-                OneTwoThreeAPI.wp_world.remove(targetPlayer);
 
                 // プレイヤー指定
-                String player_idx = data.get(2).toString();
-                int pidx = Integer.parseInt(player_idx);
-                if (pidx > 0) {
-                    List<String> players = OneTwoThreeAPI.wp_player.get(targetPlayer);
-                    String pname = players.get(pidx);
-                    if (pname.length() > 0) {
-                        try {
-                            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0021"));
-                            ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
-                            pargs.add(new DatabaseArgs("c", pname.toLowerCase()));
-                            ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);
-                            pargs.clear();
-                            pargs = null;
-                            if (rs != null) {
-                                while (rs.next()) {
-                                    pname = rs.getString("xname");
-                                    break;
-                                }
-                            }
-                            if (ps != null) {
-                                ps.close();
-                                ps = null;
-                            }
-                            if (rs != null) {
-                                rs.close();
-                                rs = null;
-                            }
-                        } catch (SQLException e){
-                            e.printStackTrace();
+                String splayer = data.get(2).toString();
+                try {
+                    PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0021"));
+                    ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
+                    pargs.add(new DatabaseArgs("c", splayer.toLowerCase()));
+                    ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);
+                    pargs.clear();
+                    pargs = null;
+                    if (rs != null) {
+                        while (rs.next()) {
+                            splayer = rs.getString("xname");
+                            break;
                         }
                     }
-                    Player target = api.getServer().getPlayerExact(pname);
+                    if (ps != null) {
+                        ps.close();
+                        ps = null;
+                    }
+                    if (rs != null) {
+                        rs.close();
+                        rs = null;
+                    }
+
+                    Player target = api.getServer().getPlayerExact(splayer);
                     if (target.getDisplayName().equalsIgnoreCase(player.getDisplayName())) {
                         player.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
                     } else {
-                        Position pos = target.getPosition();
+                        pos = target.getPosition();
                         if (pos != null) {
                             if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
                                 TeleportMessage(player, target.getDisplayName());
+                                return;
                             }
                         }
                     }
-                    OneTwoThreeAPI.wp_player.remove(targetPlayer);
-                    return;
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+
+                } catch (SQLException e){
+                    e.printStackTrace();
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 }
-                OneTwoThreeAPI.wp_player.remove(targetPlayer);
             });
+
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             e.printStackTrace();

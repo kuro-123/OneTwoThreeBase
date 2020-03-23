@@ -63,12 +63,12 @@ public class PriceCommand extends CommandBase {
             ilist.add("指定なし");
             for(Iterator<ItemPrice> iterator = api.item_price.values().iterator(); iterator.hasNext(); ) {
                 ItemPrice value = iterator.next();
-                ilist.add(value.name + " [ID: " + value.id + "] -> 現価格: " + value.price);
+                ilist.add("[ ID: " + value.id + " ] < " + value.name + " > 現価格: " + value.price);
             }
             CustomForm form = new CustomForm("価格設定")
                 .addLabel("価格の設定が行えます")
                 .addDropDown("アイテムリスト", ilist)
-                .addInput("設定価格", "数値入力(0～5,000)", "0");
+                .addInput("設定価格", "金額入力(0〜100)", "0");
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
             form.send(player, (targetPlayer, targetForm, data) -> {
                     try {
@@ -78,20 +78,41 @@ public class PriceCommand extends CommandBase {
                             return;
                         }
                         // 価格
-                        String sprice = data.get(2).toString();
+                        String sprice = "";
+                        int price = 0;
+                        try {
+                            sprice = data.get(2).toString();
+                            price = Integer.parseInt(sprice);
+                            if (!(0 <= price && price <= 100)) {
+                                player.sendMessage(api.GetWarningMessage("commands.price.price_err"));
+                                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                return;
+                            }
+                        } catch (Exception e) {
+                            player.sendMessage(api.GetWarningMessage("commands.price.price_err"));
+                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            return;
+                        }
 
                         // ID
-                        ItemPrice ip = null;
-                        String sid = "";
-                        String sindex = data.get(1).toString();
-                        int index = Integer.parseInt(sindex);
-                        index--;
+                        String sitem = "";
+                        int id = 0;
+                        try {
+                            sitem = data.get(1).toString();
+                            int pos= sitem.indexOf(" ]");
+                            String itemid = sitem.substring(5, pos);
+                            itemid = itemid.trim();
+                            id = Integer.parseInt(itemid);
 
-                        for(Iterator<ItemPrice> iterator = api.item_price.values().iterator(); iterator.hasNext(); ) {
-                            ip = iterator.next();
-                            if (ip.index == index) {
-                                break;
-                            }
+                        } catch (Exception e) {
+                            player.sendMessage(api.GetWarningMessage("commands.price.id_err"));
+                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            return;
+                        }
+
+                        ItemPrice ip = null;
+                        if (api.item_price.containsKey(id)) {
+                            ip = api.item_price.get(id);
                         }
                         if (ip != null) {
                             // アイテム情報更新
@@ -105,7 +126,7 @@ public class PriceCommand extends CommandBase {
                             if (ret > 0) {
                                 // メモリ更新
                                 ip.price = Integer.parseInt(sprice);
-                                api.item_price.put(index, ip);
+                                api.item_price.put(id, ip);
 
                                 player.sendMessage(api.GetWarningMessage("commands.price.success"));
                                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
@@ -121,7 +142,6 @@ public class PriceCommand extends CommandBase {
                         e.printStackTrace();
                     }
             });
-            ilist.clear();
 
         } catch (Exception e) {
             this.sendUsage(player);

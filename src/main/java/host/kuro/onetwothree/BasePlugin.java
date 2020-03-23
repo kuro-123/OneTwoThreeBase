@@ -58,8 +58,6 @@ public class BasePlugin extends PluginBase {
     @Override
     public void onDisable() {
         this.api.getDB().DisConnect();
-        OneTwoThreeAPI.wp_world.clear();
-        OneTwoThreeAPI.wp_player.clear();
         OneTwoThreeAPI.touch_mode.clear();
         OneTwoThreeAPI.item_price.clear();
         OneTwoThreeAPI.player_list.clear();

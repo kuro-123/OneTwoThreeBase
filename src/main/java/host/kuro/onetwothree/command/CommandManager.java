@@ -30,6 +30,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new VersionCommand(api));
             map.register("OneTwoThreeBase", new PriceCommand(api));
             map.register("OneTwoThreeBase", new RankCommand(api));
+            map.register("OneTwoThreeBase", new SellCommand(api));
         } catch (Exception e) {
             e.printStackTrace();
         }

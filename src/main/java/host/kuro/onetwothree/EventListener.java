@@ -24,6 +24,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
+import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -222,8 +223,6 @@ public class EventListener implements Listener {
 
         // メモリ関連削除
         Form.playersForm.remove(player.getName());
-        OneTwoThreeAPI.wp_world.remove(player);
-        OneTwoThreeAPI.wp_player.remove(player);
         OneTwoThreeAPI.touch_mode.remove(player);
 
         // 経過時間計測
@@ -290,6 +289,17 @@ public class EventListener implements Listener {
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     event.setCancelled();
                     return;
+                }
+            }
+
+            // 自然ワールドでドロップしたアイテムには印をつけておく
+            if (!(player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city"))) {
+                String symbol = api.getConfig().getString("GameSettings.ItemTag");
+                if (symbol.length() > 0) {
+                    Item[] drops = event.getDrops();
+                    for (Item item: drops) {
+                        item.setCustomName(item.getName()+symbol);
+                    }
                 }
             }
 

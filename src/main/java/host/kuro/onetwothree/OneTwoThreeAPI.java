@@ -60,8 +60,6 @@ public class OneTwoThreeAPI {
 
     // 各種メモリデータ
     public static HashMap<Player, Boolean> touch_mode = new HashMap<>();
-    public static HashMap<Player, List<String>> wp_world = new HashMap<>();
-    public static HashMap<Player, List<String>> wp_player = new HashMap<>();
     public static HashMap<Integer, ItemPrice> item_price = new HashMap<>();
     public static HashMap<Integer, String> player_list = new HashMap<>();
 
@@ -224,13 +222,11 @@ public class OneTwoThreeAPI {
             PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0023"));
             ResultSet rs = getDB().ExecuteQuery(ps, null);
             if (rs != null) {
-                int i = 0;
                 while(rs.next()){
                     int id = rs.getInt("id");
                     String name = rs.getString("name");
                     int price = rs.getInt("price");
-                    item_price.put(id, new ItemPrice(i, id, name, price));
-                    i++;
+                    item_price.put(id, new ItemPrice(id, name, price));
                 }
             }
             if (ps != null) {

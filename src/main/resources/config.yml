@@ -2,6 +2,7 @@ Provider: Yaml
 
 GameSettings:
   AllowCreative : "lobby"
+  ItemTag : "-123"
 
 Sound:
   Volume: 0.9
