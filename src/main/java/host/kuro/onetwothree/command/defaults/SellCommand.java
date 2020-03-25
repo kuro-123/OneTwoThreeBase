@@ -105,7 +105,7 @@ public class SellCommand extends CommandBase {
                     ArrayList<DatabaseArgs> margs = new ArrayList<DatabaseArgs>();
                     margs.add(new DatabaseArgs("c", targetPlayer.getLoginChainData().getXUID()));
                     margs.add(new DatabaseArgs("i", ""+sell_kingaku));
-                    margs.add(new DatabaseArgs("i", ""+sell_kingaku));
+                    //margs.add(new DatabaseArgs("i", ""+sell_kingaku));
                     int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0029"), margs);
                     margs.clear();
                     margs = null;

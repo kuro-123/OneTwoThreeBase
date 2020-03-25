@@ -61,6 +61,6 @@ SqlStatement:
   Sql0026: "SELECT 元名 FROM v_player WHERE 名前=?"
   Sql0027: "UPDATE player SET rank=? WHERE xname=?"
   Sql0028: "SELECT rank FROM player WHERE xuid=?"
-  Sql0029: "INSERT INTO player_wallet (xuid, money, add_date, upd_date) VALUES (?, ?, current_timestamp, current_timestamp) ON CONFLICT (xuid) DO UPDATE SET money=money+?, upd_date = current_timestamp"
+  Sql0029: "INSERT INTO player_wallet (xuid, money, add_date, upd_date) VALUES (?, ?, current_timestamp, current_timestamp) ON CONFLICT (xuid) DO UPDATE SET money=player_wallet.money+EXCLUDED.money, upd_date = current_timestamp"
 
 ConfigVersion: 1

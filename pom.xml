@@ -63,6 +63,16 @@
     <build>
         <defaultGoal>clean package</defaultGoal>
         <finalName>${project.name}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>13</source>
+                    <target>13</target>
+                </configuration>
+            </plugin>
+        </plugins>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>
