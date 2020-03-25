@@ -12,15 +12,12 @@ public class SimpleForm extends Form {
     public SimpleForm(FormWindowSimple form){
         this.form = form;
     }
-
     public SimpleForm() {
         form = new FormWindowSimple("", "");
     }
-
     public SimpleForm(String title) {
         form = new FormWindowSimple(title, "");
     }
-
     public SimpleForm(String title, String content) {
         form = new FormWindowSimple(title, content);
     }

@@ -1,12 +1,12 @@
 package host.kuro.onetwothree;
 
+import cn.nukkit.Server;
+import cn.nukkit.utils.Utils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import cn.nukkit.Server;
-import cn.nukkit.utils.Utils;
 
 public class Language {
 

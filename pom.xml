@@ -9,10 +9,15 @@
     <name>OneTwoThreeBase</name>
 
     <properties>
+        <maven.compiler.source>13</maven.compiler.source>
+        <maven.compiler.target>13</maven.compiler.target>
+        <junit.jupiter.version>5.0.0-M4</junit.jupiter.version>
+        <junit.platform.version>1.0.0-M4</junit.platform.version>
+        <log4j2.version>2.11.1</log4j2.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.14</maven.compiler.source>
-        <maven.compiler.target>1.14</maven.compiler.target>
+        <jline.version>3.9.0</jline.version>
     </properties>
+
 
     <repositories>
         <repository>

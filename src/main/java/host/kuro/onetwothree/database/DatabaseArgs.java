@@ -1,7 +1,5 @@
 package host.kuro.onetwothree.database;
 
-import host.kuro.onetwothree.OneTwoThreeAPI;
-
 public class DatabaseArgs {
     public String type;
     public String value;

@@ -1,8 +1,5 @@
 package host.kuro.onetwothree.item;
 
-import host.kuro.onetwothree.BasePlugin;
-import host.kuro.onetwothree.database.DatabaseManager;
-
 public class ItemPrice {
     public int id;
     public String name;

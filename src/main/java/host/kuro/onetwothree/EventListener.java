@@ -11,6 +11,7 @@ import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.entity.EntityDeathEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseCustom;
@@ -22,11 +23,6 @@ import cn.nukkit.form.window.FormWindowModal;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.Location;
-import cn.nukkit.level.Position;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.scheduler.Task;
-import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.forms.CustomFormResponse;
@@ -36,11 +32,8 @@ import host.kuro.onetwothree.forms.SimpleFormResponse;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
 
-import java.net.InetAddress;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.*;
 
 public class EventListener implements Listener {
@@ -389,6 +382,26 @@ public class EventListener implements Listener {
                 }
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        try {
+            Entity entity = event.getEntity();
+
+            // 自然ワールドでドロップしたアイテムには印をつけておく
+            if (!(entity.getLevel().getName().equals("lobby") || entity.getLevel().getName().equals("city"))) {
+                String symbol = api.getConfig().getString("GameSettings.ItemTag");
+                if (symbol.length() > 0) {
+                    Item[] drops = event.getDrops();
+                    for (Item item: drops) {
+                        item.setCustomName(item.getName()+symbol);
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

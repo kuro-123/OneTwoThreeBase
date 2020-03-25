@@ -1,14 +1,10 @@
 package host.kuro.onetwothree.command.defaults;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.event.player.PlayerTeleportEvent;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.Language;

@@ -12,17 +12,5 @@ public class MainTask extends Task {
 
     @Override
     public void onRun(int i) {
-/*
-    	Iterator<TPCooldown> iter = api.getTpCooldowns().iterator();
-        long time = System.currentTimeMillis();
-
-        while (iter.hasNext()) {
-            TPCooldown cooldown = iter.next();
-            if (cooldown.getTimestamp() <= time) {
-                cooldown.execute();
-                iter.remove();
-            }
-        }
-*/
     }
 }

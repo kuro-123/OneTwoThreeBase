@@ -37,6 +37,6 @@ permissions:
     default: op
 
   onetwothree.sell:
-    default: op
+    default: true
   onetwothree.sell.others:
     default: op

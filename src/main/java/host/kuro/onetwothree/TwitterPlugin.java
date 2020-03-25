@@ -1,15 +1,11 @@
 package host.kuro.onetwothree;
 
 import cn.nukkit.utils.TextFormat;
-import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.task.TwitterTask;
 import twitter4j.*;
-import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
-
-import java.util.List;
 
 public class TwitterPlugin {
     // メンバー

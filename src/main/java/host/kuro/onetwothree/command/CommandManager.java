@@ -1,11 +1,8 @@
 package host.kuro.onetwothree.command;
 
-import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandMap;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.defaults.*;
-
-import java.util.Map;
 
 public class CommandManager {
 

@@ -1,22 +1,18 @@
 package host.kuro.onetwothree.command.defaults;
 
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.event.player.PlayerTeleportEvent;
-import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.TextFormat;
-import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
-import host.kuro.onetwothree.forms.FormResponse;
 import host.kuro.onetwothree.forms.elements.CustomForm;
 import host.kuro.onetwothree.task.SoundTask;
 

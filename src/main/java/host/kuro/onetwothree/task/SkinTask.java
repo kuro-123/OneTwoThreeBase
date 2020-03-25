@@ -34,7 +34,6 @@ public class SkinTask extends Thread {
             if (dir != null) {
                 dir = null;
             }
-
             if (path.length() <= 0) return;
             path += "skin/" + player.getDisplayName().toLowerCase() + ".png";
             File f = new File(path);

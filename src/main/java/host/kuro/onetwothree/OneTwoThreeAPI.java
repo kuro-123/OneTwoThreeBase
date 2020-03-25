@@ -5,16 +5,12 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.Location;
 import cn.nukkit.plugin.PluginLogger;
-import cn.nukkit.scheduler.Task;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
-import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.item.ItemPrice;
-import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
 
 import java.net.InetAddress;
@@ -23,9 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OneTwoThreeAPI {
@@ -159,6 +152,17 @@ public class OneTwoThreeAPI {
             } catch (InterruptedException e) {
             }
         }
+    }
+
+    public boolean IsTagItem(Item item) {
+        String cus = item.getCustomName();
+        if (cus.length() <= 0) return false;
+
+        String symbol = getConfig().getString("GameSettings.ItemTag");
+        if (symbol.length() <= 0) return false;
+
+        if (cus.indexOf(symbol) <= 0) return false;
+        return true;
     }
 
     public boolean IsTouchmode(Player player) {

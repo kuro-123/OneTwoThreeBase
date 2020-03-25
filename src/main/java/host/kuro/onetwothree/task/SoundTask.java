@@ -6,6 +6,7 @@ import cn.nukkit.network.protocol.StopSoundPacket;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 
 public class SoundTask extends Thread {
+
     // サウンド一覧（リソースパック内 sound_definitions設定）
     public static final String bgm007 = "music.bgm007"; // ガルちゃん
     public static final String jin001 = "music.jin001"; // ブブー
