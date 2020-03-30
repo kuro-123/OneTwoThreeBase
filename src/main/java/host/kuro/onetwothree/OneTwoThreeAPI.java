@@ -39,6 +39,8 @@ public class OneTwoThreeAPI {
         this.plugin = plugin;
         this.db = new DatabaseManager(instance);
         this.log_cmd = new LogCommand(this);
+        this.log_win = new LogWindow(this);
+        this.log_err = new LogError(this);
     }
     public static OneTwoThreeAPI getInstance() {
         return instance;

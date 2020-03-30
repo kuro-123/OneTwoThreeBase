@@ -15,7 +15,7 @@ public class LogWindow {
         this.api = api;
     }
 
-    public void Write(Player player, String cmd, String res1, String res2, String res3, String res4, String res5, String res6, String message) {
+    public void Write(Player player, String win, String res1, String res2, String res3, String res4, String res5, String res6, String message) {
         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
         if (player == null) {
             args.add(new DatabaseArgs("c", ""));
@@ -24,7 +24,7 @@ public class LogWindow {
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
             args.add(new DatabaseArgs("i", ""+api.GetRank(player)));
         }
-        args.add(new DatabaseArgs("c", cmd));
+        args.add(new DatabaseArgs("c", win));
         args.add(new DatabaseArgs("c", res1));
         args.add(new DatabaseArgs("c", res2));
         args.add(new DatabaseArgs("c", res3));

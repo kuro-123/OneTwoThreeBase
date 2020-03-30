@@ -75,9 +75,11 @@ public class RankCommand extends CommandBase {
                 rs.close();
                 rs = null;
             }
+
+            List<String> plist = new ArrayList<>(api.player_list.values());
             CustomForm form = new CustomForm("権限設定")
                     .addLabel("権限の設定が行えます")
-                    .addDropDown("プレイヤー", new ArrayList<>(api.player_list.values()))
+                    .addDropDown("プレイヤー",  plist)
                     .addDropDown("権限リスト", rank_list);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
             form.send(player, (targetPlayer, targetForm, data) -> {
