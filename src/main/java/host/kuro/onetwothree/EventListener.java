@@ -6,6 +6,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
+import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
@@ -539,5 +540,36 @@ public class EventListener implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @EventHandler
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        String message = event.getMessage();
+        String[] array = message.split(" ");
+        if (array.length <= 0) return;
+        String cmd = "";
+        String arg1 = "";
+        String arg2 = "";
+        String arg3 = "";
+        String arg4 = "";
+        String arg5 = "";
+        String arg6 = "";
+        for (int i=0; i<=6; i++) {
+            try {
+                switch (i) {
+                    case 0: cmd = array[i]; break;
+                    case 1: arg1 = array[i]; break;
+                    case 2: arg2 = array[i]; break;
+                    case 3: arg3 = array[i]; break;
+                    case 4: arg4 = array[i]; break;
+                    case 5: arg5 = array[i]; break;
+                    case 6: arg6 = array[i]; break;
+                }
+            } catch(Exception e) {
+                break;
+            }
+        }
+        Player player = event.getPlayer();
+        api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
     }
 }

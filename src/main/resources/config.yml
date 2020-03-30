@@ -62,5 +62,6 @@ SqlStatement:
   Sql0027: "UPDATE player SET rank=? WHERE xname=?"
   Sql0028: "SELECT rank FROM player WHERE xuid=?"
   Sql0029: "INSERT INTO player_wallet (xuid, money, add_date, upd_date) VALUES (?, ?, current_timestamp, current_timestamp) ON CONFLICT (xuid) DO UPDATE SET money=player_wallet.money+EXCLUDED.money, upd_date = current_timestamp"
+  Sql0030: "INSERT INTO log_cmd (log_date, xuid, rank, cmd, arg01, arg02, arg03, arg04, arg05, arg06, message) VALUES (current_timestamp,?,?,?,?,?,?,?,?,?,?)"
 
 ConfigVersion: 1

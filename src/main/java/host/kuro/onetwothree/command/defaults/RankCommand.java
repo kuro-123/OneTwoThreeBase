@@ -75,7 +75,6 @@ public class RankCommand extends CommandBase {
                 rs.close();
                 rs = null;
             }
-
             CustomForm form = new CustomForm("権限設定")
                     .addLabel("権限の設定が行えます")
                     .addDropDown("プレイヤー", new ArrayList<>(api.player_list.values()))
