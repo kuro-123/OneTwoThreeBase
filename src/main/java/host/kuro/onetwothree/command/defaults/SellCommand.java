@@ -82,6 +82,9 @@ public class SellCommand extends CommandBase {
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                         return;
                     }
+                    // ウィンドウログ
+                    api.getLogWin().Write(targetPlayer, "アイテム売却", ""+data, "", "", "", "", "", targetPlayer.getDisplayName());
+
                     Item sell_item = targetPlayer.getInventory().getItemInHand();
                     if (!api.IsTagItem(sell_item)) {
                         // タグアイテム以外はエラー
@@ -139,6 +142,7 @@ public class SellCommand extends CommandBase {
                 } catch (Exception e) {
                     targetPlayer.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getLogErr().Write(targetPlayer, e.getStackTrace()[1].getMethodName(), e.getMessage(), targetPlayer.getDisplayName());
                     return;
                 }
             });
@@ -146,6 +150,7 @@ public class SellCommand extends CommandBase {
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
             return false;
         }
         return true;

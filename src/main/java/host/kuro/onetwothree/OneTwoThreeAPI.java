@@ -13,6 +13,8 @@ import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.item.ItemPrice;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.LogCommand;
+import host.kuro.onetwothree.utils.LogError;
+import host.kuro.onetwothree.utils.LogWindow;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -28,6 +30,8 @@ public class OneTwoThreeAPI {
     private BasePlugin plugin;
     private DatabaseManager db;
     private LogCommand log_cmd;
+    private LogWindow log_win;
+    private LogError log_err;
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
@@ -54,6 +58,8 @@ public class OneTwoThreeAPI {
     }
     public PluginLogger getLogger() { return this.plugin.getLogger(); }
     public LogCommand getLogCmd() { return log_cmd; }
+    public LogWindow getLogWin() { return log_win; }
+    public LogError getLogErr() { return log_err; }
 
     // 各種メモリデータ
     public static HashMap<Player, Boolean> touch_mode = new HashMap<>();
@@ -274,6 +280,7 @@ public class OneTwoThreeAPI {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
         return ret;
     }

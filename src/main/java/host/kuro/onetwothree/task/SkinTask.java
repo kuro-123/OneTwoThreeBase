@@ -99,6 +99,7 @@ public class SkinTask extends Thread {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 }

@@ -7,15 +7,15 @@ import host.kuro.onetwothree.database.DatabaseArgs;
 
 import java.util.ArrayList;
 
-public class LogCommand {
+public class LogWindow {
 
     protected OneTwoThreeAPI api;
 
-    public LogCommand(OneTwoThreeAPI api) {
+    public LogWindow(OneTwoThreeAPI api) {
         this.api = api;
     }
 
-    public void Write(Player player, String cmd, String arg1, String arg2, String arg3, String arg4, String arg5, String arg6, String message) {
+    public void Write(Player player, String cmd, String res1, String res2, String res3, String res4, String res5, String res6, String message) {
         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
         if (player == null) {
             args.add(new DatabaseArgs("c", ""));
@@ -25,14 +25,14 @@ public class LogCommand {
             args.add(new DatabaseArgs("i", ""+api.GetRank(player)));
         }
         args.add(new DatabaseArgs("c", cmd));
-        args.add(new DatabaseArgs("c", arg1));
-        args.add(new DatabaseArgs("c", arg2));
-        args.add(new DatabaseArgs("c", arg3));
-        args.add(new DatabaseArgs("c", arg4));
-        args.add(new DatabaseArgs("c", arg5));
-        args.add(new DatabaseArgs("c", arg6));
+        args.add(new DatabaseArgs("c", res1));
+        args.add(new DatabaseArgs("c", res2));
+        args.add(new DatabaseArgs("c", res3));
+        args.add(new DatabaseArgs("c", res4));
+        args.add(new DatabaseArgs("c", res5));
+        args.add(new DatabaseArgs("c", res6));
         args.add(new DatabaseArgs("c", message));
-        api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0030"), args);
+        api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0031"), args);
         args.clear();
         args = null;
     }

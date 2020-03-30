@@ -120,6 +120,7 @@ public class EventListener implements Listener {
                 }
             } catch (Exception e) {
                 event.setCancelled();
+                api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
             }
             if (nickname.length() > 0) {
                 player.setDisplayName(nickname);
@@ -166,6 +167,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
 
         // スキンタスク起動
@@ -248,8 +250,8 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
         try {
-            Player player = event.getPlayer();
             // タッチモード
             if (OneTwoThreeAPI.touch_mode.containsKey(player)) {
                 if (OneTwoThreeAPI.touch_mode.get(player)) {
@@ -262,14 +264,14 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
         try {
-            Player player = event.getPlayer();
-
             if (api.IsTouchmode(player)) {
                 api.GetWarningMessage(Language.translate("onetwothree.othermode"));
                 event.setCancelled();
@@ -307,14 +309,14 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
         try {
-            Player player = event.getPlayer();
-
             if (api.IsTouchmode(player)) {
                 api.GetWarningMessage(Language.translate("onetwothree.othermode"));
                 event.setCancelled();
@@ -341,11 +343,13 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
+        Player player = event.getPlayer();
         try {
             // プレイヤー情報更新(KICK)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
@@ -356,11 +360,13 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerKickEvent event) {
+        Player player = event.getPlayer();
         try {
             // プレイヤー情報更新(DEATH)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
@@ -386,6 +392,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
@@ -406,11 +413,13 @@ public class EventListener implements Listener {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage(), "");
         }
     }
 
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
+        Player player = event.getPlayer();
         try {
             // プレイヤー情報更新(CHAT)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
@@ -421,13 +430,14 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
         try {
-            Player player = event.getPlayer();
             String sFrom = event.getFrom().getLevel().getName();
             String sTo = event.getTo().getLevel().getName();
             if (sFrom.equals(sTo)) return;
@@ -441,13 +451,14 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
         try {
-            Player player = event.getPlayer();
             String sRespawn = event.getRespawnPosition().getLevel().getName();
             String allowname = api.getConfig().getString("GameSettings.AllowCreative");
             if (!sRespawn.equals(allowname)) {
@@ -460,14 +471,14 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
     @EventHandler
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
+        Player player = event.getPlayer();
         try {
-            Player player = event.getPlayer();
-
             // 一時しのぎ
             int rank = api.GetRank(player);
             if (rank < 3) {
@@ -490,13 +501,14 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void formResponded(PlayerFormRespondedEvent event) {
+        Player player = event.getPlayer();
         try {
-            Player player = event.getPlayer();
             FormWindow window = event.getWindow();
             FormResponse response = window.getResponse();
 
@@ -539,6 +551,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 

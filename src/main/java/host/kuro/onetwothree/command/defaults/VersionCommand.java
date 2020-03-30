@@ -71,6 +71,7 @@ public class VersionCommand extends CommandBase {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
         return true;
     }

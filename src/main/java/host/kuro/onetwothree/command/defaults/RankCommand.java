@@ -87,16 +87,16 @@ public class RankCommand extends CommandBase {
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                         return;
                     }
-                    // プレイヤー
-                    String sindex1 = data.get(1).toString();
-                    int index1 = Integer.parseInt(sindex1);
-                    ArrayList<String> plist = new ArrayList<>(api.player_list.values());
-                    String pname = plist.get(index1);
-                    OneTwoThreeAPI.player_list.clear();
 
+                    // ウィンドウログ
+                    api.getLogWin().Write(targetPlayer, "権限設定", data.get(1).toString(), data.get(2).toString(), "", "", "", "", targetPlayer.getDisplayName());
+
+                    // プレイヤー
+                    String pname = data.get(1).toString();
                     // 権限
-                    String sindex2 = data.get(2).toString();
-                    int index2 = Integer.parseInt(sindex2);
+                    String rname = data.get(2).toString();
+                    String rbuff = rname.substring(0, 1);
+                    int iRank = Integer.parseInt(rbuff);
 
                     // 元名GET
                     String moto_name = "";
@@ -120,13 +120,11 @@ public class RankCommand extends CommandBase {
                         rs_name.close();
                         rs_name = null;
                     }
-                    plist.clear();
-                    plist = null;
 
                     if (moto_name.length() > 0) {
                         // 権限更新
                         ArrayList<DatabaseArgs> rargs = new ArrayList<DatabaseArgs>();
-                        rargs.add(new DatabaseArgs("i", ""+index2));
+                        rargs.add(new DatabaseArgs("i", ""+iRank));
                         rargs.add(new DatabaseArgs("c", moto_name));
                         int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0027"), rargs);
                         rargs.clear();
@@ -143,7 +141,7 @@ public class RankCommand extends CommandBase {
                             sb.append(TextFormat.YELLOW);
                             sb.append(" ] さんの権限を [ ");
                             sb.append(TextFormat.WHITE);
-                            switch (index2) {
+                            switch (iRank) {
                                 case 0: sb.append("0:なし"); break;
                                 case 1: sb.append("1:一般"); break;
                                 case 2: sb.append("2:信任"); break;
@@ -168,14 +166,14 @@ public class RankCommand extends CommandBase {
                     this.sendUsage(targetPlayer);
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     e.printStackTrace();
+                    api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
                 }
             });
-            rank_list.clear();
-            rank_list = null;
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
             return false;
         }
         return true;

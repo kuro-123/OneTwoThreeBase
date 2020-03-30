@@ -66,6 +66,7 @@ public class TwitterTask extends Task {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage(), "");
         }
     }
 }

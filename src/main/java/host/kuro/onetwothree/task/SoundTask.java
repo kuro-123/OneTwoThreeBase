@@ -79,6 +79,7 @@ public class SoundTask extends Thread {
         } catch (Exception e) {
             volume = 0.9F;
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 
@@ -103,6 +104,7 @@ public class SoundTask extends Thread {
 
         } catch (Exception e) {
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
     }
 

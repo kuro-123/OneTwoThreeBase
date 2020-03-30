@@ -109,64 +109,72 @@ public class WarpCommand extends CommandBase {
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return;
                 }
+                // ウィンドウログ
+                api.getLogWin().Write(targetPlayer, "ワープ", data.get(1).toString(), data.get(2).toString(), "", "", "", "", targetPlayer.getDisplayName());
 
                 // ワールド指定
                 String sworld = data.get(1).toString();
-                Position pos = api.getServer().getLevelByName(sworld).getSpawnLocation();
-                if (pos != null) {
-                    if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                        TeleportMessage(player, sworld);
-                        return;
+                if (!sworld.equals("指定なし")) {
+                    Position pos = api.getServer().getLevelByName(sworld).getSpawnLocation();
+                    if (pos != null) {
+                        if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
+                            TeleportMessage(player, sworld);
+                            return;
+                        }
                     }
                 }
 
                 // プレイヤー指定
                 String splayer = data.get(2).toString();
-                try {
-                    PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0021"));
-                    ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
-                    pargs.add(new DatabaseArgs("c", splayer.toLowerCase()));
-                    ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);
-                    pargs.clear();
-                    pargs = null;
-                    if (rs != null) {
-                        while (rs.next()) {
-                            splayer = rs.getString("xname");
-                            break;
-                        }
-                    }
-                    if (ps != null) {
-                        ps.close();
-                        ps = null;
-                    }
-                    if (rs != null) {
-                        rs.close();
-                        rs = null;
-                    }
-
-                    Player target = api.getServer().getPlayerExact(splayer);
-                    if (target.getDisplayName().equalsIgnoreCase(player.getDisplayName())) {
-                        player.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
-                    } else {
-                        pos = target.getPosition();
-                        if (pos != null) {
-                            if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                                TeleportMessage(player, target.getDisplayName());
-                                return;
+                if (!splayer.equals("指定なし")) {
+                    try {
+                        PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0021"));
+                        ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
+                        pargs.add(new DatabaseArgs("c", splayer.toLowerCase()));
+                        ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);
+                        pargs.clear();
+                        pargs = null;
+                        if (rs != null) {
+                            while (rs.next()) {
+                                splayer = rs.getString("xname");
+                                break;
                             }
                         }
-                    }
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        if (ps != null) {
+                            ps.close();
+                            ps = null;
+                        }
+                        if (rs != null) {
+                            rs.close();
+                            rs = null;
+                        }
 
-                } catch (SQLException e){
-                    e.printStackTrace();
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        Player target = api.getServer().getPlayerExact(splayer);
+                        if (target.getDisplayName().equalsIgnoreCase(player.getDisplayName())) {
+                            player.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
+                        } else {
+                            Position pos = target.getPosition();
+                            if (pos != null) {
+                                if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
+                                    TeleportMessage(player, target.getDisplayName());
+                                    return;
+                                }
+                            }
+                        }
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+
+                    } catch (SQLException e){
+                        e.printStackTrace();
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+                    }
                 }
             });
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
             return false;
         }
         return true;

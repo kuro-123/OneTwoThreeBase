@@ -37,6 +37,13 @@ public class PriceCommand extends CommandBase {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
+        // 権限取得
+        int rank = api.GetRank(player);
+        if (rank < 3) {
+            player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            return false;
+        }
         return PriceWindow(player);
     }
 
@@ -60,6 +67,9 @@ public class PriceCommand extends CommandBase {
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                             return;
                         }
+                        // ウィンドウログ
+                        api.getLogWin().Write(targetPlayer, "価格設定", data.get(1).toString(), data.get(2).toString(), "", "", "", "", targetPlayer.getDisplayName());
+
                         // 価格
                         String sprice = "";
                         int price = 0;
@@ -74,6 +84,7 @@ public class PriceCommand extends CommandBase {
                         } catch (Exception e) {
                             player.sendMessage(api.GetWarningMessage("commands.price.price_err"));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
                             return;
                         }
 
@@ -90,6 +101,7 @@ public class PriceCommand extends CommandBase {
                         } catch (Exception e) {
                             player.sendMessage(api.GetWarningMessage("commands.price.id_err"));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
                             return;
                         }
 
@@ -123,6 +135,7 @@ public class PriceCommand extends CommandBase {
                         this.sendUsage(targetPlayer);
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                         e.printStackTrace();
+                        api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
                     }
             });
 
@@ -130,6 +143,7 @@ public class PriceCommand extends CommandBase {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
         return true;
     }
