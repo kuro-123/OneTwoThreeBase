@@ -35,11 +35,11 @@ public class RankCommand extends CommandBase {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
-        // 権限取得
+        // 権限チェック
         int rank = api.GetRank(player);
         if (rank < 3) {
-            player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
             return false;
         }
         return RankWindow(player, rank);

@@ -29,9 +29,13 @@ public class OneTwoThreeAPI {
     private static OneTwoThreeAPI instance = null;
     private BasePlugin plugin;
     private DatabaseManager db;
+    private TwitterPlugin twitter;
+
     private LogCommand log_cmd;
     private LogWindow log_win;
     private LogError log_err;
+
+    public static long systemcall_timing = 0;
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
@@ -59,6 +63,8 @@ public class OneTwoThreeAPI {
         return this.plugin.getDescription().getVersion();
     }
     public PluginLogger getLogger() { return this.plugin.getLogger(); }
+    public TwitterPlugin getTwitter() { return twitter; }
+
     public LogCommand getLogCmd() { return log_cmd; }
     public LogWindow getLogWin() { return log_win; }
     public LogError getLogErr() { return log_err; }
@@ -285,5 +291,12 @@ public class OneTwoThreeAPI {
             getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
         }
         return ret;
+    }
+
+    public boolean IsKanri(Player player) {
+        if (GetRank(player) < 3) {
+            return false;
+        }
+        return true;
     }
 }

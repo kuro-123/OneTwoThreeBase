@@ -45,3 +45,8 @@ permissions:
     default: op
   onetwothree.reboot.others:
     default: op
+
+  onetwothree.call:
+    default: op
+  onetwothree.call.others:
+    default: op

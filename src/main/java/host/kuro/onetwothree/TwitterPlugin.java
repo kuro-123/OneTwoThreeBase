@@ -11,6 +11,7 @@ public class TwitterPlugin {
     // メンバー
     private BasePlugin plugin;
     private OneTwoThreeAPI api;
+    private Twitter twitter = null;
 
     public TwitterPlugin(BasePlugin plugin, OneTwoThreeAPI api) {
         this.plugin = plugin;
@@ -52,8 +53,19 @@ public class TwitterPlugin {
             twitterStream.filter(filter);
 
             // ツイッタータスク起動
-            Twitter twitter = new TwitterFactory(conf).getInstance();
+            twitter = new TwitterFactory(conf).getInstance();
             plugin.getServer().getScheduler().scheduleRepeatingTask(plugin, new TwitterTask(plugin, api, twitter), 20*60*60); // 1時間おき
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage(), "");
+        }
+        return true;
+    }
+
+    public boolean Tweet(String message) {
+        try {
+            twitter.updateStatus(message);
 
         } catch (Exception e) {
             e.printStackTrace();

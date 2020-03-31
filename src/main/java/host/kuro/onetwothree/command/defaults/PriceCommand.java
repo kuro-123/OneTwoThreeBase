@@ -37,11 +37,10 @@ public class PriceCommand extends CommandBase {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
-        // 権限取得
-        int rank = api.GetRank(player);
-        if (rank < 3) {
-            player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
+        // 権限チェック
+        if (!api.IsKanri(player)) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
             return false;
         }
         return PriceWindow(player);

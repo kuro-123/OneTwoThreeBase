@@ -280,8 +280,8 @@ public class EventListener implements Listener {
 
             // 一時しのぎ
             if (player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city")) {
-                int rank = api.GetRank(player);
-                if (rank < 3) {
+                // 権限チェック
+                if (!api.IsKanri(player)) {
                     player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     event.setCancelled();
@@ -325,8 +325,7 @@ public class EventListener implements Listener {
 
             // 一時しのぎ
             if (player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city")) {
-                int rank = api.GetRank(player);
-                if (rank < 3) {
+                if (!api.IsKanri(player)) {
                     player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     event.setCancelled();
@@ -480,14 +479,12 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         try {
             // 一時しのぎ
-            int rank = api.GetRank(player);
-            if (rank < 3) {
+            if (!api.IsKanri(player)) {
                 player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 event.setCancelled();
                 return;
             }
-
             int newmode = event.getNewGamemode();
             String lvname = player.getLevel().getName();
             String allowname = api.getConfig().getString("GameSettings.AllowCreative");

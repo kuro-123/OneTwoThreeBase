@@ -29,6 +29,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new RankCommand(api));
             map.register("OneTwoThreeBase", new SellCommand(api));
             map.register("OneTwoThreeBase", new RebootCommand(api));
+            map.register("OneTwoThreeBase", new CallCommand(api));
         } catch (Exception e) {
             e.printStackTrace();
             api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage(), "");
