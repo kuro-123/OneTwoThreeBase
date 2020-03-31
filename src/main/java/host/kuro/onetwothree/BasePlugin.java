@@ -2,6 +2,7 @@ package host.kuro.onetwothree;
 
 import cn.nukkit.plugin.PluginBase;
 import host.kuro.onetwothree.command.CommandManager;
+import host.kuro.onetwothree.task.RebootTask;
 
 import java.io.File;
 

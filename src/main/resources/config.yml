@@ -3,6 +3,7 @@ Provider: Yaml
 GameSettings:
   AllowCreative : "lobby"
   ItemTag : "-123"
+  UpdatePath: "/var/www/html/mcbe/nukkit-1.0-SNAPSHOT.jar"
 
 Sound:
   Volume: 0.9

@@ -17,12 +17,12 @@ permissions:
     default: op
 
   onetwothree.xbox:
-    default: true
+    default: op
   onetwothree.xbox.others:
     default: op
 
   onetwothree.touch:
-    default: true
+    default: op
   onetwothree.touch.others:
     default: op
 
@@ -37,6 +37,11 @@ permissions:
     default: op
 
   onetwothree.sell:
-    default: true
+    default: op
   onetwothree.sell.others:
+    default: op
+
+  onetwothree.reboot:
+    default: op
+  onetwothree.reboot.others:
     default: op
