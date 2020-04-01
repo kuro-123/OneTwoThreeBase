@@ -12,6 +12,7 @@ import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.item.ItemPrice;
 import host.kuro.onetwothree.task.SoundTask;
+import host.kuro.onetwothree.utils.LogBlock;
 import host.kuro.onetwothree.utils.LogCommand;
 import host.kuro.onetwothree.utils.LogError;
 import host.kuro.onetwothree.utils.LogWindow;
@@ -32,6 +33,7 @@ public class OneTwoThreeAPI {
     private LogCommand log_cmd;
     private LogWindow log_win;
     private LogError log_err;
+    private LogBlock log_block;
 
     public static long systemcall_timing = 0;
 
@@ -43,6 +45,7 @@ public class OneTwoThreeAPI {
         this.log_cmd = new LogCommand(this);
         this.log_win = new LogWindow(this);
         this.log_err = new LogError(this);
+        this.log_block = new LogBlock(this);
     }
     public static OneTwoThreeAPI getInstance() {
         return instance;
@@ -66,6 +69,7 @@ public class OneTwoThreeAPI {
     public LogCommand getLogCmd() { return log_cmd; }
     public LogWindow getLogWin() { return log_win; }
     public LogError getLogErr() { return log_err; }
+    public LogBlock getLogBlock() { return log_block; }
 
     // 各種メモリデータ
     public static HashMap<Player, Boolean> touch_mode = new HashMap<>();

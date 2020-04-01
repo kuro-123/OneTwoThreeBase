@@ -66,5 +66,6 @@ SqlStatement:
   Sql0030: "INSERT INTO log_cmd (log_date, xuid, rank, cmd, arg01, arg02, arg03, arg04, arg05, arg06, message) VALUES (current_timestamp,?,?,?,?,?,?,?,?,?,?)"
   Sql0031: "INSERT INTO log_window (log_date, xuid, rank, win, res01, res02, res03, res04, res05, res06, message) VALUES (current_timestamp,?,?,?,?,?,?,?,?,?,?)"
   Sql0032: "INSERT INTO log_error (log_date, xuid, rank, place, error, message) VALUES (current_timestamp,?,?,?,?,?)"
+  Sql0033: "INSERT INTO log_block (log_date, xuid, rank, gamemode, level, x, y, z, act, block_id, block_meta, block_name, custom_name) VALUES (current_timestamp,?,?,?,?,?,?,?,?,?,?,?,?)"
 
 ConfigVersion: 1

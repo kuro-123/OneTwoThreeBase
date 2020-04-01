@@ -303,6 +303,18 @@ public class EventListener implements Listener {
                 }
             }
 
+            // ブロックログ
+            Block block = event.getBlock();
+            int bid   = block.getId();
+            int bmeta = block.getDamage();
+            String bname = block.getName();
+            String cname = "none";
+            Item item = event.getItem();
+            if (item != null) {
+                cname = item.getCustomName();
+            }
+            api.getLogBlock().Write(player, block.getLevel().getName(), ""+block.getFloorX(), ""+block.getFloorY(), ""+block.getFloorZ(), "break", ""+bid, ""+bmeta, bname, cname);
+
             // プレイヤー情報更新(BREAK)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
@@ -335,6 +347,18 @@ public class EventListener implements Listener {
                     return;
                 }
             }
+
+            // ブロックログ
+            Block block = event.getBlock();
+            int bid   = block.getId();
+            int bmeta = block.getDamage();
+            String bname = block.getName();
+            String cname = "none";
+            Item item = event.getItem();
+            if (item != null) {
+                cname = item.getCustomName();
+            }
+            api.getLogBlock().Write(player, block.getLevel().getName(), ""+block.getFloorX(), ""+block.getFloorY(), ""+block.getFloorZ(), "place", ""+bid, ""+bmeta, bname, cname);
 
             // プレイヤー情報更新(PLACE)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
