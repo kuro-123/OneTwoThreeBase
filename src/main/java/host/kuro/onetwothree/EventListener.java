@@ -179,6 +179,9 @@ public class EventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        // 階段半ブロバグ対応
+        player.setCheckMovement(false);
+
         // 権限設定
         player.setOp(false);
         player.setGamemode(Player.SURVIVAL);
