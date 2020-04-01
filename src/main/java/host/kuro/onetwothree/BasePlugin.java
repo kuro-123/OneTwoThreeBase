@@ -9,6 +9,7 @@ import java.io.File;
 public class BasePlugin extends PluginBase {
 
     private OneTwoThreeAPI api;
+    private TwitterPlugin twitter;
 
     @Override
     public void onEnable() {
@@ -37,7 +38,10 @@ public class BasePlugin extends PluginBase {
         api.SetupNukkitItems();
 
         // TwitterPlugin
-        TwitterPlugin tw = new TwitterPlugin(this, api);
+        twitter = new TwitterPlugin(this, api);
+    }
+    public TwitterPlugin getTwitter() {
+        return twitter;
     }
 
     @Override

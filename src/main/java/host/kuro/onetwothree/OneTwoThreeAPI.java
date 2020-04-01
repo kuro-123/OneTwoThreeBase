@@ -29,8 +29,6 @@ public class OneTwoThreeAPI {
     private static OneTwoThreeAPI instance = null;
     private BasePlugin plugin;
     private DatabaseManager db;
-    private TwitterPlugin twitter;
-
     private LogCommand log_cmd;
     private LogWindow log_win;
     private LogError log_err;
@@ -63,7 +61,7 @@ public class OneTwoThreeAPI {
         return this.plugin.getDescription().getVersion();
     }
     public PluginLogger getLogger() { return this.plugin.getLogger(); }
-    public TwitterPlugin getTwitter() { return twitter; }
+    public TwitterPlugin getTwitter() { return plugin.getTwitter(); }
 
     public LogCommand getLogCmd() { return log_cmd; }
     public LogWindow getLogWin() { return log_win; }
