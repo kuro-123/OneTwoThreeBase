@@ -22,7 +22,7 @@ do
 	if [ $COUNT > 0 ]; then
 		rsync -av $UPDATE $EXECUTE
 		find $UPDATE -type f -name "*.*" -delete
-		CONTINUE
+		continue
 	fi
 	# アップデートがないなら落ちる
 	break
