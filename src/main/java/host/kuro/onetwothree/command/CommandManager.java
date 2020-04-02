@@ -32,7 +32,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new CallCommand(api));
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage(), "");
+            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
         }
     }
 }

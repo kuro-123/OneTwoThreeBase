@@ -290,7 +290,7 @@ public class OneTwoThreeAPI {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
         return ret;
     }

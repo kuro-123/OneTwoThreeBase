@@ -142,7 +142,7 @@ public class SellCommand extends CommandBase {
                 } catch (Exception e) {
                     targetPlayer.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    api.getLogErr().Write(targetPlayer, e.getStackTrace()[1].getMethodName(), e.getMessage(), targetPlayer.getDisplayName());
+                    api.getLogErr().Write(targetPlayer, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
                     return;
                 }
             });
@@ -150,7 +150,7 @@ public class SellCommand extends CommandBase {
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
             return false;
         }
         return true;

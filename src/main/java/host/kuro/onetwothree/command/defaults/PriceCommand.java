@@ -83,7 +83,7 @@ public class PriceCommand extends CommandBase {
                         } catch (Exception e) {
                             player.sendMessage(api.GetWarningMessage("commands.price.price_err"));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+                            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
                             return;
                         }
 
@@ -100,7 +100,7 @@ public class PriceCommand extends CommandBase {
                         } catch (Exception e) {
                             player.sendMessage(api.GetWarningMessage("commands.price.id_err"));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+                            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
                             return;
                         }
 
@@ -134,7 +134,7 @@ public class PriceCommand extends CommandBase {
                         this.sendUsage(targetPlayer);
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                         e.printStackTrace();
-                        api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+                        api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
                     }
             });
 
@@ -142,7 +142,7 @@ public class PriceCommand extends CommandBase {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
         return true;
     }

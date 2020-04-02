@@ -120,7 +120,7 @@ public class EventListener implements Listener {
                 }
             } catch (Exception e) {
                 event.setCancelled();
-                api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+                api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
             }
             if (nickname.length() > 0) {
                 player.setDisplayName(nickname);
@@ -167,7 +167,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
 
         // スキンタスク起動
@@ -267,7 +267,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -324,7 +324,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -369,7 +369,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -386,7 +386,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -418,7 +418,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -439,7 +439,7 @@ public class EventListener implements Listener {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage(), "");
+            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
         }
     }
 
@@ -456,7 +456,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -477,7 +477,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -497,7 +497,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -525,7 +525,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -575,7 +575,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage(), player.getDisplayName());
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
