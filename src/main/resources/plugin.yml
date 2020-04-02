@@ -50,3 +50,8 @@ permissions:
     default: op
   onetwothree.call.others:
     default: op
+
+  onetwothree.list:
+    default: true
+  onetwothree.list.others:
+    default: true

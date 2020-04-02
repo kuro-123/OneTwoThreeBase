@@ -295,6 +295,17 @@ public class OneTwoThreeAPI {
         return ret;
     }
 
+    public String GetRankName(Player player) {
+        switch (GetRank(player)) {
+            case 0: return "なし";
+            case 1: return "一般";
+            case 2: return "信任";
+            case 3: return "管理";
+            case 4: return "鯖主";
+        }
+        return "なし";
+    }
+
     public boolean IsKanri(Player player) {
         if (GetRank(player) < 3) {
             return false;
