@@ -16,6 +16,9 @@ public class LogError {
     }
 
     public void Write(Player player, String place, String error, String message) {
+        if (error.length() > 500) {
+            error = error.substring(0, 500);
+        }
         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
         if (player == null) {
             args.add(new DatabaseArgs("c", ""));
