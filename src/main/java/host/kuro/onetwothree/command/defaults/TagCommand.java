@@ -37,9 +37,14 @@ public class TagCommand extends CommandBase {
         if (!this.testPermission(sender)) {
             return false;
         }
-        if (args.length != 1) {
-            this.sendUsage(sender);
-            return false;
+        boolean delete = false;
+        if (args.length == 0) {
+            delete = true;
+        } else {
+            if (args.length != 1) {
+                this.sendUsage(sender);
+                return false;
+            }
         }
 
         Player player = null;
@@ -53,107 +58,108 @@ public class TagCommand extends CommandBase {
         }
 
         try {
-            // 文字数チェック
-            int len =args[0].length();
-            if (len < 3 || len > 16) {
-                player.sendMessage(api.GetWarningMessage("commands.tag.err_len"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                return false;
-            }
-
-            // 半角英数チェック(_のみOK)
-            if (!api.isHankakuEisu(args[0])) {
-                player.sendMessage(api.GetWarningMessage("commands.tag.err_eisu"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                return false;
-            }
-
-            // タグ重複チェック
-            boolean hit = false;
-            PreparedStatement ps = null;
-            ps = api.getDB().getConnection().prepareStatement(cfg.getString("SqlStatement.Sql0034"));
-            ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
-            xargs.add(new DatabaseArgs("c", args[0].toLowerCase()));
-            ResultSet rs_tag = api.getDB().ExecuteQuery(ps, xargs);
-            xargs.clear();
-            xargs = null;
-            if (rs_tag != null) {
-                while(rs_tag.next()){
-                    // 重複
-                    hit = true;
-                    break;
-                }
-            }
-            if (ps != null) {
-                ps.close();
-                ps = null;
-            }
-            if (rs_tag != null) {
-                rs_tag.close();
-                rs_tag = null;
-            }
-            if (hit) {
-                player.sendMessage(api.GetWarningMessage("commands.tag.err_dupli"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                return false;
-            }
-
-            // プレイヤー表示情報から更新時間を取得
-            StringBuilder sb = new StringBuilder();
-            sb.append(cfg.getString("SqlStatement.Sql0001"));
-            ArrayList<DatabaseArgs> dargs = new ArrayList<DatabaseArgs>();
-            dargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
-            Timestamp ts = null;
-
-            ps = api.getDB().getConnection().prepareStatement(new String(sb));
-            ResultSet rs = api.getDB().ExecuteQuery(ps, dargs);
-            dargs.clear();
-            dargs = null;
-            if (rs != null) {
-                while(rs.next()){
-                    ts = rs.getTimestamp("upd_date");
-                    break;
-                }
-            }
-            if (ps != null) {
-                ps.close();
-                ps = null;
-            }
-            if (rs != null) {
-                rs.close();
-                rs = null;
-            }
-
-            // 経過時間が設定値日数を超えていなければ変更不可
-            if (ts != null) {
-                int allow_days = cfg.getInt("NameCommand.AllowDays");
-                Date dat_dt = new Date(ts.getTime());
-                Date now_dt = new Date();
-                long dateTimePast = dat_dt.getTime();
-                long dateTimeNow   = now_dt.getTime();
-                long diff = dateTimeNow - dateTimePast;
-                diff = diff / 1000 / 60 / 60 / 24; // 日数換算
-                if (diff < allow_days) {
-                    StringBuilder mes = new StringBuilder();
-                    mes.append(api.GetWarningMessage("commands.tag.err_days1"));
-                    mes.append(" (");
-                    mes.append(Language.translate("commands.tag.err_days2"));
-                    mes.append(": ");
-                    mes.append(allow_days);
-                    mes.append(")");
-                    player.sendMessage(new String(mes));
+            if (!delete) {
+                // 文字数チェック
+                int len =args[0].length();
+                if (len < 3 || len > 16) {
+                    player.sendMessage(api.GetWarningMessage("commands.tag.err_len"));
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return false;
                 }
-            }
+                // 半角英数チェック(_のみOK)
+                if (!api.isHankakuEisu(args[0])) {
+                    player.sendMessage(api.GetWarningMessage("commands.tag.err_eisu"));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    return false;
+                }
+                // タグ重複チェック
+                boolean hit = false;
+                PreparedStatement ps = null;
+                ps = api.getDB().getConnection().prepareStatement(cfg.getString("SqlStatement.Sql0034"));
+                ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
+                xargs.add(new DatabaseArgs("c", args[0].toLowerCase()));
+                ResultSet rs_tag = api.getDB().ExecuteQuery(ps, xargs);
+                xargs.clear();
+                xargs = null;
+                if (rs_tag != null) {
+                    while(rs_tag.next()){
+                        // 重複
+                        hit = true;
+                        break;
+                    }
+                }
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (rs_tag != null) {
+                    rs_tag.close();
+                    rs_tag = null;
+                }
+                if (hit) {
+                    player.sendMessage(api.GetWarningMessage("commands.tag.err_dupli"));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    return false;
+                }
+                // プレイヤー表示情報から更新時間を取得
+                StringBuilder sb = new StringBuilder();
+                sb.append(cfg.getString("SqlStatement.Sql0001"));
+                ArrayList<DatabaseArgs> dargs = new ArrayList<DatabaseArgs>();
+                dargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
+                Timestamp ts = null;
+                ps = api.getDB().getConnection().prepareStatement(new String(sb));
+                ResultSet rs = api.getDB().ExecuteQuery(ps, dargs);
+                dargs.clear();
+                dargs = null;
+                if (rs != null) {
+                    while(rs.next()){
+                        ts = rs.getTimestamp("upd_date");
+                        break;
+                    }
+                }
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (rs != null) {
+                    rs.close();
+                    rs = null;
+                }
 
+                // 経過時間が設定値日数を超えていなければ変更不可
+                if (ts != null) {
+                    int allow_days = cfg.getInt("NameCommand.AllowDays");
+                    Date dat_dt = new Date(ts.getTime());
+                    Date now_dt = new Date();
+                    long dateTimePast = dat_dt.getTime();
+                    long dateTimeNow   = now_dt.getTime();
+                    long diff = dateTimeNow - dateTimePast;
+                    diff = diff / 1000 / 60 / 60 / 24; // 日数換算
+                    if (diff < allow_days) {
+                        StringBuilder mes = new StringBuilder();
+                        mes.append(api.GetWarningMessage("commands.tag.err_days1"));
+                        mes.append(" (");
+                        mes.append(Language.translate("commands.tag.err_days2"));
+                        mes.append(": ");
+                        mes.append(allow_days);
+                        mes.append(")");
+                        player.sendMessage(new String(mes));
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        return false;
+                    }
+                }
+            }
             // プレイヤー表示情報へ登録(UPDATE)
+            String value = "";
+            if (!delete) {
+                value = args[0];
+            }
             StringBuilder sb_upd = new StringBuilder();
             ArrayList<DatabaseArgs> uargs = new ArrayList<DatabaseArgs>();
             sb_upd.append(cfg.getString("SqlStatement.Sql0035"));
             uargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
-            uargs.add(new DatabaseArgs("c", args[0]));       // tag
-            uargs.add(new DatabaseArgs("c", args[0]));       // tag
+            uargs.add(new DatabaseArgs("c", value));       // tag
+            uargs.add(new DatabaseArgs("c", value));       // tag
             int ret = api.getDB().ExecuteUpdate(new String(sb_upd), uargs);
             uargs.clear();
             uargs = null;
@@ -174,19 +180,24 @@ public class TagCommand extends CommandBase {
         }
 
         // 名前・タグ表示
-        String tag = args[0];
-        StringBuilder sb = new StringBuilder();
-        sb.append(" ");
-        sb.append(player.getDisplayName());
-        if (tag.length() > 0) {
-            sb.append("\n  ");
-            sb.append(TextFormat.WHITE);
-            sb.append(tag);
-        }
-        player.setNameTagVisible(true);
-        player.setNameTagAlwaysVisible(true);
-        player.setNameTag(new String(sb));
+        if (!delete) {
+            String tag = args[0];
+            StringBuilder sb = new StringBuilder();
+            sb.append(player.getDisplayName());
+            if (tag.length() > 0) {
+                sb.append("\n");
+                sb.append(TextFormat.WHITE);
+                sb.append(tag);
+            }
+            player.setNameTagVisible(true);
+            player.setNameTagAlwaysVisible(true);
+            player.setNameTag(new String(sb));
 
+        } else {
+            player.setNameTagVisible(false);
+            player.setNameTagAlwaysVisible(false);
+            player.setNameTag("");
+        }
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
         return true;
     }

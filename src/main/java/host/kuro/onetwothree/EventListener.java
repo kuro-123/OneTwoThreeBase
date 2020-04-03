@@ -216,10 +216,9 @@ public class EventListener implements Listener {
         if (tag != null) {
             if (tag.length() > 0) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(" ");
                 sb.append(player.getDisplayName());
                 if (tag.length() > 0) {
-                    sb.append("\n  ");
+                    sb.append("\n");
                     sb.append(TextFormat.WHITE);
                     sb.append(tag);
                 }
@@ -227,6 +226,10 @@ public class EventListener implements Listener {
                 player.setNameTagAlwaysVisible(true);
                 player.setNameTag(new String(sb));
             }
+        } else {
+            player.setNameTagVisible(false);
+            player.setNameTagAlwaysVisible(false);
+            player.setNameTag("");
         }
 
         // スキンタスク起動
