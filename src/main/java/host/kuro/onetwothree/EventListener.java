@@ -25,6 +25,7 @@ import cn.nukkit.form.window.FormWindowModal;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
+import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.forms.CustomFormResponse;
@@ -95,38 +96,6 @@ public class EventListener implements Listener {
                 args = null;
             }
 
-            // ニックネーム取得
-            String nickname = "";
-            try {
-                PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0009"));
-                ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
-                xargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-                ResultSet rs_name = api.getDB().ExecuteQuery(ps, xargs);
-                xargs.clear();
-                xargs = null;
-                if (rs_name != null) {
-                    while (rs_name.next()) {
-                        nickname = rs_name.getString("name");
-                        break;
-                    }
-                }
-                if (ps != null) {
-                    ps.close();
-                    ps = null;
-                }
-                if (rs_name != null) {
-                    rs_name.close();
-                    rs_name = null;
-                }
-            } catch (Exception e) {
-                event.setCancelled();
-                api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
-            }
-            if (nickname.length() > 0) {
-                player.setDisplayName(nickname);
-                player.setDataProperty(new StringEntityData(4, nickname), false); // 4 = DATA_NAMETAG
-            }
-
             // プレイヤー情報チェック
             boolean hit = false;
             PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0019"));
@@ -169,10 +138,6 @@ public class EventListener implements Listener {
             e.printStackTrace();
             api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
-
-        // スキンタスク起動
-        SkinTask task = new SkinTask(api, player);
-        task.start();
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -212,6 +177,61 @@ public class EventListener implements Listener {
         ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0020"), largs);
         largs.clear();
         largs = null;
+
+        // ニックネーム/タグ取得
+        String nickname = "";
+        String tag = "";
+        try {
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0009"));
+            ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
+            xargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            ResultSet rs_name = api.getDB().ExecuteQuery(ps, xargs);
+            xargs.clear();
+            xargs = null;
+            if (rs_name != null) {
+                while (rs_name.next()) {
+                    nickname = rs_name.getString("name");
+                    tag = rs_name.getString("tag");
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs_name != null) {
+                rs_name.close();
+                rs_name = null;
+            }
+        } catch (Exception e) {
+            event.setCancelled();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+        if (nickname != null) {
+            if (nickname.length() > 0) {
+                player.setDisplayName(nickname);
+                player.setDataProperty(new StringEntityData(4, nickname), false); // 4 = DATA_NAMETAG
+            }
+        }
+        if (tag != null) {
+            if (tag.length() > 0) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(" ");
+                sb.append(player.getDisplayName());
+                if (tag.length() > 0) {
+                    sb.append("\n  ");
+                    sb.append(TextFormat.WHITE);
+                    sb.append(tag);
+                }
+                player.setNameTagVisible(true);
+                player.setNameTagAlwaysVisible(true);
+                player.setNameTag(new String(sb));
+            }
+        }
+
+        // スキンタスク起動
+        SkinTask task = new SkinTask(api, player);
+        task.start();
 
         // 経過時間計測開始
         playtime.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());

@@ -55,3 +55,9 @@ permissions:
     default: true
   onetwothree.list.others:
     default: true
+
+  onetwothree.tag:
+    default: true
+  onetwothree.tag.others:
+    default: op
+
