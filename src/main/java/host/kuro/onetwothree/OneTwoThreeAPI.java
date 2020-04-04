@@ -152,14 +152,36 @@ public class OneTwoThreeAPI {
     // あいまいプレイヤー検索
     public String AmbiguousSearch(String name) {
         String ret = "";
-        Player target = Server.getInstance().getPlayer(name);
-        if (target == null) {
-            IPlayer itarget = Server.getInstance().getOfflinePlayer(name);
-            if (itarget != null) {
-                ret = itarget.getName();
+        try {
+            Player target = Server.getInstance().getPlayer(name);
+            if (target != null) {
+                ret = target.getName();
             }
-        } else {
-            ret = target.getName();
+            if (ret.length() <= 0) {
+                // データあいまい検索
+                PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0042"));
+                ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
+                pargs.add(new DatabaseArgs("c", name.toLowerCase() + "%"));
+                ResultSet rs = getDB().ExecuteQuery(ps, pargs);
+                pargs.clear();
+                pargs = null;
+                if (rs != null) {
+                    while (rs.next()) {
+                        ret = rs.getString("name");
+                        break;
+                    }
+                }
+                if (ps != null) {
+                    ps.close();
+                    ps = null;
+                }
+                if (rs != null) {
+                    rs.close();
+                    rs = null;
+                }
+            }
+        } catch (Exception e) {
+             ret = "";
         }
         return ret;
     }

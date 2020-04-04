@@ -28,3 +28,5 @@ permissions:
     default: true
   onetwothree.tag:
     default: true
+  onetwothree.alias:
+    default: op

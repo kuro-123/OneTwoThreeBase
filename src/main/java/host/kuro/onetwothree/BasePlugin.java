@@ -44,7 +44,7 @@ public class BasePlugin extends PluginBase {
         // 起動
         this.getLogger().info(Language.translate("onetwothree.loaded"));
         // 起動ツイート
-        api.getTwitter().Tweet("【123鯖情報】 起動(or再起動)しました！アプデ内容等はゲーム内！WEBで！\n#123鯖");
+        //api.getTwitter().Tweet("【123鯖情報】 起動(or再起動)しました！アプデ内容等はゲーム内！WEBで！\n#123鯖");
     }
     public TwitterPlugin getTwitter() {
         return twitter;
