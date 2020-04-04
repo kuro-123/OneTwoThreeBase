@@ -73,7 +73,7 @@ public class SoundTask extends Thread {
 
         // ボリューム
         try {
-            String sVol = api.getConfig().getString("Sound.Volume");
+            String sVol = api.getConfig().getString("GameSettings.Volume");
             volume = Float.parseFloat(sVol);
 
         } catch (Exception e) {

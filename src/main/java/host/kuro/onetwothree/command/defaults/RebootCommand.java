@@ -30,12 +30,6 @@ public class RebootCommand extends CommandBase {
         // コマンドチェック
         if (!this.testPermission(sender)) return false;
 
-        File file = new File(api.getConfig().getString("GameSettings.UpdatePath"));
-        if (!file.exists()) {
-            this.sendUsage(sender);
-            return false;
-        }
-
         // ブロードキャスト通知
         StringBuilder sb = new StringBuilder();
         sb.append(TextFormat.GOLD);

@@ -1,13 +1,15 @@
 Provider: Yaml
 
+# ゲーム設定
 GameSettings:
+  # クリエ可能ワールド
   AllowCreative : "lobby"
+  # アイテムマーク
   ItemTag : "-123"
-  UpdatePath: "/var/www/html/mcbe/nukkit-1.0-SNAPSHOT.jar"
-
-Sound:
+  # ボリューム
   Volume: 0.9
 
+# データベース設定
 Database:
   Host: "127.0.0.1"
   Port: "5432"
@@ -15,11 +17,13 @@ Database:
   User: "kuro"
   Pass: "********"
 
+# WEB設定
 Web:
   DataPath: "/var/www/html/mcbe/data/"
   SkinDays: 7
   SkinMake: ""
 
+# TWITTER設定
 Twitter:
   ConsumerKey: ""
   ConsumerSecret: ""
@@ -27,12 +31,54 @@ Twitter:
   AccessTokenSecret: ""
   BroadcastID: 0
 
+# DISCORD設定
+Discord:
+  # ボットトークン
+  botToken: ""
+  # チャットチャネルID
+  channelId: ""
+  # ボットの再生中のステータスを設定
+  botStatus: "Minecraft"
+  # テキストチャネルトピック
+  channelTopic: "Powered by DiscordChat for Nukkit"
+  # enable !playerlist command on Discord
+  playerListCommand: true
+  # JOINメッセージ
+  joinMessages: true
+  # QUITメッセージ
+  quitMessages: true
+  # DEATHメッセージ
+  deathMessages: true
+  # 鯖起動メッセージ
+  startMessages: true
+  # 鯖停止メッセージ
+  stopMessages: true
+  # MinecraftへのDiscordメッセージを有効にする
+  enableDiscordToMinecraft: true
+  # DiscordへのMinecraftメッセージを有効にする
+  enableMinecraftToDiscord: true
+  # コンソールにもDiscordメッセージを表示する
+  enableMessagesToConsole: false
+  # discordコマンドのプレフィックス
+  commandPrefix: "!"
+  # Discordコンソールを有効にする
+  discordConsole: false
+  # DiscordサーバーコンソールチャネルID
+  consoleChannelId: ""
+  # コンソールコマンドを実行するために必要なロール
+  consoleRole: ""
+
+# Nukkitコマンド
 Command:
+  # 無効にするコマンド
   Disable: "list,version,plugins,seed,defaultgamemode,me,difficulty,op,deop,whitelist,save-on,save-off,save-all,give,effect,enchant,particle,gamerule,title,reload,xp,status,gc,timings,debugpaste"
 
+# nameコマンド
 NameCommand:
+  # 再設定までの日数
   AllowDays: 1
 
+# SQLステートメント
 SqlStatement:
   Sql0001: "SELECT upd_date FROM player_display WHERE xuid = ?"
   Sql0002: "INSERT INTO player_display (xuid, name, tag, com, add_date, upd_date) VALUES (?, ?, null, null, current_timestamp, current_timestamp) ON CONFLICT (xuid) DO UPDATE SET name=?, upd_date = current_timestamp"

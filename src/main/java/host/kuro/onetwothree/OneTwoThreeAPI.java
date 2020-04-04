@@ -61,6 +61,7 @@ public class OneTwoThreeAPI {
     public static OneTwoThreeAPI getInstance() {
         return instance;
     }
+    public BasePlugin getPlugin() { return plugin; }
     public Server getServer() { return plugin.getServer(); }
     public DatabaseManager getDB() {
         return this.db;

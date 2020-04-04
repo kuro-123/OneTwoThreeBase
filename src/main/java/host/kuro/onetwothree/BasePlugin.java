@@ -1,10 +1,17 @@
 package host.kuro.onetwothree;
 
+import cn.nukkit.Server;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.Config;
 import host.kuro.onetwothree.command.CommandManager;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.task.RebootTask;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.TextChannel;
 
+import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
@@ -16,13 +23,22 @@ public class BasePlugin extends PluginBase {
     private TwitterPlugin twitter;
     private boolean debug;
 
+    private JDA jda;
+    private String channelId;
+
+    public JDA getJDA() { return jda; }
+    public String getChannelID() { return channelId; }
+
     @Override
     public void onEnable() {
         debug = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
+
         this.getDataFolder().mkdirs();
         Language.load(this.getServer().getLanguage().getLang());
+
         // CONFIG
         saveDefaultConfig();
+        Config config = getConfig();
         // 初期ディレクトリチェック
         InitDirectory("");
         InitDirectory("skin");
@@ -45,14 +61,25 @@ public class BasePlugin extends PluginBase {
         }
         // TwitterPlugin
         twitter = new TwitterPlugin(this, api);
-
+        // DiscordPlugin
+        try {
+            jda = new JDABuilder(config.getString("Discord.botToken")).build();
+            jda.awaitReady();
+            channelId = config.getString("Discord.channelId");
+            jda.addEventListener(new DiscordChatListener(api));
+            if (!config.getString("botStatus").isEmpty()) {
+                jda.getPresence().setActivity(Activity.of(Activity.ActivityType.DEFAULT, config.getString("botStatus")));
+            }
+        } catch (InterruptedException | LoginException e) {
+            e.printStackTrace();
+        }
         // 起動
         this.getLogger().info(Language.translate("onetwothree.loaded"));
 
         // 起動ツイート
-        if (!debug) {
-            api.getTwitter().Tweet("【123鯖情報】 起動しました！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
-        }
+        //if (!debug) {
+            //api.getTwitter().Tweet("【123鯖情報】 起動しました！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
+        //}
     }
     public TwitterPlugin getTwitter() {
         return twitter;
