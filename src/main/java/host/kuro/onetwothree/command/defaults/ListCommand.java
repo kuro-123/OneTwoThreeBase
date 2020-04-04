@@ -28,11 +28,7 @@ public class ListCommand extends CommandBase {
         if (!this.testPermission(sender)) return false;
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
-        if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            return false;
-        }
+
         StringBuilder sb = new StringBuilder();
         try {
             int onlineCount = 0;
