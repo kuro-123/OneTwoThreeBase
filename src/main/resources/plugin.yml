@@ -34,3 +34,5 @@ permissions:
     default: true
   onetwothree.kv:
     default: op
+  onetwothree.lag:
+    default: op

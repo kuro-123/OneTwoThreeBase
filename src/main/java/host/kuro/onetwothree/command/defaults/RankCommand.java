@@ -35,7 +35,7 @@ public class RankCommand extends CommandBase {
         int rank = api.GetRank(player);
         if (rank < 3) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
+            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;
         }
         return RankWindow(player, rank);

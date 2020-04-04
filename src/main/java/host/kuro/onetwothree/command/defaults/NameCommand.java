@@ -45,7 +45,7 @@ public class NameCommand extends CommandBase {
         // 権限チェック
         if (!api.IsJyumin(player)) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
+            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;
         }
 

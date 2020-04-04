@@ -46,6 +46,7 @@ public class OneTwoThreeAPI {
     public final Map<String, Long> play_time = new HashMap<>();
     public final Map<Player, Integer> play_rank = new HashMap<>();
     public static long systemcall_timing = 0;
+    public int lag_task_id = -1;
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス

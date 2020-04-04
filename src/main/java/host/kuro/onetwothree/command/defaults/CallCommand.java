@@ -32,7 +32,7 @@ public class CallCommand extends CommandBase {
             // 権限チェック
             if (!api.IsKanri(player)) {
                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
+                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
                 return false;
             }
             // クールダウンチェック
