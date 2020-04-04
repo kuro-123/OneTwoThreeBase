@@ -35,20 +35,15 @@ public class WarpCommand extends CommandBase {
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
-    	if (!this.testPermission(sender)) {
-            return false;
-        }
-
+        // コマンドチェック
+        if (!this.testPermission(sender)) return false;
         Player player = null;
-        if(!(sender instanceof ConsoleCommandSender)){
-            player = (Player) sender;
-        }
+        if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
             this.sendUsage(sender);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
-
         if (args.length != 1) {
             // 引数なしはフォーム選択
             return WarpWindow(player);

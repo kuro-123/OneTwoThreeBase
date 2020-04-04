@@ -27,13 +27,9 @@ public class RebootCommand extends CommandBase {
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!this.testPermission(sender)) {
-            return false;
-        }
-        if(!(sender instanceof ConsoleCommandSender)) {
-            this.sendUsage(sender);
-            return false;
-        }
+        // コマンドチェック
+        if (!this.testPermission(sender)) return false;
+
         File file = new File(api.getConfig().getString("GameSettings.UpdatePath"));
         if (!file.exists()) {
             this.sendUsage(sender);

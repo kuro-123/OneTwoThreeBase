@@ -31,7 +31,7 @@ Command:
   Disable: "list,version,plugins,seed,defaultgamemode,me,difficulty,op,deop,whitelist,save-on,save-off,save-all,give,effect,enchant,particle,gamerule,title,reload,xp,status,gc,timings,debugpaste"
 
 NameCommand:
-  AllowDays: 3
+  AllowDays: 1
 
 SqlStatement:
   Sql0001: "SELECT upd_date FROM player_display WHERE xuid = ?"
@@ -42,7 +42,7 @@ SqlStatement:
   Sql0006: "UPDATE player SET play_status='ﾛｸﾞｲﾝ' WHERE xuid=?"
   Sql0007: "UPDATE player SET play_time=play_time+?, play_status='' WHERE xuid=?"
   Sql0008: "UPDATE player SET play_status='' WHERE xuid=?"
-  Sql0009: "SELECT name, tag FROM player_display WHERE xuid = ?"
+  Sql0009: "SELECT name, tag, upd_date FROM player_display WHERE xuid = ?"
   Sql0010: "SELECT * FROM version ORDER BY add_date DESC limit 5 offset 0"
   Sql0011: "SELECT xuid FROM (SELECT xuid, xname as name FROM player UNION SELECT xuid, name FROM player_display ) TGT WHERE LOWER(TGT.name) = ?"
   Sql0012: "UPDATE player_info SET break=break+1, upd_date=current_timestamp WHERE xuid=?"
@@ -68,6 +68,7 @@ SqlStatement:
   Sql0032: "INSERT INTO log_error (log_date, xuid, rank, place, error, message) VALUES (current_timestamp,?,?,?,?,?)"
   Sql0033: "INSERT INTO log_block (log_date, xuid, rank, gamemode, level, x, y, z, act, block_id, block_meta, block_name, custom_name) VALUES (current_timestamp,?,?,?,?,?,?,?,?,?,?,?,?)"
   Sql0034: "SELECT tag FROM player_display WHERE tag=?"
-  Sql0035: "INSERT INTO player_display (xuid, name, tag, com, add_date, upd_date) VALUES (?, null, ?, null, current_timestamp, current_timestamp) ON CONFLICT (xuid) DO UPDATE SET tag=?, upd_date = current_timestamp"
+  Sql0035: "INSERT INTO player_display (xuid, name, tag, com, add_date, upd_date) VALUES (?, null, ?, null, current_timestamp, current_timestamp) ON CONFLICT (xuid) DO UPDATE SET tag=?"
+  Sql0036: "SELECT BL.log_date,UN.name,BL.act,BL.block_name FROM (SELECT xuid, act, block_name, log_date FROM log_block WHERE level='?' AND x=? AND y=? AND z=?) BL LEFT OUTER JOIN (SELECT xuid, xname as name FROM player UNION SELECT xuid, name FROM player_display) UN ON BL.xuid=UN.xuid ORDER BY log_date DESC"
 
 ConfigVersion: 1

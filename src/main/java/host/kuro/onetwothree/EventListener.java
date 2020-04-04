@@ -42,7 +42,6 @@ import java.util.*;
 public class EventListener implements Listener {
 
     private final OneTwoThreeAPI api;
-    private final Map<String, Long> playtime = new HashMap<>();
     public EventListener(OneTwoThreeAPI api) {
         this.api = api;
     }
@@ -50,13 +49,13 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerPreLogin(PlayerPreLoginEvent event) {
         Player player = event.getPlayer();
-        // check xboxauth
-        if (!player.getLoginChainData().isXboxAuthed()) {
-            event.setCancelled();
-            return;
-        }
-
         try {
+            // XBOX認証チェック
+            if (!player.getLoginChainData().isXboxAuthed()) {
+                event.setCancelled();
+                return;
+            }
+
             // ネットワーク取得
             String ip = player.getAddress();
             String host = api.GetHostInfo(ip);
@@ -151,6 +150,7 @@ public class EventListener implements Listener {
         player.setOp(false);
         player.setGamemode(Player.SURVIVAL);
         int rank = api.GetRank(player);
+        api.play_rank.put(player, rank);
         if (rank > 1) {
             player.setOp(true);
         }
@@ -158,6 +158,7 @@ public class EventListener implements Listener {
             player.setGamemode(Player.CREATIVE);
         }
 
+        // クリエ許可ワールド取得
         String allowname = api.getConfig().getString("GameSettings.AllowCreative");
         Level lv = api.getServer().getLevelByName(allowname);
         player.setSpawn(lv.getSpawnLocation());
@@ -237,22 +238,18 @@ public class EventListener implements Listener {
         task.start();
 
         // 経過時間計測開始
-        playtime.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());
+        api.play_time.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        // メモリ関連削除
-        Form.playersForm.remove(player.getName());
-        OneTwoThreeAPI.touch_mode.remove(player);
-
         // 経過時間計測
         int ptime = 0;
         String xuid = player.getLoginChainData().getXUID();
-        if (playtime.containsKey(xuid)) {
-            long start = playtime.get(xuid);
+        if (api.play_time.containsKey(xuid)) {
+            long start = api.play_time.get(xuid);
             long finish = System.currentTimeMillis();
             long timeElapsed = finish - start;
             ptime = (int) (timeElapsed /= 1000); // 秒換算
@@ -270,6 +267,12 @@ public class EventListener implements Listener {
         }
         args.clear();
         args = null;
+
+        // メモリ関連削除
+        Form.playersForm.remove(player.getName());
+        OneTwoThreeAPI.touch_mode.remove(player);
+        api.play_time.remove(player);
+        api.play_rank.remove(player);
 
         api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin061, 0, false); // ドアクローズ
     }

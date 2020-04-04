@@ -8,56 +8,23 @@ main: host.kuro.onetwothree.BasePlugin
 permissions:
   onetwothree.warp:
     default: true
-  onetwothree.warp.others:
-    default: op
-
   onetwothree.name:
     default: true
-  onetwothree.name.others:
-    default: op
-
   onetwothree.xbox:
-    default: op
-  onetwothree.xbox.others:
-    default: op
-
+    default: true
   onetwothree.touch:
     default: op
-  onetwothree.touch.others:
-    default: op
-
   onetwothree.price:
     default: op
-  onetwothree.price.others:
-    default: op
-
   onetwothree.rank:
     default: op
-  onetwothree.rank.others:
-    default: op
-
   onetwothree.sell:
     default: op
-  onetwothree.sell.others:
-    default: op
-
   onetwothree.reboot:
     default: op
-  onetwothree.reboot.others:
-    default: op
-
   onetwothree.call:
     default: op
-  onetwothree.call.others:
-    default: op
-
   onetwothree.list:
     default: true
-  onetwothree.list.others:
-    default: true
-
   onetwothree.tag:
     default: true
-  onetwothree.tag.others:
-    default: op
-

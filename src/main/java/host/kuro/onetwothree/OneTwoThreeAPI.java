@@ -4,10 +4,13 @@ import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.command.CommandSender;
+import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.item.Item;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.item.ItemPrice;
@@ -16,6 +19,7 @@ import host.kuro.onetwothree.utils.LogBlock;
 import host.kuro.onetwothree.utils.LogCommand;
 import host.kuro.onetwothree.utils.LogError;
 import host.kuro.onetwothree.utils.LogWindow;
+import org.postgresql.util.LruCache;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,6 +27,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class OneTwoThreeAPI {
@@ -35,6 +40,8 @@ public class OneTwoThreeAPI {
     private LogError log_err;
     private LogBlock log_block;
 
+    public final Map<String, Long> play_time = new HashMap<>();
+    public final Map<Player, Integer> play_rank = new HashMap<>();
     public static long systemcall_timing = 0;
 
     public OneTwoThreeAPI(BasePlugin plugin) {
@@ -307,7 +314,15 @@ public class OneTwoThreeAPI {
     }
 
     public boolean IsKanri(Player player) {
-        if (GetRank(player) < 3) {
+        int rank = play_rank.get(player);
+        if (rank < 3) {
+            return false;
+        }
+        return true;
+    }
+    public boolean IsJyumin(Player player) {
+        int rank = play_rank.get(player);
+        if (rank < 1) {
             return false;
         }
         return true;

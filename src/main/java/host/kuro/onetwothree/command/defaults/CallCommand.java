@@ -19,26 +19,22 @@ public class CallCommand extends CommandBase {
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
-        if (!this.testPermission(sender)) {
-            return false;
-        }
+        // コマンドチェック
+        if (!this.testPermission(sender)) return false;
         Player player = null;
-        if(!(sender instanceof ConsoleCommandSender)){
-            player = (Player) sender;
-        }
+        if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
             this.sendUsage(sender);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
-        // 権限チェック
-        if (!api.IsKanri(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
-            return false;
-        }
-
         try {
+            // 権限チェック
+            if (!api.IsKanri(player)) {
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                player.sendMessage(api.GetWarningMessage("commands.rank.permission"));
+                return false;
+            }
             // クールダウンチェック
             if (OneTwoThreeAPI.systemcall_timing != 0) {
                 long now = System.currentTimeMillis();

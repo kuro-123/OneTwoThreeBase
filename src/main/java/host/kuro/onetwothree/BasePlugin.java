@@ -5,6 +5,7 @@ import host.kuro.onetwothree.command.CommandManager;
 import host.kuro.onetwothree.task.RebootTask;
 
 import java.io.File;
+import java.util.Calendar;
 
 public class BasePlugin extends PluginBase {
 
@@ -15,7 +16,6 @@ public class BasePlugin extends PluginBase {
     public void onEnable() {
         this.getDataFolder().mkdirs();
         Language.load(this.getServer().getLanguage().getLang());
-
         // CONFIG
         saveDefaultConfig();
         // 初期ディレクトリチェック
@@ -29,16 +29,19 @@ public class BasePlugin extends PluginBase {
         CommandManager.registerAll(this.api);
         // EVENT
         this.getServer().getPluginManager().registerEvents(new EventListener(this.api), this);
-
-        this.getLogger().info(Language.translate("onetwothree.loaded"));
+        // IP表示
         this.getLogger().info("IP: " + this.api.GetIpInfo());
-
         // アイテムデータセットアップ
-        this.getLogger().info(Language.translate("onetwothree.datasetup"));
-        api.SetupNukkitItems();
-
+        Calendar cal = Calendar.getInstance();
+        int week = cal.get(Calendar.DAY_OF_WEEK);
+        if (week == Calendar.SUNDAY) {
+            this.getLogger().info(Language.translate("onetwothree.datasetup"));
+            api.SetupNukkitItems();
+        }
         // TwitterPlugin
         twitter = new TwitterPlugin(this, api);
+        // 起動
+        this.getLogger().info(Language.translate("onetwothree.loaded"));
     }
     public TwitterPlugin getTwitter() {
         return twitter;
