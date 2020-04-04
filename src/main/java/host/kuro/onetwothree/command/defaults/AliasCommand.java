@@ -42,6 +42,12 @@ public class AliasCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
 
+        if (args.length != 1) {
+            this.sendUsage(sender);
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            return false;
+        }
+
         // 権限チェック
         if (player != null) {
             if (!api.IsKanri(player)) {
@@ -53,9 +59,6 @@ public class AliasCommand extends CommandBase {
 
         // あいまい検索
         String name = api.AmbiguousSearch(args[0]);
-        if (name.length() == 0) {
-        }
-
         String message = GetAliasString(name);
         if (message.length() <= 0) {
             this.sendUsage(sender);
