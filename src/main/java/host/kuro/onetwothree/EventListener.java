@@ -270,7 +270,7 @@ public class EventListener implements Listener {
 
         // メモリ関連削除
         Form.playersForm.remove(player.getName());
-        OneTwoThreeAPI.touch_mode.remove(player);
+        OneTwoThreeAPI.mode.remove(player);
         api.play_time.remove(player);
         api.play_rank.remove(player);
 
@@ -282,10 +282,16 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         try {
             // タッチモード
-            if (OneTwoThreeAPI.touch_mode.containsKey(player)) {
-                if (OneTwoThreeAPI.touch_mode.get(player)) {
+            if (OneTwoThreeAPI.mode.containsKey(player)) {
+                if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_TOUCH) {
                     Block block = event.getBlock();
                     player.sendMessage(api.GetInfoMessage(api.GetBlockInfoMessage(block)));
+                    event.setCancelled();
+                    return;
+                }
+                else if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_KUROVIEW) {
+                    Block block = event.getBlock();
+                    api.OpenKuroView(player, block);
                     event.setCancelled();
                     return;
                 }
@@ -301,7 +307,7 @@ public class EventListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         try {
-            if (api.IsTouchmode(player)) {
+            if (api.IsTouchmode(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
                 api.GetWarningMessage(Language.translate("onetwothree.othermode"));
                 event.setCancelled();
                 return;
@@ -358,7 +364,7 @@ public class EventListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         try {
-            if (api.IsTouchmode(player)) {
+            if (api.IsTouchmode(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
                 api.GetWarningMessage(Language.translate("onetwothree.othermode"));
                 event.setCancelled();
                 return;

@@ -65,7 +65,7 @@ public class BasePlugin extends PluginBase {
             api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0044"), null);
         }
         this.api.getDB().DisConnect();
-        OneTwoThreeAPI.touch_mode.clear();
+        OneTwoThreeAPI.mode.clear();
         OneTwoThreeAPI.item_price.clear();
         OneTwoThreeAPI.player_list.clear();
         this.getLogger().info(Language.translate("onetwothree.unloaded"));

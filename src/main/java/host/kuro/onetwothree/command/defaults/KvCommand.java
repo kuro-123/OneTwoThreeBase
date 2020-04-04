@@ -9,14 +9,14 @@ import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.task.SoundTask;
 
-public class TouchCommand extends CommandBase {
+public class KvCommand extends CommandBase {
 
     private Config cfg;
     OneTwoThreeAPI api;
 
-    public TouchCommand(OneTwoThreeAPI api) {
-        super("touch", api);
-        this.setAliases(new String[]{"tc", "t"});
+    public KvCommand(OneTwoThreeAPI api) {
+        super("kv", api);
+        this.setAliases(new String[]{"kv", "k"});
         commandParameters.clear();
         this.api = api;
         cfg = api.getConfig();
@@ -35,16 +35,16 @@ public class TouchCommand extends CommandBase {
 
         try {
             if (!OneTwoThreeAPI.mode.containsKey(player)) {
-                OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_TOUCH);
-                player.sendMessage(api.GetInfoMessage(Language.translate("commands.touch.modeon")));;
+                OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_KUROVIEW);
+                player.sendMessage(api.GetInfoMessage(Language.translate("commands.kv.modeon")));;
 
             } else {
                 if (OneTwoThreeAPI.mode.get(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
                     OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_NONE);
-                    player.sendMessage(api.GetInfoMessage(Language.translate("commands.touch.modeoff")));
+                    player.sendMessage(api.GetInfoMessage(Language.translate("commands.kv.modeoff")));
                 } else {
-                    OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_TOUCH);
-                    player.sendMessage(api.GetInfoMessage(Language.translate("commands.touch.modeon")));
+                    OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_KUROVIEW);
+                    player.sendMessage(api.GetInfoMessage(Language.translate("commands.kv.modeon")));
                 }
             }
 

@@ -32,3 +32,5 @@ permissions:
     default: op
   onetwothree.imadonkurai:
     default: true
+  onetwothree.kv:
+    default: op
