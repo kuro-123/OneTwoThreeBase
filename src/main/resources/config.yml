@@ -77,5 +77,6 @@ SqlStatement:
   Sql0041: "SELECT UR.xname, UD.name FROM (SELECT xuid, xname, host, ip, cid, device_id FROM player WHERE LENGTH(cid) >= 6 AND device_id=?) UR LEFT JOIN (SELECT xuid, name FROM player_display) UD ON UR.xuid = UD.xuid ORDER BY xname, name"
   Sql0042: "SELECT name FROM (SELECT xname as name FROM player UNION SELECT name FROM player_display ) TGT WHERE LOWER(TGT.name) LIKE ? ORDER BY name"
   Sql0043: "SELECT play_time FROM player WHERE xuid=?"
+  Sql0044: "UPDATE player SET status=null"
 
 ConfigVersion: 1

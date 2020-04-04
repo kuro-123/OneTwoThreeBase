@@ -2,18 +2,23 @@ package host.kuro.onetwothree;
 
 import cn.nukkit.plugin.PluginBase;
 import host.kuro.onetwothree.command.CommandManager;
+import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.task.RebootTask;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class BasePlugin extends PluginBase {
 
     private OneTwoThreeAPI api;
     private TwitterPlugin twitter;
+    private boolean debug;
 
     @Override
     public void onEnable() {
+        debug = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
         this.getDataFolder().mkdirs();
         Language.load(this.getServer().getLanguage().getLang());
         // CONFIG
@@ -43,8 +48,11 @@ public class BasePlugin extends PluginBase {
 
         // 起動
         this.getLogger().info(Language.translate("onetwothree.loaded"));
+
         // 起動ツイート
-        //api.getTwitter().Tweet("【123鯖情報】 起動(or再起動)しました！アプデ内容等はゲーム内！WEBで！\n#123鯖");
+        if (!debug) {
+            api.getTwitter().Tweet("【123鯖情報】 起動しました！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
+        }
     }
     public TwitterPlugin getTwitter() {
         return twitter;
@@ -52,6 +60,10 @@ public class BasePlugin extends PluginBase {
 
     @Override
     public void onDisable() {
+        // ステータスクリア
+        if (!debug) {
+            api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0044"), null);
+        }
         this.api.getDB().DisConnect();
         OneTwoThreeAPI.touch_mode.clear();
         OneTwoThreeAPI.item_price.clear();
