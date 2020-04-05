@@ -1,20 +1,16 @@
 package host.kuro.onetwothree;
 
-import cn.nukkit.IPlayer;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
-import cn.nukkit.command.CommandSender;
-import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.item.Item;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
-import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
-import host.kuro.onetwothree.item.ItemPrice;
+import host.kuro.onetwothree.item.ItemInfo;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.LogBlock;
 import host.kuro.onetwothree.utils.LogCommand;
@@ -22,7 +18,6 @@ import host.kuro.onetwothree.utils.LogError;
 import host.kuro.onetwothree.utils.LogWindow;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.postgresql.util.LruCache;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -46,12 +41,16 @@ public class OneTwoThreeAPI {
     private LogError log_err;
     private LogBlock log_block;
 
+    // 各種メモリデータ
     public SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
     public SimpleDateFormat sdf_hms = new SimpleDateFormat("HH:mm:ss");
     public final Map<String, Long> play_time = new HashMap<>();
     public final Map<Player, Integer> play_rank = new HashMap<>();
     public static long systemcall_timing = 0;
     public int lag_task_id = -1;
+    public static HashMap<Player, TAP_MODE> mode = new HashMap<>();
+    public static HashMap<Integer, ItemInfo> item_info = new HashMap<>();
+    public static HashMap<Integer, String> player_list = new HashMap<>();
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
@@ -87,11 +86,6 @@ public class OneTwoThreeAPI {
     public LogWindow getLogWin() { return log_win; }
     public LogError getLogErr() { return log_err; }
     public LogBlock getLogBlock() { return log_block; }
-
-    // 各種メモリデータ
-    public static HashMap<Player, TAP_MODE> mode = new HashMap<>();
-    public static HashMap<Integer, ItemPrice> item_price = new HashMap<>();
-    public static HashMap<Integer, String> player_list = new HashMap<>();
 
     // タップモード
     public static enum TAP_MODE {
@@ -375,7 +369,8 @@ public class OneTwoThreeAPI {
                     int id = rs.getInt("id");
                     String name = rs.getString("name");
                     int price = rs.getInt("price");
-                    item_price.put(id, new ItemPrice(id, name, price));
+                    String ban = rs.getString("ban");
+                    item_info.put(id, new ItemInfo(id, name, price, ban));
                 }
             }
             if (ps != null) {
@@ -446,6 +441,13 @@ public class OneTwoThreeAPI {
         return ""+TextFormat.GRAY;
     }
 
+    public boolean IsNushi(Player player) {
+        int rank = play_rank.get(player);
+        if (rank < 4) {
+            return false;
+        }
+        return true;
+    }
     public boolean IsKanri(Player player) {
         int rank = play_rank.get(player);
         if (rank < 3) {
@@ -610,5 +612,37 @@ public class OneTwoThreeAPI {
         ret = ret.replace(""+TextFormat.ITALIC, "");
         ret = ret.replace(""+TextFormat.RESET, "");
         return ret;
+    }
+
+    public boolean IsBanItem(Player player, Item item) {
+        int id = item.getId();
+        ItemInfo ip = null;
+        if (item_info.containsKey(id)) {
+            ip = item_info.get(id);
+        }
+        if (ip == null) return false;
+        if (!ip.ban.equals("〇")) return false;
+
+        StringBuilder sb = new StringBuilder();
+        if (!IsNushi(player)) {
+            sb.append(TextFormat.RED);
+            sb.append("[BANアイテム警告] ");
+            sb.append(TextFormat.WHITE);
+            sb.append(" [ ");
+            sb.append(TextFormat.YELLOW);
+            sb.append(player.getDisplayName());
+            sb.append(TextFormat.WHITE);
+            sb.append(" ] さんが [ ");
+            sb.append(TextFormat.YELLOW);
+            sb.append(ip.name);
+            sb.append(TextFormat.WHITE);
+            sb.append(" ] を使おうとしています！");
+            sb.append(TextFormat.RED);
+            sb.append(" ご注意ください！");
+            String message = new String(sb);
+            getServer().broadcastMessage(message);
+            sendDiscordRedMessage(message);
+        }
+        return true;
     }
 }

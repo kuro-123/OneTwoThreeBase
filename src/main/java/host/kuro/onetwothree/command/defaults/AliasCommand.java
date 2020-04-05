@@ -7,18 +7,14 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
-import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
-import host.kuro.onetwothree.forms.elements.CustomForm;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
-import host.kuro.onetwothree.item.ItemPrice;
 import host.kuro.onetwothree.task.SoundTask;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.*;
 
 public class AliasCommand extends CommandBase {

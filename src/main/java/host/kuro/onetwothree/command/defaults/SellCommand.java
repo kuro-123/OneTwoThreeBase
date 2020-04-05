@@ -11,7 +11,7 @@ import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.forms.elements.ModalForm;
-import host.kuro.onetwothree.item.ItemPrice;
+import host.kuro.onetwothree.item.ItemInfo;
 import host.kuro.onetwothree.task.SoundTask;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class SellCommand extends CommandBase {
                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 return false;
             }
-            ItemPrice ip = api.item_price.get(item.getId());
+            ItemInfo ip = api.item_info.get(item.getId());
             int price = ip.price;
             if (price <= 0) {
                 // 価格が0以下はエラー
@@ -88,7 +88,7 @@ public class SellCommand extends CommandBase {
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                         return;
                     }
-                    ItemPrice sell_ip = api.item_price.get(sell_item.getId());
+                    ItemInfo sell_ip = api.item_info.get(sell_item.getId());
                     int sell_price = sell_ip.price;
                     if (sell_price <= 0) {
                         // 価格が0以下はエラー

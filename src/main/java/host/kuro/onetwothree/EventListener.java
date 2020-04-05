@@ -10,9 +10,11 @@ import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
+import cn.nukkit.event.block.ItemFrameDropItemEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDeathEvent;
+import cn.nukkit.event.entity.EntityShootBowEvent;
 import cn.nukkit.event.inventory.CraftItemEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.form.response.FormResponse;
@@ -327,6 +329,12 @@ public class EventListener implements Listener {
                 }
             }
 
+            // BANアイテム
+            if (api.IsBanItem(player, event.getItem())) {
+                event.setCancelled();
+                return;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
@@ -400,6 +408,14 @@ public class EventListener implements Listener {
                 return;
             }
 
+            Block block = event.getBlock();
+
+            // BANアイテム
+            if (api.IsBanItem(player, block.toItem())) {
+                event.setCancelled();
+                return;
+            }
+
             // 一時しのぎ
             if (player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city")) {
                 if (!api.IsKanri(player)) {
@@ -411,7 +427,6 @@ public class EventListener implements Listener {
             }
 
             // ブロックログ
-            Block block = event.getBlock();
             int bid   = block.getId();
             int bmeta = block.getDamage();
             String bname = block.getName();
@@ -649,6 +664,70 @@ public class EventListener implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
             api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+    }
+
+    @EventHandler
+    public void onItemFrameDropItem(ItemFrameDropItemEvent event) {
+        Player player = event.getPlayer();
+        // BANアイテム
+        if (api.IsBanItem(player, event.getItem())) {
+            event.setCancelled();
+            return;
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        // BANアイテム
+        if (api.IsBanItem(player, event.getItem())) {
+            event.setCancelled();
+            return;
+        }
+    }
+
+    @EventHandler
+    public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
+        Player player = event.getPlayer();
+        // BANアイテム
+        if (api.IsBanItem(player, event.getItem())) {
+            event.setCancelled();
+            return;
+        }
+    }
+
+    @EventHandler
+    public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+        Player player = event.getPlayer();
+        // BANアイテム
+        if (api.IsBanItem(player, event.getItem())) {
+            event.setCancelled();
+            return;
+        }
+    }
+
+    @EventHandler
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+        Player player = event.getPlayer();
+        // BANアイテム
+        if (api.IsBanItem(player, event.getItem())) {
+            event.setCancelled();
+            return;
+        }
+    }
+
+    @EventHandler
+    public void onEntityShootBow(EntityShootBowEvent event) {
+        Entity entity = event.getEntity();
+        Player player = null;
+        if (entity instanceof Player) {
+            player = (Player)player;
+        }
+        // BANアイテム
+        if (api.IsBanItem(player, event.getBow())) {
+            event.setCancelled();
+            return;
         }
     }
 

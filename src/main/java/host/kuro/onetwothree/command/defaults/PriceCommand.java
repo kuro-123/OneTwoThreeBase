@@ -8,7 +8,7 @@ import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.forms.elements.CustomForm;
-import host.kuro.onetwothree.item.ItemPrice;
+import host.kuro.onetwothree.item.ItemInfo;
 import host.kuro.onetwothree.task.SoundTask;
 
 import java.util.ArrayList;
@@ -47,8 +47,8 @@ public class PriceCommand extends CommandBase {
         try {
             ArrayList<String> ilist = new ArrayList<String>();
             ilist.add("指定なし");
-            for(Iterator<ItemPrice> iterator = api.item_price.values().iterator(); iterator.hasNext(); ) {
-                ItemPrice value = iterator.next();
+            for(Iterator<ItemInfo> iterator = api.item_info.values().iterator(); iterator.hasNext(); ) {
+                ItemInfo value = iterator.next();
                 ilist.add("[ ID: " + value.id + " ] < " + value.name + " > 現価格: " + value.price);
             }
             CustomForm form = new CustomForm("価格設定")
@@ -101,23 +101,23 @@ public class PriceCommand extends CommandBase {
                             return;
                         }
 
-                        ItemPrice ip = null;
-                        if (api.item_price.containsKey(id)) {
-                            ip = api.item_price.get(id);
+                        ItemInfo iteminfo = null;
+                        if (api.item_info.containsKey(id)) {
+                            iteminfo = api.item_info.get(id);
                         }
-                        if (ip != null) {
+                        if (iteminfo != null) {
                             // アイテム情報更新
                             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
                             args.add(new DatabaseArgs("i", sprice));
                             args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
-                            args.add(new DatabaseArgs("i",""+ip.id));
+                            args.add(new DatabaseArgs("i",""+iteminfo.id));
                             int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0024"), args);
                             args.clear();
                             args = null;
                             if (ret > 0) {
                                 // メモリ更新
-                                ip.price = Integer.parseInt(sprice);
-                                api.item_price.put(id, ip);
+                                iteminfo.price = Integer.parseInt(sprice);
+                                api.item_info.put(id, iteminfo);
 
                                 player.sendMessage(api.GetWarningMessage("commands.price.success"));
                                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS

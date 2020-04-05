@@ -89,7 +89,7 @@ public class BasePlugin extends PluginBase {
         }
         this.api.getDB().DisConnect();
         OneTwoThreeAPI.mode.clear();
-        OneTwoThreeAPI.item_price.clear();
+        OneTwoThreeAPI.item_info.clear();
         OneTwoThreeAPI.player_list.clear();
         this.getLogger().info(Language.translate("onetwothree.unloaded"));
     }
