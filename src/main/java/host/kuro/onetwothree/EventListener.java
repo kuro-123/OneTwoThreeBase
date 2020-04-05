@@ -479,6 +479,12 @@ public class EventListener implements Listener {
     public void onPlayerChat(PlayerChatEvent event) {
         Player player = event.getPlayer();
         try {
+            // Discord連携
+            if (api.getConfig().getString("Discord.botToken").length() > 0) {
+                String message = event.getMessage();
+                api.sendDiscordMessage(player, message);
+            }
+
             // プレイヤー情報更新(CHAT)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
@@ -641,4 +647,5 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
     }
+
 }

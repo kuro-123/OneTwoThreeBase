@@ -20,6 +20,8 @@ import host.kuro.onetwothree.utils.LogBlock;
 import host.kuro.onetwothree.utils.LogCommand;
 import host.kuro.onetwothree.utils.LogError;
 import host.kuro.onetwothree.utils.LogWindow;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.postgresql.util.LruCache;
 
 import java.net.InetAddress;
@@ -88,7 +90,7 @@ public class OneTwoThreeAPI {
     public static HashMap<Integer, ItemPrice> item_price = new HashMap<>();
     public static HashMap<Integer, String> player_list = new HashMap<>();
 
-    //
+    // タップモード
     public static enum TAP_MODE {
         MODE_NONE,
         MODE_TOUCH,
@@ -280,6 +282,8 @@ public class OneTwoThreeAPI {
                 String pname = "";
                 String act = "";
                 String bname = "";
+                String bid = "";
+                String bmeta = "";
                 while(rs.next()){
                     log_date = rs.getTimestamp("log_date");
                     String stime = sdf.format(log_date);
@@ -288,17 +292,32 @@ public class OneTwoThreeAPI {
                     act = act.replace("break", "破壊");
                     act = act.replace("place", "建築");
                     bname = rs.getString("block_name");
+                    bid = rs.getString("block_id");
+                    bmeta = rs.getString("block_meta");
+
                     sb.append(TextFormat.WHITE); sb.append("日時: ");   sb.append(TextFormat.WHITE); sb.append(stime);
                     sb.append(TextFormat.WHITE); sb.append(" ﾌﾟﾚｲﾔｰ: "); sb.append(TextFormat.WHITE); sb.append(pname);
                     sb.append(TextFormat.WHITE); sb.append("\n動作: ");   sb.append(TextFormat.YELLOW); sb.append(act);
-                    sb.append(TextFormat.WHITE); sb.append(" ﾌﾞﾛｯｸ: ");  sb.append(TextFormat.GREEN); sb.append(bname);
+                    sb.append(TextFormat.WHITE); sb.append(" ﾌﾞﾛｯｸ: ");  sb.append(TextFormat.GREEN); sb.append(bname + " (ID:" + bid + " META:" + bmeta + ")");
                     sb.append("\n\n");
                     hit = true;
                 }
                 if (hit) {
                     // ウィンドウ
+                    StringBuilder sb_title = new StringBuilder();
+                    sb_title.append("場所: ");
+                    sb_title.append(block.getLevel().getName());
+                    sb_title.append(" x: ");
+                    sb_title.append(block.getFloorX());
+                    sb_title.append(", y: ");
+                    sb_title.append(block.getFloorY());
+                    sb_title.append(", z: ");
+                    sb_title.append(block.getFloorZ());
+                    sb_title.append(TextFormat.GREEN);
+                    sb_title.append("\n履歴順は上からが最新↓\n");
+                    sb_title.append(TextFormat.WHITE);
                     PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
-                    SimpleForm form = new SimpleForm("くろビュー", new String(sb));
+                    SimpleForm form = new SimpleForm("くろビュー", new String(sb_title) + new String(sb));
                     form.send(player, (targetPlayer, targetForm, data) -> {
                     });
                 } else {
@@ -422,5 +441,24 @@ public class OneTwoThreeAPI {
             return false;
         }
         return true;
+    }
+
+    public void sendDiscordMessage(Player player, String message) {
+        try {
+            JDA jda = getPlugin().getJDA();
+            if (jda == null) return;
+            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
+            if (channel != null) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("[鯖内] <");
+                sb.append(player.getDisplayName());
+                sb.append("> ");
+                sb.append(message);
+                channel.sendMessage(message).queue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
     }
 }
