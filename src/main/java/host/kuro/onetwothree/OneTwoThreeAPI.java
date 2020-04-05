@@ -454,7 +454,7 @@ public class OneTwoThreeAPI {
                 sb.append(player.getDisplayName());
                 sb.append("> ");
                 sb.append(message);
-                channel.sendMessage(message).queue();
+                channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
             e.printStackTrace();

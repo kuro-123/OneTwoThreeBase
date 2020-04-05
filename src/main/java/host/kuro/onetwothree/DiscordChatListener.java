@@ -42,12 +42,14 @@ public class DiscordChatListener extends ListenerAdapter {
         if (message.isEmpty() && e.getMessage().getAttachments().isEmpty()) return;
         // 長文は削る
         if (message.length() > 128) message = message.substring(0, 124);
+        // やまびこは避けるw
+        if (message.indexOf("[鯖内]") >= 0) return;
 
         StringBuilder sb = new StringBuilder();
         sb.append(TextFormat.WHITE);
         sb.append("[");
         sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append("DISCORD");
+        sb.append("DISCO");
         sb.append(TextFormat.WHITE);
         sb.append("] <");
         sb.append(TextFormat.LIGHT_PURPLE);
