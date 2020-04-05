@@ -209,28 +209,24 @@ public class EventListener implements Listener {
             api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
         if (nickname != null) {
-            if (nickname.length() > 0) {
-                player.setDisplayName(nickname);
-                player.setDataProperty(new StringEntityData(4, nickname), false); // 4 = DATA_NAMETAG
-            }
+            player.setDisplayName(nickname);
+            player.setDataProperty(new StringEntityData(4, nickname), false); // 4 = DATA_NAMETAG
         }
         if (tag != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(player.getDisplayName());
             if (tag.length() > 0) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(player.getDisplayName());
-                if (tag.length() > 0) {
-                    sb.append("\n");
-                    sb.append(TextFormat.WHITE);
-                    sb.append(tag);
-                }
-                player.setNameTagVisible(true);
-                player.setNameTagAlwaysVisible(true);
-                player.setNameTag(new String(sb));
+                sb.append("\n");
+                sb.append(TextFormat.WHITE);
+                sb.append(tag);
             }
+            player.setNameTagVisible(true);
+            player.setNameTagAlwaysVisible(true);
+            player.setNameTag(new String(sb));
         } else {
-            player.setNameTagVisible(false);
-            player.setNameTagAlwaysVisible(false);
-            player.setNameTag("");
+            player.setNameTagVisible(true);
+            player.setNameTagAlwaysVisible(true);
+            player.setNameTag(player.getDisplayName());
         }
 
         // スキンタスク起動
@@ -240,7 +236,6 @@ public class EventListener implements Listener {
         // 参加メッセージ
         StringBuilder sb_join = new StringBuilder();
         sb_join.append(TextFormat.YELLOW);
-        sb_join.append("[情報] ");
         sb_join.append(player.getDisplayName());
         sb_join.append("さん ");
         sb_join.append(api.GetRankColor(player));
@@ -287,7 +282,6 @@ public class EventListener implements Listener {
         // 退出メッセージ
         StringBuilder sb_quit = new StringBuilder();
         sb_quit.append(TextFormat.YELLOW);
-        sb_quit.append("[情報] ");
         sb_quit.append(player.getDisplayName());
         sb_quit.append("さん ");
         sb_quit.append(api.GetRankColor(player));
@@ -298,7 +292,7 @@ public class EventListener implements Listener {
         sb_quit.append("が退出しました");
         String message = new String(sb_quit);
         event.setQuitMessage(message);
-        api.sendDiscordBlueMessage(message);
+        api.sendDiscordGrayMessage(message);
 
         // メモリ関連削除
         Form.playersForm.remove(player.getName());
@@ -684,5 +678,4 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
     }
-
 }

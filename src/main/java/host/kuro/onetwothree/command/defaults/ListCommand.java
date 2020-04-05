@@ -16,9 +16,11 @@ import java.sql.ResultSet;
 public class ListCommand extends CommandBase {
 
     private Config cfg;
+    private static OneTwoThreeAPI api;
 
     public ListCommand(OneTwoThreeAPI api) {
         super("list", api);
+        this.api = api;
         this.setAliases(new String[]{"li"});
         commandParameters.clear();
     }
@@ -29,10 +31,30 @@ public class ListCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
 
+        try {
+            String buff = GetListString(player);
+            if (buff.length() > 0) {
+                if(!(sender instanceof ConsoleCommandSender)){
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
+                    SimpleForm form = new SimpleForm("プレイヤーリスト", buff);
+                    form.send(player, (targetPlayer, targetForm, data) -> {
+                    });
+                } else {
+                    sender.sendMessage(buff);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+        return true;
+    }
+
+    public static String GetListString(Player player) {
         StringBuilder sb = new StringBuilder();
         try {
             int onlineCount = 0;
-            for (Player p : sender.getServer().getOnlinePlayers().values()) {
+            for (Player p : api.getServer().getOnlinePlayers().values()) {
                 sb.append(TextFormat.WHITE);
                 sb.append("[");
                 sb.append(api.GetRankName(p));
@@ -61,20 +83,10 @@ public class ListCommand extends CommandBase {
             sb.append("\nオンライン人数 [ ");
             sb.append(""+onlineCount);
             sb.append("人 ]");
-            if (sb.length() > 0) {
-                if(!(sender instanceof ConsoleCommandSender)){
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
-                    SimpleForm form = new SimpleForm("プレイヤーリスト", new String(sb));
-                    form.send(player, (targetPlayer, targetForm, data) -> {
-                    });
-                } else {
-                    sender.sendMessage(new String(sb));
-                }
-            }
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            return "";
         }
-        return true;
+        return new String(sb);
     }
 }

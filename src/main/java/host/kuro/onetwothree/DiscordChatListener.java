@@ -2,6 +2,7 @@ package host.kuro.onetwothree;
 
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.command.defaults.ListCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -45,17 +46,30 @@ public class DiscordChatListener extends ListenerAdapter {
         // やまびこは避けるw
         if (message.indexOf("[鯖内]") >= 0) return;
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append("[");
-        sb.append("ﾃﾞｨｽｺ");
-        sb.append("] <");
-        sb.append(TextFormat.WHITE);
-        sb.append(author);
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append("> ");
-        sb.append(TextFormat.WHITE);
-        sb.append(message);
-        api.getServer().broadcastMessage(new String(sb));
+        if (message.startsWith("/")) {
+            // コマンド
+            CommnadExecuteFromDiscord(message);
+        } else {
+            // チャット
+            StringBuilder sb = new StringBuilder();
+            sb.append(TextFormat.LIGHT_PURPLE);
+            sb.append("[");
+            sb.append("ﾃﾞｨｽｺ");
+            sb.append("] <");
+            sb.append(TextFormat.WHITE);
+            sb.append(author);
+            sb.append(TextFormat.LIGHT_PURPLE);
+            sb.append("> ");
+            sb.append(TextFormat.WHITE);
+            sb.append(message);
+            api.getServer().broadcastMessage(new String(sb));
+        }
+    }
+
+    private void CommnadExecuteFromDiscord(String message) {
+        if (message.startsWith("/list")) {
+            String buff = ListCommand.GetListString(null);
+            api.sendDiscordGreenMessage("\n" + buff);
+        }
     }
 }

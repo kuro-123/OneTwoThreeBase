@@ -532,8 +532,8 @@ public class OneTwoThreeAPI {
             if (channel != null) {
                 String chat_time = sdf_hms.format(new Date());
                 StringBuilder sb = new StringBuilder();
-                sb.append("```py\n");
-                sb.append("  ");
+                sb.append("```xl\n");
+                sb.append("' ");
                 sb.append(chat_time);
                 sb.append(" [鯖内] ");
                 sb.append(CutSection(message));
@@ -554,6 +554,26 @@ public class OneTwoThreeAPI {
                 StringBuilder sb = new StringBuilder();
                 sb.append("```diff\n");
                 sb.append("+ ");
+                sb.append(chat_time);
+                sb.append(" [鯖内] ");
+                sb.append(CutSection(message));
+                sb.append("\n```");
+                channel.sendMessage(new String(sb)).queue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendDiscordGrayMessage(String message) {
+        try {
+            JDA jda = getPlugin().getJDA();
+            if (jda == null) return;
+            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
+            if (channel != null) {
+                String chat_time = sdf_hms.format(new Date());
+                StringBuilder sb = new StringBuilder();
+                sb.append("```py\n");
+                sb.append("# ");
                 sb.append(chat_time);
                 sb.append(" [鯖内] ");
                 sb.append(CutSection(message));
