@@ -49,11 +49,11 @@ public class DiscordChatListener extends ListenerAdapter {
         sb.append(TextFormat.LIGHT_PURPLE);
         sb.append("DISCORD");
         sb.append(TextFormat.WHITE);
-        sb.append("] < ");
+        sb.append("] <");
         sb.append(TextFormat.LIGHT_PURPLE);
         sb.append(author);
         sb.append(TextFormat.WHITE);
-        sb.append(" > ");
+        sb.append("> ");
         sb.append(TextFormat.LIGHT_PURPLE);
         sb.append(message);
         api.getServer().broadcastMessage(new String(sb));
