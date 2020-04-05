@@ -643,12 +643,17 @@ public class OneTwoThreeAPI {
     }
 
     public boolean IsBanItem(Player player, Item item) {
+        if (item == null) return false;
+        if (item_info == null) return false;
+        if (player == null) return false;
+
         int id = item.getId();
         ItemInfo ip = null;
         if (item_info.containsKey(id)) {
             ip = item_info.get(id);
         }
         if (ip == null) return false;
+        if (ip.ban == null) return false;
         if (!ip.ban.equals("〇")) return false;
 
         StringBuilder sb = new StringBuilder();

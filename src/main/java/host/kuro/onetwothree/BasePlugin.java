@@ -6,6 +6,7 @@ import cn.nukkit.utils.Config;
 import host.kuro.onetwothree.command.CommandManager;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.task.RebootTask;
+import host.kuro.onetwothree.utils.Particle;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -80,6 +81,8 @@ public class BasePlugin extends PluginBase {
                 e.printStackTrace();
             }
         }
+        // パーティクル設定
+        Particle.SetAPI(api);
         // 起動
         this.getLogger().info(Language.translate("onetwothree.loaded"));
     }

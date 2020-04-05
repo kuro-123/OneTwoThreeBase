@@ -36,6 +36,7 @@ import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
+import host.kuro.onetwothree.utils.Particle;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -493,6 +494,7 @@ public class EventListener implements Listener {
                 }
             }
 
+            Particle.SpiralFlame(player, player.getLevel(), player.getX(), player.getY(), player.getZ());
             api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin002, 0, false); // ボンッ
 
         } catch (Exception e) {
