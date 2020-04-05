@@ -31,12 +31,13 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class OneTwoThreeAPI {
-    // メンバー
+
     private static OneTwoThreeAPI instance = null;
     private BasePlugin plugin;
     private DatabaseManager db;
@@ -45,6 +46,8 @@ public class OneTwoThreeAPI {
     private LogError log_err;
     private LogBlock log_block;
 
+    public SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+    public SimpleDateFormat sdf_hms = new SimpleDateFormat("HH:mm:ss");
     public final Map<String, Long> play_time = new HashMap<>();
     public final Map<Player, Integer> play_rank = new HashMap<>();
     public static long systemcall_timing = 0;
@@ -418,7 +421,8 @@ public class OneTwoThreeAPI {
     }
 
     public String GetRankName(Player player) {
-        switch (GetRank(player)) {
+        int rank = play_rank.get(player);
+        switch (rank) {
             case 0: return "なし";
             case 1: return "一般";
             case 2: return "信任";
@@ -426,6 +430,20 @@ public class OneTwoThreeAPI {
             case 4: return "鯖主";
         }
         return "なし";
+    }
+    public String GetRankColor(Player player) {
+        if (player == null) {
+            return ""+TextFormat.GRAY;
+        }
+        int rank = play_rank.get(player);
+        switch (rank) {
+            case 0: return ""+TextFormat.GRAY;
+            case 1: return ""+TextFormat.WHITE;
+            case 2: return ""+TextFormat.AQUA;
+            case 3: return ""+TextFormat.GREEN;
+            case 4: return ""+TextFormat.MINECOIN_GOLD;
+        }
+        return ""+TextFormat.GRAY;
     }
 
     public boolean IsKanri(Player player) {
@@ -449,12 +467,15 @@ public class OneTwoThreeAPI {
             if (jda == null) return;
             TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
             if (channel != null) {
+                String chat_time = sdf_hms.format(new Date());
                 StringBuilder sb = new StringBuilder();
                 sb.append("```diff\n");
-                sb.append("[鯖内] <");
+                sb.append("  ");
+                sb.append(chat_time);
+                sb.append(" [鯖内] <");
                 sb.append(player.getDisplayName());
                 sb.append("> ");
-                sb.append(message);
+                sb.append(CutSection(message));
                 sb.append("\n```");
                 channel.sendMessage(new String(sb)).queue();
             }
@@ -469,10 +490,13 @@ public class OneTwoThreeAPI {
             if (jda == null) return;
             TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
             if (channel != null) {
+                String chat_time = sdf_hms.format(new Date());
                 StringBuilder sb = new StringBuilder();
                 sb.append("```diff\n");
-                sb.append("- [鯖内] ");
-                sb.append(message);
+                sb.append("- ");
+                sb.append(chat_time);
+                sb.append(" [鯖内] ");
+                sb.append(CutSection(message));
                 sb.append("\n```");
                 channel.sendMessage(new String(sb)).queue();
             }
@@ -486,10 +510,33 @@ public class OneTwoThreeAPI {
             if (jda == null) return;
             TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
             if (channel != null) {
+                String chat_time = sdf_hms.format(new Date());
                 StringBuilder sb = new StringBuilder();
                 sb.append("```md\n");
                 sb.append("# ");
-                sb.append(message);
+                sb.append(chat_time);
+                sb.append(" [鯖内] ");
+                sb.append(CutSection(message));
+                sb.append("\n```");
+                channel.sendMessage(new String(sb)).queue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendDiscordGreenMessage(String message) {
+        try {
+            JDA jda = getPlugin().getJDA();
+            if (jda == null) return;
+            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
+            if (channel != null) {
+                String chat_time = sdf_hms.format(new Date());
+                StringBuilder sb = new StringBuilder();
+                sb.append("```py\n");
+                sb.append("  ");
+                sb.append(chat_time);
+                sb.append(" [鯖内] ");
+                sb.append(CutSection(message));
                 sb.append("\n```");
                 channel.sendMessage(new String(sb)).queue();
             }
@@ -503,10 +550,13 @@ public class OneTwoThreeAPI {
             if (jda == null) return;
             TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
             if (channel != null) {
+                String chat_time = sdf_hms.format(new Date());
                 StringBuilder sb = new StringBuilder();
                 sb.append("```diff\n");
                 sb.append("+ ");
-                sb.append(message);
+                sb.append(chat_time);
+                sb.append(" [鯖内] ");
+                sb.append(CutSection(message));
                 sb.append("\n```");
                 channel.sendMessage(new String(sb)).queue();
             }
@@ -514,5 +564,31 @@ public class OneTwoThreeAPI {
             e.printStackTrace();
         }
     }
-
+    public String CutSection(String message) {
+        String ret = message;
+        ret = ret.replace(""+TextFormat.BLACK, "");
+        ret = ret.replace(""+TextFormat.DARK_BLUE, "");
+        ret = ret.replace(""+TextFormat.DARK_GREEN, "");
+        ret = ret.replace(""+TextFormat.DARK_AQUA, "");
+        ret = ret.replace(""+TextFormat.DARK_RED, "");
+        ret = ret.replace(""+TextFormat.DARK_PURPLE, "");
+        ret = ret.replace(""+TextFormat.GOLD, "");
+        ret = ret.replace(""+TextFormat.GRAY, "");
+        ret = ret.replace(""+TextFormat.DARK_GRAY, "");
+        ret = ret.replace(""+TextFormat.BLUE, "");
+        ret = ret.replace(""+TextFormat.GREEN, "");
+        ret = ret.replace(""+TextFormat.AQUA, "");
+        ret = ret.replace(""+TextFormat.RED, "");
+        ret = ret.replace(""+TextFormat.LIGHT_PURPLE, "");
+        ret = ret.replace(""+TextFormat.YELLOW, "");
+        ret = ret.replace(""+TextFormat.WHITE, "");
+        ret = ret.replace(""+TextFormat.MINECOIN_GOLD, "");
+        ret = ret.replace(""+TextFormat.OBFUSCATED, "");
+        ret = ret.replace(""+TextFormat.BOLD, "");
+        ret = ret.replace(""+TextFormat.STRIKETHROUGH, "");
+        ret = ret.replace(""+TextFormat.UNDERLINE, "");
+        ret = ret.replace(""+TextFormat.ITALIC, "");
+        ret = ret.replace(""+TextFormat.RESET, "");
+        return ret;
+    }
 }

@@ -61,7 +61,9 @@ public class TwitterTask extends Task {
                 sb.append("\n");
                 count++;
             }
-            plugin.getServer().broadcastMessage(new String(sb));
+            String message = new String(sb);
+            plugin.getServer().broadcastMessage(message);
+            api.sendDiscordYellowMessage(message);
             api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin015, 0, false); // INFO
 
         } catch (Exception e) {

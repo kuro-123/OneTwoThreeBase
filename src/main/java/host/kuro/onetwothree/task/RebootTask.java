@@ -29,6 +29,7 @@ public class RebootTask extends AsyncTask {
                 break;
             case 4:
                 // 再起動
+                message = "";
                 api.getServer().shutdown();
                 break;
         }

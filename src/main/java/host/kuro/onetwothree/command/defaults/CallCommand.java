@@ -63,7 +63,9 @@ public class CallCommand extends CommandBase {
             sb_b.append(TextFormat.YELLOW);
             sb_b.append(player.getDisplayName());
             sb_b.append("さんがシステムコールしました！ (公式ツイート ※クールタイム15分)");
-            api.getServer().broadcastMessage(new String(sb_b));
+            String message = new String(sb_b);
+            api.getServer().broadcastMessage(message);
+            api.sendDiscordYellowMessage(message);
 
             player.sendMessage(api.GetInfoMessage("commands.name.success"));
 

@@ -46,17 +46,15 @@ public class DiscordChatListener extends ListenerAdapter {
         if (message.indexOf("[鯖内]") >= 0) return;
 
         StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.WHITE);
+        sb.append(TextFormat.LIGHT_PURPLE);
         sb.append("[");
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append("DISCO");
-        sb.append(TextFormat.WHITE);
+        sb.append("ﾃﾞｨｽｺ");
         sb.append("] <");
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append(author);
         sb.append(TextFormat.WHITE);
-        sb.append("> ");
+        sb.append(author);
         sb.append(TextFormat.LIGHT_PURPLE);
+        sb.append("> ");
+        sb.append(TextFormat.WHITE);
         sb.append(message);
         api.getServer().broadcastMessage(new String(sb));
     }

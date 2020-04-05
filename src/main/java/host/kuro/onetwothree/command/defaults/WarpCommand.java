@@ -188,7 +188,10 @@ public class WarpCommand extends CommandBase {
         sb.append(target);
         sb.append(TextFormat.LIGHT_PURPLE);
         sb.append(" ]");
-        api.getServer().broadcastMessage(new String(sb));
+        String message = new String(sb);
+        api.getServer().broadcastMessage(message);
+        api.sendDiscordGreenMessage(message);
+
         api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin020, 0, false); // WARP
     }
 }

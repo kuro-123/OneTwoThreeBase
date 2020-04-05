@@ -36,10 +36,13 @@ public class RebootCommand extends CommandBase {
         sb.append(TextFormat.BOLD);
         sb.append("==== [鯖主再起動] ====");
         sb.append(TextFormat.GOLD);
-        api.getServer().broadcastMessage(new String(sb));
+        String message = new String(sb);
+        api.getServer().broadcastMessage(message);
+        api.sendDiscordRedMessage(message);
 
         // リブートタスク起動
         api.getServer().getScheduler().scheduleRepeatingTask(new RebootTask(api), 200);
+        api.getTwitter().Tweet("【123鯖情報】 再起動を行います！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
         return true;
     }
 }

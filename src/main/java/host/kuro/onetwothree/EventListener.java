@@ -237,6 +237,22 @@ public class EventListener implements Listener {
         SkinTask task = new SkinTask(api, player);
         task.start();
 
+        // 参加メッセージ
+        StringBuilder sb_join = new StringBuilder();
+        sb_join.append(TextFormat.YELLOW);
+        sb_join.append("[情報] ");
+        sb_join.append(player.getDisplayName());
+        sb_join.append("さん ");
+        sb_join.append(api.GetRankColor(player));
+        sb_join.append("<");
+        sb_join.append(api.GetRankName(player));
+        sb_join.append("> ");
+        sb_join.append(TextFormat.YELLOW);
+        sb_join.append("が参加しました");
+        String message = new String(sb_join);
+        event.setJoinMessage(message);
+        api.sendDiscordBlueMessage(message);
+
         // 経過時間計測開始
         api.play_time.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());
     }
@@ -267,6 +283,22 @@ public class EventListener implements Listener {
         }
         args.clear();
         args = null;
+
+        // 退出メッセージ
+        StringBuilder sb_quit = new StringBuilder();
+        sb_quit.append(TextFormat.YELLOW);
+        sb_quit.append("[情報] ");
+        sb_quit.append(player.getDisplayName());
+        sb_quit.append("さん ");
+        sb_quit.append(api.GetRankColor(player));
+        sb_quit.append("<");
+        sb_quit.append(api.GetRankName(player));
+        sb_quit.append("> ");
+        sb_quit.append(TextFormat.YELLOW);
+        sb_quit.append("が退出しました");
+        String message = new String(sb_quit);
+        event.setQuitMessage(message);
+        api.sendDiscordBlueMessage(message);
 
         // メモリ関連削除
         Form.playersForm.remove(player.getName());
@@ -479,11 +511,16 @@ public class EventListener implements Listener {
     public void onPlayerChat(PlayerChatEvent event) {
         Player player = event.getPlayer();
         try {
+            String message = event.getMessage();
+
             // Discord連携
             if (api.getConfig().getString("Discord.botToken").length() > 0) {
-                String message = event.getMessage();
                 api.sendDiscordMessage(player, message);
             }
+
+            // 権限カラー
+            String color = api.GetRankColor(player);
+            event.setMessage(color + message);
 
             // プレイヤー情報更新(CHAT)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();

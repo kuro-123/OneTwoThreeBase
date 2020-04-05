@@ -95,8 +95,9 @@ class TweetListener extends StatusAdapter {
             mes = mes.substring(0, 32);
         }
         sb.append(mes);
-        plugin.getServer().broadcastMessage(new String(sb));
+        String message = new String(sb);
+        plugin.getServer().broadcastMessage(message);
+        api.sendDiscordYellowMessage(message);
         api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin015, 0, false); // INFO
-
     }
 }

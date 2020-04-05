@@ -148,7 +148,10 @@ public class RankCommand extends CommandBase {
                             }
                             sb.append(TextFormat.YELLOW);
                             sb.append(" ] へ更新しました！");
-                            api.getServer().broadcastMessage(new String(sb));
+                            String message = new String(sb);
+                            api.getServer().broadcastMessage(message);
+                            api.sendDiscordGreenMessage(message);
+
                             api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin016, 0, false); // ハープ
 
                         } else {

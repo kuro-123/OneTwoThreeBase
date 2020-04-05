@@ -75,11 +75,7 @@ public class BasePlugin extends PluginBase {
         }
         // 起動
         this.getLogger().info(Language.translate("onetwothree.loaded"));
-
-        // 起動ツイート
-        //if (!debug) {
-            //api.getTwitter().Tweet("【123鯖情報】 起動しました！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
-        //}
+        api.sendDiscordGreenMessage("【123鯖情報】 起動しました！");
     }
     public TwitterPlugin getTwitter() {
         return twitter;
