@@ -50,5 +50,6 @@ public class LagTask extends AsyncTask {
         }
         if (message.length() <= 0) return;
         api.getServer().broadcastMessage(message);
+        api.sendDiscordYellowMessage(message);
     }
 }

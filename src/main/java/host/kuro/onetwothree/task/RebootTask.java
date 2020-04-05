@@ -34,5 +34,6 @@ public class RebootTask extends AsyncTask {
         }
         if (message.length() <= 0) return;
         api.getServer().broadcastMessage(message);
+        api.sendDiscordRedMessage(message);
     }
 }

@@ -450,10 +450,12 @@ public class OneTwoThreeAPI {
             TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
             if (channel != null) {
                 StringBuilder sb = new StringBuilder();
+                sb.append("```diff\n");
                 sb.append("[鯖内] <");
                 sb.append(player.getDisplayName());
                 sb.append("> ");
                 sb.append(message);
+                sb.append("\n```");
                 channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
@@ -461,4 +463,56 @@ public class OneTwoThreeAPI {
             getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
+    public void sendDiscordRedMessage(String message) {
+        try {
+            JDA jda = getPlugin().getJDA();
+            if (jda == null) return;
+            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
+            if (channel != null) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("```diff\n");
+                sb.append("- [鯖内] ");
+                sb.append(message);
+                sb.append("\n```");
+                channel.sendMessage(new String(sb)).queue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendDiscordBlueMessage(String message) {
+        try {
+            JDA jda = getPlugin().getJDA();
+            if (jda == null) return;
+            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
+            if (channel != null) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("```md\n");
+                sb.append("# ");
+                sb.append(message);
+                sb.append("\n```");
+                channel.sendMessage(new String(sb)).queue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendDiscordYellowMessage(String message) {
+        try {
+            JDA jda = getPlugin().getJDA();
+            if (jda == null) return;
+            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
+            if (channel != null) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("```diff\n");
+                sb.append("+ ");
+                sb.append(message);
+                sb.append("\n```");
+                channel.sendMessage(new String(sb)).queue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

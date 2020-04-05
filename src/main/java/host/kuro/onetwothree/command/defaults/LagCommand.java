@@ -38,13 +38,13 @@ public class LagCommand extends CommandBase {
                 player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
                 return false;
             }
-        }
-        if (api.lag_task_id == -1) {
-            String mes = TextFormat.RED + Language.translate("commands.lag.err_execute");
-            player.sendMessage(mes);
-            this.api.getServer().getLogger().warning(mes);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            return false;
+            if (api.lag_task_id != -1) {
+                String mes = TextFormat.RED + Language.translate("commands.lag.err_execute");
+                player.sendMessage(mes);
+                this.api.getServer().getLogger().warning(mes);
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                return false;
+            }
         }
         // ラグタスク起動
         LagTask task = new LagTask(api);
