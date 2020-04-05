@@ -209,23 +209,27 @@ public class EventListener implements Listener {
             api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
         if (nickname != null) {
-            player.setDisplayName(nickname);
-            player.setDataProperty(new StringEntityData(4, nickname), false); // 4 = DATA_NAMETAG
-        }
-        if (tag != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(player.getDisplayName());
-            if (tag.length() > 0) {
-                sb.append("\n");
-                sb.append(TextFormat.WHITE);
-                sb.append(tag);
+            if (nickname.length() > 0) {
+                player.setDisplayName(nickname);
+                player.setDataProperty(new StringEntityData(4, nickname), false); // 4 = DATA_NAMETAG
             }
-            player.setNameTagVisible(true);
-            player.setNameTagAlwaysVisible(true);
-            player.setNameTag(new String(sb));
+        }
+        player.setNameTagVisible(true);
+        player.setNameTagAlwaysVisible(true);
+        if (tag != null) {
+            if (tag.length() > 0) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(player.getDisplayName());
+                if (tag.length() > 0) {
+                    sb.append("\n");
+                    sb.append(TextFormat.WHITE);
+                    sb.append(tag);
+                }
+                player.setNameTag(new String(sb));
+            } else {
+                player.setNameTag(player.getDisplayName());
+            }
         } else {
-            player.setNameTagVisible(true);
-            player.setNameTagAlwaysVisible(true);
             player.setNameTag(player.getDisplayName());
         }
 
