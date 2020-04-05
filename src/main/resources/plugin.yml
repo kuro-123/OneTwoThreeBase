@@ -36,3 +36,7 @@ permissions:
     default: op
   onetwothree.lag:
     default: op
+  onetwothree.banitem:
+    default: op
+  onetwothree.rand:
+    default: true

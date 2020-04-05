@@ -42,7 +42,7 @@ public class RebootCommand extends CommandBase {
 
         // リブートタスク起動
         api.getServer().getScheduler().scheduleRepeatingTask(new RebootTask(api), 200);
-        api.getTwitter().Tweet("【123鯖情報】 再起動を行います！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
+        if (!api.getDebug()) api.getTwitter().Tweet("【123鯖情報】 再起動を行います！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
         return true;
     }
 }

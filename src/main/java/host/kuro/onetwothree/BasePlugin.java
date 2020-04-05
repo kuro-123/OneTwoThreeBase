@@ -25,9 +25,12 @@ public class BasePlugin extends PluginBase {
 
     private JDA jda;
     private String channelId;
+    private String ban_channelId;
 
     public JDA getJDA() { return jda; }
     public String getChannelID() { return channelId; }
+    public String getBanChannelID() { return ban_channelId; }
+    public boolean getDebug() { return debug; }
 
     @Override
     public void onEnable() {
@@ -59,23 +62,26 @@ public class BasePlugin extends PluginBase {
             this.getLogger().info(Language.translate("onetwothree.datasetup"));
             api.SetupNukkitItems();
         }
-        // TwitterPlugin
-        twitter = new TwitterPlugin(this, api);
-        // DiscordPlugin
-        try {
-            jda = new JDABuilder(config.getString("Discord.botToken")).build();
-            jda.awaitReady();
-            channelId = config.getString("Discord.channelId");
-            jda.addEventListener(new DiscordChatListener(api));
-            if (!config.getString("botStatus").isEmpty()) {
-                jda.getPresence().setActivity(Activity.of(Activity.ActivityType.DEFAULT, config.getString("botStatus")));
+        if (!getDebug()) {
+            // TwitterPlugin
+            twitter = new TwitterPlugin(this, api);
+            // DiscordPlugin
+            try {
+                jda = new JDABuilder(config.getString("Discord.botToken")).build();
+                jda.awaitReady();
+                channelId = config.getString("Discord.channelId");
+                ban_channelId = config.getString("Discord.ban_channelId");
+                jda.addEventListener(new DiscordChatListener(api));
+                if (!config.getString("botStatus").isEmpty()) {
+                    jda.getPresence().setActivity(Activity.of(Activity.ActivityType.DEFAULT, config.getString("botStatus")));
+                }
+                api.sendDiscordGreenMessage("【123鯖情報】 起動しました！");
+            } catch (InterruptedException | LoginException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException | LoginException e) {
-            e.printStackTrace();
         }
         // 起動
         this.getLogger().info(Language.translate("onetwothree.loaded"));
-        api.sendDiscordGreenMessage("【123鯖情報】 起動しました！");
     }
     public TwitterPlugin getTwitter() {
         return twitter;

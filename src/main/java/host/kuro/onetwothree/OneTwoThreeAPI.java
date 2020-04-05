@@ -12,10 +12,7 @@ import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.item.ItemInfo;
 import host.kuro.onetwothree.task.SoundTask;
-import host.kuro.onetwothree.utils.LogBlock;
-import host.kuro.onetwothree.utils.LogCommand;
-import host.kuro.onetwothree.utils.LogError;
-import host.kuro.onetwothree.utils.LogWindow;
+import host.kuro.onetwothree.utils.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -40,6 +37,7 @@ public class OneTwoThreeAPI {
     private LogWindow log_win;
     private LogError log_err;
     private LogBlock log_block;
+    private static final MtRand random = new MtRand(System.currentTimeMillis());
 
     // 各種メモリデータ
     public SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
@@ -81,6 +79,8 @@ public class OneTwoThreeAPI {
     }
     public PluginLogger getLogger() { return this.plugin.getLogger(); }
     public TwitterPlugin getTwitter() { return plugin.getTwitter(); }
+    public MtRand getRand() { return random; }
+    public boolean getDebug() { return plugin.getDebug(); }
 
     public LogCommand getLogCmd() { return log_cmd; }
     public LogWindow getLogWin() { return log_win; }
@@ -343,6 +343,7 @@ public class OneTwoThreeAPI {
     }
 
     public void SetupNukkitItems() {
+        if (getDebug()) return;
         try {
             for (Class c : Item.list) {
                 if (c != null) {
@@ -464,6 +465,7 @@ public class OneTwoThreeAPI {
     }
 
     public void sendDiscordMessage(Player player, String message) {
+        if (getDebug()) return;
         try {
             JDA jda = getPlugin().getJDA();
             if (jda == null) return;
@@ -487,6 +489,7 @@ public class OneTwoThreeAPI {
         }
     }
     public void sendDiscordRedMessage(String message) {
+        if (getDebug()) return;
         try {
             JDA jda = getPlugin().getJDA();
             if (jda == null) return;
@@ -507,6 +510,7 @@ public class OneTwoThreeAPI {
         }
     }
     public void sendDiscordBlueMessage(String message) {
+        if (getDebug()) return;
         try {
             JDA jda = getPlugin().getJDA();
             if (jda == null) return;
@@ -527,6 +531,7 @@ public class OneTwoThreeAPI {
         }
     }
     public void sendDiscordGreenMessage(String message) {
+        if (getDebug()) return;
         try {
             JDA jda = getPlugin().getJDA();
             if (jda == null) return;
@@ -547,6 +552,7 @@ public class OneTwoThreeAPI {
         }
     }
     public void sendDiscordYellowMessage(String message) {
+        if (getDebug()) return;
         try {
             JDA jda = getPlugin().getJDA();
             if (jda == null) return;
@@ -567,6 +573,7 @@ public class OneTwoThreeAPI {
         }
     }
     public void sendDiscordGrayMessage(String message) {
+        if (getDebug()) return;
         try {
             JDA jda = getPlugin().getJDA();
             if (jda == null) return;
@@ -576,6 +583,27 @@ public class OneTwoThreeAPI {
                 StringBuilder sb = new StringBuilder();
                 sb.append("```py\n");
                 sb.append("# ");
+                sb.append(chat_time);
+                sb.append(" [鯖内] ");
+                sb.append(CutSection(message));
+                sb.append("\n```");
+                channel.sendMessage(new String(sb)).queue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendDiscordBanMessage(String message) {
+        if (getDebug()) return;
+        try {
+            JDA jda = getPlugin().getJDA();
+            if (jda == null) return;
+            TextChannel channel = jda.getTextChannelById(getPlugin().getBanChannelID());
+            if (channel != null) {
+                String chat_time = sdf_hms.format(new Date());
+                StringBuilder sb = new StringBuilder();
+                sb.append("```diff\n");
+                sb.append("- ");
                 sb.append(chat_time);
                 sb.append(" [鯖内] ");
                 sb.append(CutSection(message));
@@ -631,6 +659,14 @@ public class OneTwoThreeAPI {
             sb.append(" [ ");
             sb.append(TextFormat.YELLOW);
             sb.append(player.getDisplayName());
+            sb.append(" 位置:");
+            sb.append(player.getLevel().getName());
+            sb.append(" x:");
+            sb.append(player.getFloorX());
+            sb.append(" y:");
+            sb.append(player.getFloorY());
+            sb.append(" z:");
+            sb.append(player.getFloorZ());
             sb.append(TextFormat.WHITE);
             sb.append(" ] さんが [ ");
             sb.append(TextFormat.YELLOW);
@@ -642,6 +678,8 @@ public class OneTwoThreeAPI {
             String message = new String(sb);
             getServer().broadcastMessage(message);
             sendDiscordRedMessage(message);
+            sendDiscordBanMessage(message);
+            PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
         }
         return true;
     }

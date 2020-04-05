@@ -37,6 +37,8 @@ Discord:
   botToken: ""
   # チャットチャネルID
   channelId: ""
+  # 違反報告チャンネルID
+  ban_channelId: ""
   # ボットの再生中のステータスを設定
   botStatus: "MCBE<123鯖>"
 

@@ -23,6 +23,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+        if (api.getDebug()) return;
         // JDA
         if (jda == null) return;
         if (jda.getSelfUser() == null) return;

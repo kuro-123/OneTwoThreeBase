@@ -493,6 +493,8 @@ public class EventListener implements Listener {
                 }
             }
 
+            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin002, 0, false); // ボンッ
+
         } catch (Exception e) {
             e.printStackTrace();
             api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
