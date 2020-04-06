@@ -332,7 +332,7 @@ public class OneTwoThreeAPI {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, "OpenKuroView : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -411,7 +411,7 @@ public class OneTwoThreeAPI {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, "GetRank : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
         return ret;
     }
@@ -485,7 +485,7 @@ public class OneTwoThreeAPI {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, "sendDiscordMessage : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
     public void sendDiscordRedMessage(String message) {

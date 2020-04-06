@@ -73,7 +73,7 @@ public class TagCommand extends CommandBase {
                 rs = null;
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "TagCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
 
         // 設定ウィンドウ
@@ -121,7 +121,7 @@ public class TagCommand extends CommandBase {
                 this.sendUsage(targetPlayer);
                 api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 e.printStackTrace();
-                api.getLogErr().Write(targetPlayer, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
+                api.getLogErr().Write(targetPlayer, "TagCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
             }
         });
         return true;

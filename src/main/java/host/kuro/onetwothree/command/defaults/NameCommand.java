@@ -75,7 +75,7 @@ public class NameCommand extends CommandBase {
                 rs = null;
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "NameCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
 
         // 経過時間が設定値日数を超えていなければ変更不可
@@ -118,13 +118,14 @@ public class NameCommand extends CommandBase {
                 api.getLogWin().Write(targetPlayer, Language.translate("commands.name.window_title"), data.get(1).toString(), "", "", "", "", "", targetPlayer.getDisplayName());
                 // ネーム取得
                 String name = data.get(2).toString();
-                // 文字数チェック
-                if (!IsMojisu(targetPlayer, name)) return;
-                // 半角英数
-                if (!IsHankaku(targetPlayer, name)) return;
-                // 名前重複チェック
-                if (!IsDupli(targetPlayer, name)) return;
-
+                if (name.length() > 0) {
+                    // 文字数チェック
+                    if (!IsMojisu(targetPlayer, name)) return;
+                    // 半角英数
+                    if (!IsHankaku(targetPlayer, name)) return;
+                    // 名前重複チェック
+                    if (!IsDupli(targetPlayer, name)) return;
+                }
                 // プレイヤー表示情報へ登録(UPSERT)
                 StringBuilder sb_upd = new StringBuilder();
                 ArrayList<DatabaseArgs> uargs = new ArrayList<DatabaseArgs>();
@@ -149,7 +150,7 @@ public class NameCommand extends CommandBase {
                 this.sendUsage(targetPlayer);
                 api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 e.printStackTrace();
-                api.getLogErr().Write(targetPlayer, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
+                api.getLogErr().Write(targetPlayer, "NameCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
             }
         });
         return true;
@@ -209,7 +210,7 @@ public class NameCommand extends CommandBase {
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "IsDupli : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
             return false;
         }
         return true;

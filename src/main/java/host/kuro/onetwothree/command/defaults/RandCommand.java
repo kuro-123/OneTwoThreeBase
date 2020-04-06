@@ -51,19 +51,19 @@ public class RandCommand extends CommandBase {
         }
         try {
             String kisu_gusu;
-            int ret = -1;
-            int iMin = Integer.parseInt(args[0]);
-            int iMax = Integer.parseInt(args[1]);
-            int iTemp = 0;
-            if (iMin > iMax) {
-                iTemp = iMax;
-                iMax = iMin;
-                iMin = iTemp;
+            long ret = -1;
+            long lMin = Long.parseLong(args[0]);
+            long lMax = Long.parseLong(args[1]);
+            long iTemp = 0;
+            if (lMin > lMax) {
+                iTemp = lMax;
+                lMax = lMin;
+                lMin = iTemp;
             }
-            if (iMin == iMax) {
-                ret = iMax;
+            if (lMin == lMax) {
+                ret = lMax;
             } else {
-                ret = api.getRand().Next(iMin, iMax);
+                ret = api.getRand().NextL(lMin, lMax);
             }
             if ((ret % 2) == 0) {
                 kisu_gusu = "偶数";
@@ -77,9 +77,9 @@ public class RandCommand extends CommandBase {
             sb.append(player.getDisplayName());
             sb.append(TextFormat.WHITE);
             sb.append("]さんが引いた値 (最小:");
-            sb.append(String.valueOf(iMin));
+            sb.append(String.valueOf(lMin));
             sb.append(" 最大:");
-            sb.append(String.valueOf(iMax));
+            sb.append(String.valueOf(lMax));
             sb.append(") は -> [ ");
             sb.append(TextFormat.GREEN);
             sb.append(String.valueOf(ret));
@@ -96,7 +96,7 @@ public class RandCommand extends CommandBase {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            //api.getLogErr().Write(player, "RandCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
         return true;
     }

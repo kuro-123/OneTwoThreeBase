@@ -58,7 +58,7 @@ public class TwitterPlugin {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, "Register : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
         }
         return true;
     }
@@ -69,7 +69,7 @@ public class TwitterPlugin {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, "Tweet : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
         }
         return true;
     }

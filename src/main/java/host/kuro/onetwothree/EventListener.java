@@ -140,7 +140,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerPreLogin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -211,7 +211,7 @@ public class EventListener implements Listener {
             }
         } catch (Exception e) {
             event.setCancelled();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerJoin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
         if (nickname != null) {
             if (nickname.length() > 0) {
@@ -315,20 +315,24 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (player == null) return;
+
         try {
             // タッチモード
-            if (OneTwoThreeAPI.mode.containsKey(player)) {
-                if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_TOUCH) {
-                    Block block = event.getBlock();
-                    player.sendMessage(api.GetInfoMessage(api.GetBlockInfoMessage(block)));
-                    event.setCancelled();
-                    return;
-                }
-                else if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_KUROVIEW) {
-                    Block block = event.getBlock();
-                    api.OpenKuroView(player, block);
-                    event.setCancelled();
-                    return;
+            if (OneTwoThreeAPI.mode != null) {
+                if (OneTwoThreeAPI.mode.containsKey(player)) {
+                    if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_TOUCH) {
+                        Block block = event.getBlock();
+                        player.sendMessage(api.GetInfoMessage(api.GetBlockInfoMessage(block)));
+                        event.setCancelled();
+                        return;
+                    }
+                    else if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_KUROVIEW) {
+                        Block block = event.getBlock();
+                        api.OpenKuroView(player, block);
+                        event.setCancelled();
+                        return;
+                    }
                 }
             }
 
@@ -340,7 +344,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerInteract : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -397,7 +401,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onBlockBreak : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -449,7 +453,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onBlockPlace : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -466,7 +470,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerKick : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -543,7 +547,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerDeath : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -564,7 +568,7 @@ public class EventListener implements Listener {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(null, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, "onEntityDeath : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
         }
     }
 
@@ -592,7 +596,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerChat : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -613,7 +617,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerTeleport : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -633,7 +637,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerRespawn : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -661,7 +665,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerGameModeChange : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -711,7 +715,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "formResponded : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
