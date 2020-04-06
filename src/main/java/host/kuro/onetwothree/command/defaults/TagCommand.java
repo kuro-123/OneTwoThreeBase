@@ -94,8 +94,9 @@ public class TagCommand extends CommandBase {
                 // タグ取得
                 String upd_tag = data.get(2).toString();
                 // 文字数チェック
-                if (!IsMojisu(targetPlayer, upd_tag)) return;
-
+                if (upd_tag.length() > 0) {
+                    if (!IsMojisu(targetPlayer, upd_tag)) return;
+                }
                 // プレイヤー表示情報へ登録(UPSERT)
                 StringBuilder sb_upd = new StringBuilder();
                 ArrayList<DatabaseArgs> uargs = new ArrayList<DatabaseArgs>();

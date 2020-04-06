@@ -42,6 +42,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
 
+import static cn.nukkit.event.entity.EntityDamageEvent.DamageCause.SUICIDE;
+
 public class EventListener implements Listener {
 
     private final OneTwoThreeAPI api;
@@ -469,17 +471,24 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerKickEvent event) {
-        Player player = event.getPlayer();
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Entity entity = event.getEntity();
+        if (entity == null) return;
+        Player player = null;
+        if (entity instanceof Player) {
+            player = (Player)entity;
+        }
+        if (player == null) return;
+
         try {
             // プレイヤー情報更新(DEATH)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
-            args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
             int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0016"), args);
             args.clear();
             args = null;
 
-            Entity entity = event.getPlayer();
+            // キラー取得
             EntityDamageEvent cause = entity.getLastDamageCause();
             if (cause instanceof EntityDamageByEntityEvent) {
                 Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
@@ -492,6 +501,41 @@ public class EventListener implements Listener {
                     kargs.clear();
                     kargs = null;
                 }
+            }
+
+            String cause_name = "";
+            if (cause != null) {
+                EntityDamageEvent.DamageCause causeid = cause.getCause();
+                switch (causeid) {
+                    case ENTITY_ATTACK: cause_name = "死因: 攻撃"; break;
+                    case PROJECTILE: cause_name = "死因: 射抜"; break;
+                    case SUICIDE: cause_name = "死因: 自殺"; break;
+                    case VOID: cause_name = "死因: 奈落"; break;
+                    case FALL: cause_name = "死因: 落下"; break;
+                    case SUFFOCATION: cause_name = "死因: 窒息"; break;
+                    case LAVA: cause_name = "死因: 溶岩"; break;
+                    case FIRE: cause_name = "死因: 焼死"; break;
+                    case FIRE_TICK: cause_name = "死因: 炎"; break;
+                    case DROWNING: cause_name = "死因: 溺死"; break;
+                    case CONTACT: cause_name = "死因: サボテン"; break;
+                    case BLOCK_EXPLOSION: cause_name = "死因: 爆発"; break;
+                    case ENTITY_EXPLOSION: cause_name = "死因: 爆発"; break;
+                    case MAGIC: cause_name = "死因: 魔法"; break;
+                    case LIGHTNING: cause_name = "死因: 雷"; break;
+                    default: cause_name = "死因: 不明"; break;
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.append(TextFormat.YELLOW);
+                sb.append("[ ");
+                sb.append(player.getDisplayName());
+                sb.append(" さん ] が あひ～！ [ ");
+                sb.append(TextFormat.RED);
+                sb.append(cause_name);
+                sb.append(TextFormat.YELLOW);
+                sb.append(" ]");
+                String message = new String(sb);
+                api.getServer().broadcastMessage(message);
+                api.sendDiscordYellowMessage(message);
             }
 
             Particle.SpiralFlame(player, player.getLevel(), player.getX(), player.getY(), player.getZ());
