@@ -417,13 +417,15 @@ public class OneTwoThreeAPI {
     }
 
     public String GetRankName(Player player) {
-        int rank = play_rank.get(player);
-        switch (rank) {
-            case 0: return "なし";
-            case 1: return "一般";
-            case 2: return "信任";
-            case 3: return "管理";
-            case 4: return "鯖主";
+        if (play_rank != null) {
+            int rank = play_rank.get(player);
+            switch (rank) {
+                case 0: return "なし";
+                case 1: return "一般";
+                case 2: return "信任";
+                case 3: return "管理";
+                case 4: return "鯖主";
+            }
         }
         return "なし";
     }
@@ -431,34 +433,48 @@ public class OneTwoThreeAPI {
         if (player == null) {
             return ""+TextFormat.GRAY;
         }
-        int rank = play_rank.get(player);
-        switch (rank) {
-            case 0: return ""+TextFormat.GRAY;
-            case 1: return ""+TextFormat.WHITE;
-            case 2: return ""+TextFormat.AQUA;
-            case 3: return ""+TextFormat.GREEN;
-            case 4: return ""+TextFormat.MINECOIN_GOLD;
+        if (play_rank != null) {
+            int rank = play_rank.get(player);
+            switch (rank) {
+                case 0: return ""+TextFormat.GRAY;
+                case 1: return ""+TextFormat.WHITE;
+                case 2: return ""+TextFormat.AQUA;
+                case 3: return ""+TextFormat.GREEN;
+                case 4: return ""+TextFormat.MINECOIN_GOLD;
+            }
         }
         return ""+TextFormat.GRAY;
     }
 
     public boolean IsNushi(Player player) {
-        int rank = play_rank.get(player);
-        if (rank < 4) {
+        if (play_rank != null) {
+            int rank = play_rank.get(player);
+            if (rank < 4) {
+                return false;
+            }
+        } else {
             return false;
         }
         return true;
     }
     public boolean IsKanri(Player player) {
-        int rank = play_rank.get(player);
-        if (rank < 3) {
+        if (play_rank != null) {
+            int rank = play_rank.get(player);
+            if (rank < 3) {
+                return false;
+            }
+        } else {
             return false;
         }
         return true;
     }
     public boolean IsJyumin(Player player) {
-        int rank = play_rank.get(player);
-        if (rank < 1) {
+        if (play_rank != null) {
+            int rank = play_rank.get(player);
+            if (rank < 1) {
+                return false;
+            }
+        } else {
             return false;
         }
         return true;

@@ -498,19 +498,21 @@ public class EventListener implements Listener {
             String killername = "";
             String killitem = "";
             EntityDamageEvent cause = entity.getLastDamageCause();
-            if (cause instanceof EntityDamageByEntityEvent) {
-                Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
-                if (damager instanceof Player) {
-                    killer = (Player) damager;
-                    Item head = Item.get(Item.SKULL,3,1);
-                    head.setCustomName(player.getDisplayName() + "の首");
-                    ((Player)killer).getInventory().addItem(head);
-                    // プレイヤー情報更新(KILL)
-                    ArrayList<DatabaseArgs> kargs = new ArrayList<DatabaseArgs>();
-                    args.add(new DatabaseArgs("c", killer.getLoginChainData().getXUID()));          // xuid
-                    ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0015"), kargs);
-                    kargs.clear();
-                    kargs = null;
+            if (cause != null) {
+                if (cause instanceof EntityDamageByEntityEvent) {
+                    Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
+                    if (damager instanceof Player) {
+                        killer = (Player) damager;
+                        Item head = Item.get(Item.SKULL,3,1);
+                        head.setCustomName(player.getDisplayName() + "の首");
+                        ((Player)killer).getInventory().addItem(head);
+                        // プレイヤー情報更新(KILL)
+                        ArrayList<DatabaseArgs> kargs = new ArrayList<DatabaseArgs>();
+                        args.add(new DatabaseArgs("c", killer.getLoginChainData().getXUID()));          // xuid
+                        ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0015"), kargs);
+                        kargs.clear();
+                        kargs = null;
+                    }
                 }
             }
             if (killer != null) {
