@@ -25,6 +25,7 @@ import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowModal;
 import cn.nukkit.form.window.FormWindowSimple;
+import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.utils.TextFormat;
@@ -493,17 +494,30 @@ public class EventListener implements Listener {
             args = null;
 
             // キラー取得
+            Player killer = null;
+            String killername = "";
+            String killitem = "";
             EntityDamageEvent cause = entity.getLastDamageCause();
             if (cause instanceof EntityDamageByEntityEvent) {
                 Entity damager = ((EntityDamageByEntityEvent) cause).getDamager();
                 if (damager instanceof Player) {
-                    Player killer = (Player) damager;
+                    killer = (Player) damager;
+                    Item head = Item.get(Item.SKULL,3,1);
+                    head.setCustomName(player.getDisplayName() + "の首");
+                    ((Player)killer).getInventory().addItem(head);
                     // プレイヤー情報更新(KILL)
                     ArrayList<DatabaseArgs> kargs = new ArrayList<DatabaseArgs>();
                     args.add(new DatabaseArgs("c", killer.getLoginChainData().getXUID()));          // xuid
                     ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0015"), kargs);
                     kargs.clear();
                     kargs = null;
+                }
+            }
+            if (killer != null) {
+                if (killer instanceof Player) {
+                    killername = ((Player)killer).getName();
+                    PlayerInventory inv = ((Player)killer).getInventory();
+                    killitem = inv.getItemInHand().getName();
                 }
             }
 
@@ -537,6 +551,22 @@ public class EventListener implements Listener {
                 sb.append(cause_name);
                 sb.append(TextFormat.YELLOW);
                 sb.append(" ]");
+                if (killername.length() > 0) {
+                    sb.append(TextFormat.YELLOW);
+                    sb.append(" [ 殺害者: ");
+                    sb.append(TextFormat.RED);
+                    sb.append(killername);
+                    sb.append(TextFormat.YELLOW);
+                    sb.append(" ]");
+                }
+                if (killitem.length() > 0) {
+                    sb.append(TextFormat.YELLOW);
+                    sb.append(" [ ｱｲﾃﾑ: ");
+                    sb.append(TextFormat.RED);
+                    sb.append(killitem);
+                    sb.append(TextFormat.YELLOW);
+                    sb.append(" ]");
+                }
                 String message = new String(sb);
                 api.getServer().broadcastMessage(message);
                 api.sendDiscordYellowMessage(message);
