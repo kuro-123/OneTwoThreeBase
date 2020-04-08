@@ -176,6 +176,8 @@ public class WarpCommand extends CommandBase {
     }
 
     private void TeleportMessage(Player player, String target) {
+        if (player.isSpectator()) return;
+
         StringBuilder sb = new StringBuilder();
         sb.append(TextFormat.LIGHT_PURPLE);
         sb.append("[ﾜｰﾌﾟ] ");

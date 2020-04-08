@@ -22,10 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class OneTwoThreeAPI {
@@ -345,21 +342,25 @@ public class OneTwoThreeAPI {
     public void SetupNukkitItems() {
         if (getDebug()) return;
         try {
-            for (Class c : Item.list) {
-                if (c != null) {
-                    String name = c.getSimpleName();
-                    name = name.replace("Block", "");
-                    name = name.replace("Item", "");
-                    Item item = Item.fromString(name);
-                    if (item != null) {
-                        int id = item.getId();
-                        // ステータス更新
-                        ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
-                        args.add(new DatabaseArgs("i", ""+id));
-                        args.add(new DatabaseArgs("c", name));
-                        int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0022"), args);
-                        args.clear();
-                        args = null;
+            Calendar cal = Calendar.getInstance();
+            int week = cal.get(Calendar.DAY_OF_WEEK);
+            if (week == Calendar.SUNDAY) {
+                for (Class c : Item.list) {
+                    if (c != null) {
+                        String name = c.getSimpleName();
+                        name = name.replace("Block", "");
+                        name = name.replace("Item", "");
+                        Item item = Item.fromString(name);
+                        if (item != null) {
+                            int id = item.getId();
+                            // ステータス更新
+                            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+                            args.add(new DatabaseArgs("i", ""+id));
+                            args.add(new DatabaseArgs("c", name));
+                            int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0022"), args);
+                            args.clear();
+                            args = null;
+                        }
                     }
                 }
             }

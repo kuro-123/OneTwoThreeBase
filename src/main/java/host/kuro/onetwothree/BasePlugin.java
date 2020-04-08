@@ -57,12 +57,8 @@ public class BasePlugin extends PluginBase {
         // IP表示
         this.getLogger().info("IP: " + this.api.GetIpInfo());
         // アイテムデータセットアップ
-        Calendar cal = Calendar.getInstance();
-        int week = cal.get(Calendar.DAY_OF_WEEK);
-        if (week == Calendar.SUNDAY) {
-            this.getLogger().info(Language.translate("onetwothree.datasetup"));
-            api.SetupNukkitItems();
-        }
+        this.getLogger().info(Language.translate("onetwothree.datasetup"));
+        api.SetupNukkitItems();
         if (!getDebug()) {
             // TwitterPlugin
             twitter = new TwitterPlugin(this, api);
