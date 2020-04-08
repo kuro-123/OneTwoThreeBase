@@ -431,18 +431,24 @@ public class OneTwoThreeAPI {
         return "なし";
     }
     public String GetRankColor(Player player) {
-        if (player == null) {
-            return ""+TextFormat.GRAY;
-        }
-        if (play_rank != null) {
-            int rank = play_rank.get(player);
-            switch (rank) {
-                case 0: return ""+TextFormat.GRAY;
-                case 1: return ""+TextFormat.WHITE;
-                case 2: return ""+TextFormat.AQUA;
-                case 3: return ""+TextFormat.GREEN;
-                case 4: return ""+TextFormat.MINECOIN_GOLD;
+        try {
+            if (player == null) {
+                return ""+TextFormat.GRAY;
             }
+            if (play_rank != null) {
+                int rank = play_rank.get(player);
+                switch (rank) {
+                    case 0: return ""+TextFormat.GRAY;
+                    case 1: return ""+TextFormat.WHITE;
+                    case 2: return ""+TextFormat.AQUA;
+                    case 3: return ""+TextFormat.GREEN;
+                    case 4: return ""+TextFormat.MINECOIN_GOLD;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, "GetRankColor : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
         return ""+TextFormat.GRAY;
     }
