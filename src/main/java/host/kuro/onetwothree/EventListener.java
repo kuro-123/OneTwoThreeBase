@@ -508,7 +508,7 @@ public class EventListener implements Listener {
                         ((Player)killer).getInventory().addItem(head);
                         // プレイヤー情報更新(KILL)
                         ArrayList<DatabaseArgs> kargs = new ArrayList<DatabaseArgs>();
-                        args.add(new DatabaseArgs("c", killer.getLoginChainData().getXUID()));          // xuid
+                        kargs.add(new DatabaseArgs("c", killer.getLoginChainData().getXUID()));          // xuid
                         ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0015"), kargs);
                         kargs.clear();
                         kargs = null;
