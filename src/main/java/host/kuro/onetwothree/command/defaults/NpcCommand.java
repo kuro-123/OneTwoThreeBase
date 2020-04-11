@@ -141,6 +141,15 @@ public class NpcCommand extends CommandBase {
             slist.add("スキン12");
             slist.add("スキン13");
             slist.add("スキン14");
+            slist.add("スキン15");
+            slist.add("スキン16");
+            slist.add("スキン17");
+            slist.add("スキン18");
+            slist.add("スキン19");
+            slist.add("スキン20");
+            slist.add("スキン21");
+            slist.add("スキン22");
+            slist.add("スキン23");
 
             CustomForm form = new CustomForm("NPC設定")
                     .addLabel("設定後にタップした位置に設置できます")
@@ -201,6 +210,15 @@ public class NpcCommand extends CommandBase {
                         case "スキン12": url = path + "skin/npc/skin12.png"; break;
                         case "スキン13": url = path + "skin/npc/skin13.png"; break;
                         case "スキン14": url = path + "skin/npc/skin14.png"; break;
+                        case "スキン15": url = path + "skin/npc/skin15.png"; break;
+                        case "スキン16": url = path + "skin/npc/skin16.png"; break;
+                        case "スキン17": url = path + "skin/npc/skin17.png"; break;
+                        case "スキン18": url = path + "skin/npc/skin18.png"; break;
+                        case "スキン19": url = path + "skin/npc/skin19.png"; break;
+                        case "スキン20": url = path + "skin/npc/skin20.png"; break;
+                        case "スキン21": url = path + "skin/npc/skin21.png"; break;
+                        case "スキン22": url = path + "skin/npc/skin22.png"; break;
+                        case "スキン23": url = path + "skin/npc/skin23.png"; break;
                         default:
                             targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.err_choise")));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
