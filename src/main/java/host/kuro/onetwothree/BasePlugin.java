@@ -22,6 +22,7 @@ public class BasePlugin extends PluginBase {
 
     private OneTwoThreeAPI api;
     private TwitterPlugin twitter;
+    private NpcPlugin npc;
     private boolean debug;
 
     private JDA jda;
@@ -59,6 +60,8 @@ public class BasePlugin extends PluginBase {
         // アイテムデータセットアップ
         this.getLogger().info(Language.translate("onetwothree.datasetup"));
         api.SetupNukkitItems();
+        // NPCプラグイン
+        npc = new NpcPlugin(this.api);
         if (!getDebug()) {
             // TwitterPlugin
             twitter = new TwitterPlugin(this, api);
@@ -84,6 +87,9 @@ public class BasePlugin extends PluginBase {
     }
     public TwitterPlugin getTwitter() {
         return twitter;
+    }
+    public NpcPlugin getNpc() {
+        return npc;
     }
 
     @Override

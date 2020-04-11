@@ -3,6 +3,7 @@ package host.kuro.onetwothree;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.item.Item;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
@@ -43,9 +44,11 @@ public class OneTwoThreeAPI {
     public final Map<Player, Integer> play_rank = new HashMap<>();
     public static long systemcall_timing = 0;
     public int lag_task_id = -1;
+
     public static HashMap<Player, TAP_MODE> mode = new HashMap<>();
     public static HashMap<Integer, ItemInfo> item_info = new HashMap<>();
     public static HashMap<Integer, String> player_list = new HashMap<>();
+    public static HashMap<String, EntityHuman> npc_list = new HashMap<>();
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス

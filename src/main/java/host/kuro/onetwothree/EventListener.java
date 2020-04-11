@@ -61,7 +61,16 @@ public class EventListener implements Listener {
                 event.setCancelled();
                 return;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            api.getLogErr().Write(player, "onPlayerPreLogin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+    }
 
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent event) {
+        Player player = event.getPlayer();
+        try {
             // ネットワーク取得
             String ip = player.getAddress();
             String host = api.GetHostInfo(ip);
@@ -141,7 +150,7 @@ public class EventListener implements Listener {
 
         } catch (Exception e) {
             e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerPreLogin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, "onPlayerLogin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
     }
 
@@ -317,6 +326,9 @@ public class EventListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (player == null) return;
+
+        //api.getPlugin().getNpc().SetMerchantSpawn(player, event.getBlock().getLocation(), NpcPlugin.NPC_KIND.KIND_MERCHANT_TYPE01, "kurokuro", "",
+        //                null, null, null, null, null, 0.0F, 0.0F, 1.0F);
 
         try {
             // タッチモード
