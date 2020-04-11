@@ -6,6 +6,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.OneTwoThreeAPI;
+import host.kuro.onetwothree.npc.NpcType;
 
 public class LagTask extends AsyncTask {
 
@@ -23,22 +24,22 @@ public class LagTask extends AsyncTask {
         LAG_SEQ++;
         switch(LAG_SEQ) {
             case 1:
-                message = TextFormat.LIGHT_PURPLE + "ラグ要因の除去を行います！20秒後に実施されます！";
+                message = TextFormat.LIGHT_PURPLE + "【ラグ除去】 ラグ要因の除去を行います！20秒後に実施されます！";
                 break;
             case 2:
-                message = TextFormat.LIGHT_PURPLE + "10秒前です！ご注意ください！";
+                message = TextFormat.LIGHT_PURPLE + "【ラグ除去】 10秒前です！ご注意ください！";
                 break;
             case 3:
                 int i = 0;
                 for (Level level : api.getServer().getLevels().values()) {
                     for (Entity entity : level.getEntities()) {
-                        if (!(entity instanceof Player)) {
+                        if (!(entity instanceof Player) && !(entity instanceof NpcType)) {
                             entity.close();
                             i++;
                         }
                     }
                 }
-                message = TextFormat.LIGHT_PURPLE + String.format("除去が完了しました <除去数 : %d個>", i);
+                message = TextFormat.LIGHT_PURPLE + String.format("【ラグ除去】 除去が完了しました <除去数 : %d個>", i);
                 break;
             case 4:
                 message = "";

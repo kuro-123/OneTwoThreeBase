@@ -40,6 +40,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new RandCommand(api));
             map.register("OneTwoThreeBase", new KcCommand(api));
             map.register("OneTwoThreeBase", new NpcCommand(api));
+            map.register("OneTwoThreeBase", new InfoCommand(api));
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -105,5 +105,6 @@ SqlStatement:
   Sql0043: "SELECT play_time FROM player WHERE xuid=?"
   Sql0044: "UPDATE player SET status=null"
   Sql0045: "UPDATE item SET ban=?, updater=?, upd_date=current_timestamp WHERE id=? AND meta=0"
+  Sql0046: "SELECT xuid, xname, name, tag, play_time, money, login, break, place, kick, death, kill, chat FROM v_player_info WHERE xuid=?"
 
 ConfigVersion: 1

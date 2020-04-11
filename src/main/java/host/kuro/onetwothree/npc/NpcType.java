@@ -190,20 +190,12 @@ public class NpcType extends EntityHuman {
         }
     }
 
+    public boolean interact(Player player, Item item) {
+        return false;
+    }
+
     @Override
     public boolean attack(EntityDamageEvent source) {
-        Player player = null;
-        if (!(source instanceof EntityDamageByEntityEvent)) return false;
-        if (!(((EntityDamageByEntityEvent) source).getDamager() instanceof Player)) return false;
-
-        player = (Player)((EntityDamageByEntityEvent) source).getDamager();
-        if (player == null) return false;
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("テストですよー");
-        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.voi044, 0, false); // WINDOW
-        SimpleForm form = new SimpleForm(this.getName(), new String(sb));
-        form.send(player, (targetPlayer, targetForm, data) -> {});
         return false;
     }
 }

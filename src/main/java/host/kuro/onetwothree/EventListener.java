@@ -35,6 +35,9 @@ import host.kuro.onetwothree.forms.CustomFormResponse;
 import host.kuro.onetwothree.forms.Form;
 import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
+import host.kuro.onetwothree.npc.NpcMerchantType01;
+import host.kuro.onetwothree.npc.NpcMerchantType02;
+import host.kuro.onetwothree.npc.NpcType;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.Particle;
@@ -73,7 +76,8 @@ public class EventListener implements Listener {
         try {
             // ネットワーク取得
             String ip = player.getAddress();
-            String host = api.GetHostInfo(ip);
+            //String host = api.GetHostInfo(ip);
+            String host = ""; // 一時的 重いので後々非同期でやらせる
 
             // SQL
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
@@ -321,6 +325,14 @@ public class EventListener implements Listener {
         api.play_rank.remove(player);
 
         api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin061, 0, false); // ドアクローズ
+    }
+
+    @EventHandler
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof NpcType) {
+            ((NpcType)entity).interact(event.getPlayer(), event.getItem());
+        }
     }
 
     @EventHandler
@@ -663,6 +675,15 @@ public class EventListener implements Listener {
                 player.setGamemode(Player.SURVIVAL);
                 player.sendMessage(api.GetWarningMessage(Language.translate("onetwothree.forceSurvival")));
                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin005, 0, false); // forcemode
+            }
+
+            if (!sFrom.equals(sTo)) {
+                if (sTo.indexOf("nature") >=0) {
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin024, 2000, false); // 資源ワールドIN
+                }
+                else if (sTo.indexOf("city") >=0) {
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin025, 2000, false); // 街ワールドIN
+                }
             }
 
         } catch (Exception e) {

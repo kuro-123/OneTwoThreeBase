@@ -4,11 +4,15 @@ import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.scheduler.TaskHandler;
 import cn.nukkit.utils.Config;
 import host.kuro.onetwothree.command.CommandManager;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.npc.NpcType;
+import host.kuro.onetwothree.task.LagTask;
 import host.kuro.onetwothree.task.RebootTask;
+import host.kuro.onetwothree.task.TimingTask;
+import host.kuro.onetwothree.task.WorldTask;
 import host.kuro.onetwothree.utils.Particle;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -83,6 +87,17 @@ public class BasePlugin extends PluginBase {
                 e.printStackTrace();
             }
         }
+
+        for (Level lv : api.getServer().getLevels().values()) {
+            if (lv.getName().indexOf("nature") >= 0) {
+                lv.setSpawnLocation(lv.getSafeSpawn());
+            }
+        }
+
+        // タイミングタスク起動
+        TimingTask task = new TimingTask(api);
+        api.getServer().getScheduler().scheduleRepeatingTask(task, 20 * 60 * 60);
+
         // パーティクル設定
         Particle.SetAPI(api);
         // 起動

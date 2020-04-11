@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.*;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
@@ -16,12 +17,7 @@ public class NpcCommonType extends NpcType {
     }
 
     @Override
-    public boolean attack(EntityDamageEvent source) {
-        Player player = null;
-        if (!(source instanceof EntityDamageByEntityEvent)) return false;
-        if (!(((EntityDamageByEntityEvent) source).getDamager() instanceof Player)) return false;
-
-        player = (Player)((EntityDamageByEntityEvent) source).getDamager();
+    public boolean interact(Player player, Item item) {
         if (player == null) return false;
 
         StringBuilder sb = new StringBuilder();

@@ -44,3 +44,5 @@ permissions:
     default: op
   onetwothree.npc:
     default: op
+  onetwothree.info:
+    default: true

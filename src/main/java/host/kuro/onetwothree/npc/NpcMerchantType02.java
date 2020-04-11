@@ -24,14 +24,8 @@ public class NpcMerchantType02 extends NpcType {
     }
 
     @Override
-    public boolean attack(EntityDamageEvent source) {
-        Player player = null;
-        if (!(source instanceof EntityDamageByEntityEvent)) return false;
-        if (!(((EntityDamageByEntityEvent) source).getDamager() instanceof Player)) return false;
-
-        player = (Player)((EntityDamageByEntityEvent) source).getDamager();
+    public boolean interact(Player player, Item item) {
         if (player == null) return false;
-
         SellWindow(player);
         return false;
     }

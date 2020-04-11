@@ -48,6 +48,7 @@ public class OneTwoThreeAPI {
     public final Map<Player, Integer> play_rank = new HashMap<>();
     public static long systemcall_timing = 0;
     public int lag_task_id = -1;
+    public int world_task_id = -1;
 
     public static HashMap<Player, TAP_MODE> mode = new HashMap<>();
     public static HashMap<Integer, ItemInfo> item_info = new HashMap<>();
@@ -348,26 +349,26 @@ public class OneTwoThreeAPI {
     }
 
     public void SetupNukkitItems() {
-        if (getDebug()) return;
         try {
-            Calendar cal = Calendar.getInstance();
-            int week = cal.get(Calendar.DAY_OF_WEEK);
-            if (week == Calendar.SUNDAY) {
-                for (Class c : Item.list) {
-                    if (c != null) {
-                        String name = c.getSimpleName();
-                        name = name.replace("Block", "");
-                        name = name.replace("Item", "");
-                        Item item = Item.fromString(name);
-                        if (item != null) {
-                            int id = item.getId();
-                            // ステータス更新
-                            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
-                            args.add(new DatabaseArgs("i", ""+id));
-                            args.add(new DatabaseArgs("c", name));
-                            int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0022"), args);
-                            args.clear();
-                            args = null;
+            if (getDebug()) {
+                Calendar cal = Calendar.getInstance();
+                int week = cal.get(Calendar.DAY_OF_WEEK);
+                if (week == Calendar.SUNDAY) {
+                    for (Class c : Item.list) {
+                        if (c != null) {
+                            String name = c.getSimpleName();
+                            name = name.replace("Block", "");
+                            name = name.replace("Item", "");
+                            Item item = Item.fromString(name);
+                            if (item != null) {
+                                int id = item.getId();
+                                ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+                                args.add(new DatabaseArgs("i", ""+id));
+                                args.add(new DatabaseArgs("c", name));
+                                int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0022"), args);
+                                args.clear();
+                                args = null;
+                            }
                         }
                     }
                 }
