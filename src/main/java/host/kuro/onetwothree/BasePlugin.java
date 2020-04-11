@@ -1,10 +1,13 @@
 package host.kuro.onetwothree;
 
 import cn.nukkit.Server;
+import cn.nukkit.entity.Entity;
+import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import host.kuro.onetwothree.command.CommandManager;
 import host.kuro.onetwothree.database.DatabaseArgs;
+import host.kuro.onetwothree.npc.NpcType;
 import host.kuro.onetwothree.task.RebootTask;
 import host.kuro.onetwothree.utils.Particle;
 import net.dv8tion.jda.api.JDA;

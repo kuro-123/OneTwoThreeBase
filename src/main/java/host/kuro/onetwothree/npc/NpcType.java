@@ -2,48 +2,37 @@ package host.kuro.onetwothree.npc;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
-import cn.nukkit.block.BlockLiquid;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityCreature;
 import cn.nukkit.entity.EntityHuman;
-import cn.nukkit.entity.data.FloatEntityData;
-import cn.nukkit.entity.data.Skin;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.level.particle.SmokeParticle;
-import cn.nukkit.math.NukkitMath;
-import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.*;
 import cn.nukkit.network.protocol.AddPlayerPacket;
-import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.task.SoundTask;
+import host.kuro.onetwothree.utils.MtRand;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class NpcType extends EntityHuman {
 
     protected OneTwoThreeAPI api;
+    protected int free_times = 0;
+    protected int free_next = 10;
+    private static final MtRand random = new MtRand(System.currentTimeMillis());
 
     public NpcType(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
-    }
-
-    public void SetAPI(OneTwoThreeAPI api) {
-        this.api = api;
+        api = OneTwoThreeAPI.getInstance();
     }
 
     private Player GetTarget() {
         Player target = null;
-        double target_distance = 4.0D;
+        double target_distance = 9.0D;
         for (Player player : this.getLevel().getPlayers().values()) {
             double distance = this.distanceSquared(player);
             if (distance < target_distance) {
@@ -82,6 +71,21 @@ public class NpcType extends EntityHuman {
             double diff = Math.abs(x) + Math.abs(z);
             this.yaw = Math.toDegrees(-Math.atan2(x / diff, z / diff));
             this.pitch = y == 0 ? 0 : Math.toDegrees(-Math.atan2(y, Math.sqrt(x * x + z * z)));
+            free_times = 0;
+        } else {
+            free_times++;
+        }
+
+        // キョロキョロ
+        if (free_times > 60) {
+            if ((free_times % free_next) == 0) {
+                long value = random.Next(-450, 450);
+                double dvalue = (double)value / 10.0D;
+                this.pitch = dvalue;
+                free_next = random.Next(4, 80);
+                value = random.Next(-45, 45);
+                this.yaw +=value;
+            }
         }
 
         if (this.onGround) {
@@ -175,6 +179,14 @@ public class NpcType extends EntityHuman {
 
             this.server.removePlayerListData(this.getUniqueId(), new Player[]{player});
             super.spawnTo(player);
+
+            // スケーリング
+            try {
+                String sscale = getDataProperty(776).getData().toString();
+                Float scale = Float.parseFloat(sscale);
+                this.setScale(scale);
+            } catch (Exception ex) {
+            }
         }
     }
 

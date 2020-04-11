@@ -2,7 +2,9 @@ package host.kuro.onetwothree;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.data.FloatEntityData;
 import cn.nukkit.entity.data.Skin;
+import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.nbt.tag.*;
@@ -190,6 +192,7 @@ public class NpcPlugin {
             }
 
             // クラス名
+            String type = "";
             String entity_namme = "NpcMerchantType01";
             switch (npc_info.kind) {
                 case KIND_COMMON_TYPE01: entity_namme = "NpcCommonType"; break;
@@ -201,20 +204,38 @@ public class NpcPlugin {
             // エンティティー生成
             Entity npc = Entity.createEntity(entity_namme, player.chunk, nbt);
             if (npc != null) {
-                if (npc instanceof NpcType) {
-                    ((NpcType)npc).SetAPI(api);
-
-                } else if (npc instanceof NpcCommonType) {
-                    String message = "";
-                    switch (npc_info.kind) {
-                        case KIND_COMMON_TYPE01: message = api.getConfig().getString("Npc.Type01"); break;
-                        case KIND_COMMON_TYPE02: message = api.getConfig().getString("Npc.Type02"); break;
-                    }
-                    ((NpcCommonType)npc).SetMessage(message);
-                }
                 npc.setNameTag(npc_name);
                 npc.setNameTagVisible(true);
                 npc.setNameTagAlwaysVisible(true);
+
+                StringEntityData data;
+                FloatEntityData fdata;
+                switch (npc_info.kind) {
+                    case KIND_COMMON_TYPE01:
+                        data = new StringEntityData(777,"c01");
+                        npc.setDataProperty(data);
+                        fdata = new FloatEntityData(776,scale);
+                        npc.setDataProperty(fdata);
+                        break;
+                    case KIND_COMMON_TYPE02:
+                        data = new StringEntityData(777,"c02");
+                        npc.setDataProperty(data);
+                        fdata = new FloatEntityData(776,scale);
+                        npc.setDataProperty(fdata);
+                        break;
+                    case KIND_MERCHANT_TYPE01:
+                        data = new StringEntityData(777,"m01");
+                        npc.setDataProperty(data);
+                        fdata = new FloatEntityData(776,scale);
+                        npc.setDataProperty(fdata);
+                        break;
+                    case KIND_MERCHANT_TYPE02:
+                        data = new StringEntityData(777,"m02");
+                        npc.setDataProperty(data);
+                        fdata = new FloatEntityData(776,scale);
+                        npc.setDataProperty(fdata);
+                        break;
+                }
                 npc.spawnToAll();
             }
 

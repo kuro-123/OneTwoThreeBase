@@ -1,6 +1,7 @@
 package host.kuro.onetwothree.npc;
 
 import cn.nukkit.Player;
+import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.level.format.FullChunk;
@@ -10,14 +11,8 @@ import host.kuro.onetwothree.task.SoundTask;
 
 public class NpcCommonType extends NpcType {
 
-    private String message;
-
     public NpcCommonType(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
-    }
-
-    public void SetMessage(String message) {
-        this.message = message;
     }
 
     @Override
@@ -31,6 +26,14 @@ public class NpcCommonType extends NpcType {
 
         StringBuilder sb = new StringBuilder();
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin054, 0, false); // ウィンドウ
+
+        String message = "";
+        String dat = getDataProperty(777).getData().toString();
+        if (dat.length() <= 0 || dat.equals("c01")) {
+            message = api.getConfig().getString("Npc.Type01");
+        } else if (dat.equals("c02")) {
+            message = api.getConfig().getString("Npc.Type02");
+        }
         SimpleForm form = new SimpleForm(this.getName(), message);
         form.send(player, (targetPlayer, targetForm, data) -> {});
         return false;
