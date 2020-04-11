@@ -42,3 +42,5 @@ permissions:
     default: true
   onetwothree.kc:
     default: op
+  onetwothree.npc:
+    default: op

@@ -1,4 +1,4 @@
-package host.kuro.onetwothree.item;
+package host.kuro.onetwothree.datatype;
 
 public class ItemInfo {
     public int id;

@@ -11,7 +11,7 @@ import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.forms.elements.ModalForm;
-import host.kuro.onetwothree.item.ItemInfo;
+import host.kuro.onetwothree.datatype.ItemInfo;
 import host.kuro.onetwothree.task.SoundTask;
 
 import java.util.ArrayList;

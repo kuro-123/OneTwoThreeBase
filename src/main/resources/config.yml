@@ -20,6 +20,7 @@ Database:
 # WEB設定
 Web:
   DataPath: "/var/www/html/mcbe/data/"
+  WebPath: "http://kuro.host/mcbe/data/"
   SkinDays: 7
   SkinMake: ""
 
@@ -51,6 +52,11 @@ Command:
 NameCommand:
   # 再設定までの日数
   AllowDays: 1
+
+# NPCワード
+Npc:
+  Type01: "テストだぜ"
+  Type02: "テストだよ"
 
 # SQLステートメント
 SqlStatement:

@@ -316,6 +316,7 @@ public class EventListener implements Listener {
         // メモリ関連削除
         Form.playersForm.remove(player.getName());
         OneTwoThreeAPI.mode.remove(player);
+        OneTwoThreeAPI.npc_info.remove(player);
         api.play_time.remove(player);
         api.play_rank.remove(player);
 
@@ -326,9 +327,6 @@ public class EventListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (player == null) return;
-
-        //api.getPlugin().getNpc().SetMerchantSpawn(player, event.getBlock().getLocation(), NpcPlugin.NPC_KIND.KIND_MERCHANT_TYPE01, "kurokuro", "",
-        //                null, null, null, null, null, 0.0F, 0.0F, 1.0F);
 
         try {
             // タッチモード
@@ -343,6 +341,14 @@ public class EventListener implements Listener {
                     else if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_KUROVIEW) {
                         Block block = event.getBlock();
                         api.OpenKuroView(player, block);
+                        event.setCancelled();
+                        return;
+                    }
+                    else if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_NPC) {
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+                        OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_NONE);
+                        Block block = event.getBlock();
+                        api.SpawnNpc(player, block);
                         event.setCancelled();
                         return;
                     }

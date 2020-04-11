@@ -39,6 +39,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new BanItemCommand(api));
             map.register("OneTwoThreeBase", new RandCommand(api));
             map.register("OneTwoThreeBase", new KcCommand(api));
+            map.register("OneTwoThreeBase", new NpcCommand(api));
 
         } catch (Exception e) {
             e.printStackTrace();

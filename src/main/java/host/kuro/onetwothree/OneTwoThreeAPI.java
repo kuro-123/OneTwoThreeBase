@@ -5,13 +5,17 @@ import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Location;
+import cn.nukkit.math.BlockFace;
+import cn.nukkit.math.NukkitMath;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
+import host.kuro.onetwothree.datatype.NpcInfo;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
-import host.kuro.onetwothree.item.ItemInfo;
+import host.kuro.onetwothree.datatype.ItemInfo;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.*;
 import net.dv8tion.jda.api.JDA;
@@ -48,7 +52,7 @@ public class OneTwoThreeAPI {
     public static HashMap<Player, TAP_MODE> mode = new HashMap<>();
     public static HashMap<Integer, ItemInfo> item_info = new HashMap<>();
     public static HashMap<Integer, String> player_list = new HashMap<>();
-    public static HashMap<String, EntityHuman> npc_list = new HashMap<>();
+    public static HashMap<Player, NpcInfo> npc_info = new HashMap<>();
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
@@ -92,6 +96,7 @@ public class OneTwoThreeAPI {
         MODE_NONE,
         MODE_TOUCH,
         MODE_KUROVIEW,
+        MODE_NPC,
     };
 
     // IPアドレスを取得
@@ -457,6 +462,7 @@ public class OneTwoThreeAPI {
     }
 
     public boolean IsNushi(Player player) {
+        if (player == null) return false;
         if (play_rank != null) {
             int rank = play_rank.get(player);
             if (rank < 4) {
@@ -468,6 +474,7 @@ public class OneTwoThreeAPI {
         return true;
     }
     public boolean IsKanri(Player player) {
+        if (player == null) return false;
         if (play_rank != null) {
             int rank = play_rank.get(player);
             if (rank < 3) {
@@ -479,6 +486,7 @@ public class OneTwoThreeAPI {
         return true;
     }
     public boolean IsJyumin(Player player) {
+        if (player == null) return false;
         if (play_rank != null) {
             int rank = play_rank.get(player);
             if (rank < 1) {
@@ -713,5 +721,28 @@ public class OneTwoThreeAPI {
             PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
         }
         return true;
+    }
+
+    public void SpawnNpc(Player player, Block block) {
+        if (!OneTwoThreeAPI.npc_info.containsKey(player)) return;
+        NpcInfo npc_info = OneTwoThreeAPI.npc_info.get(player);
+
+        Location loc = block.getLocation();
+        loc.y += 1.2F;
+
+        Float yaw =Float.parseFloat(String.valueOf(player.getYaw()));
+        Float pitch = Float.parseFloat(String.valueOf(player.getPitch()));
+
+        getPlugin().getNpc().SetNpcSpawn(
+            player,
+            loc,
+            npc_info,
+            null,
+            null,
+            null,
+            null,
+            null,
+            yaw,
+            pitch);
     }
 }
