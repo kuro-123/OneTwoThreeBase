@@ -84,6 +84,13 @@ public class DatabaseManager {
                     case"t":
                         ps.setString(i, arg.value);
                         break;
+                    case "b":
+                        if (arg.value.toLowerCase().equals("true")) {
+                            ps.setBoolean(i, true);
+                        } else {
+                            ps.setBoolean(i, false);
+                        }
+                        break;
                 }
                 i++;
             }

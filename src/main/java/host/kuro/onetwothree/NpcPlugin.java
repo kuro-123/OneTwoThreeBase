@@ -10,7 +10,6 @@ import cn.nukkit.level.Position;
 import cn.nukkit.nbt.tag.*;
 import host.kuro.onetwothree.datatype.NpcInfo;
 import host.kuro.onetwothree.npc.NpcCommonType;
-import host.kuro.onetwothree.npc.NpcType;
 import host.kuro.onetwothree.npc.NpcMerchantType01;
 import host.kuro.onetwothree.npc.NpcMerchantType02;
 import host.kuro.onetwothree.task.SoundTask;

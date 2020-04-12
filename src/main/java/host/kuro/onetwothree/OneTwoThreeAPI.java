@@ -3,17 +3,15 @@ package host.kuro.onetwothree;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
-import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Location;
-import cn.nukkit.math.BlockFace;
-import cn.nukkit.math.NukkitMath;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.datatype.NpcInfo;
+import host.kuro.onetwothree.datatype.WorldInfo;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.datatype.ItemInfo;
 import host.kuro.onetwothree.task.SoundTask;
@@ -54,6 +52,7 @@ public class OneTwoThreeAPI {
     public static HashMap<Integer, ItemInfo> item_info = new HashMap<>();
     public static HashMap<Integer, String> player_list = new HashMap<>();
     public static HashMap<Player, NpcInfo> npc_info = new HashMap<>();
+    public static HashMap<String, WorldInfo> world_info = new HashMap<>();
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス

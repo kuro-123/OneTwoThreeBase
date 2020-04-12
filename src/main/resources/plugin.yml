@@ -46,3 +46,5 @@ permissions:
     default: op
   onetwothree.info:
     default: true
+  onetwothree.world:
+    default: op
