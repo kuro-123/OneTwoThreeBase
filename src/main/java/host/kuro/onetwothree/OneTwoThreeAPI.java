@@ -770,4 +770,65 @@ public class OneTwoThreeAPI {
         if (!world_info.containsKey(level.getName())) return null;
         return world_info.get(level.getName());
     }
+
+    public int GetChatCount(Player player) {
+        int ret = 0;
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0049"));
+            ResultSet rs = getDB().ExecuteQuery(ps, args);
+            args.clear();
+            args = null;
+            if (rs != null) {
+                while(rs.next()){
+                    ret = rs.getInt("chat");
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, "GetChatCOunt : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+        return ret;
+    }
+
+    public int GetBreakPlaceCount(Player player) {
+        int ret = 0;
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0049"));
+            ResultSet rs = getDB().ExecuteQuery(ps, args);
+            args.clear();
+            args = null;
+            if (rs != null) {
+                while(rs.next()){
+                    ret  = rs.getInt("break");
+                    ret += rs.getInt("place");
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, "GetBreakPlaceCount : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+        return ret;
+    }
 }

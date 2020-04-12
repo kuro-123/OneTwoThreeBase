@@ -33,7 +33,7 @@ public class RankCommand extends CommandBase {
         }
         // 権限チェック
         int rank = api.GetRank(player);
-        if (rank < 3) {
+        if (rank < 2) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;
@@ -48,7 +48,9 @@ public class RankCommand extends CommandBase {
             rank_list.add("0:訪問");
             rank_list.add("1:住民");
             rank_list.add("2:ＧＭ");
-            rank_list.add("3:パイ");
+            if (rank >= 3) {
+                rank_list.add("3:パイ");
+            }
             if (rank >= 4) {
                 rank_list.add("4:鯖主");
             }

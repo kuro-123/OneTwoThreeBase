@@ -48,6 +48,16 @@ public class TagCommand extends CommandBase {
             player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;
         }
+        // スキルチェック
+        if (!api.IsGameMaster(player)) {
+            int count = api.GetChatCount(player);
+            if (count < 1000) {
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                player.sendMessage(api.GetWarningMessage("onetwothree.skill_err"));
+                return false;
+            }
+        }
+
         // 現在のプレイヤー情報取得
         String tag = "";
         try {

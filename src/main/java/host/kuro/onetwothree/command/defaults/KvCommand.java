@@ -38,6 +38,15 @@ public class KvCommand extends CommandBase {
             player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;
         }
+        // スキルチェック
+        if (!api.IsGameMaster(player)) {
+            int count = api.GetBreakPlaceCount(player);
+            if (count < 100000) {
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                player.sendMessage(api.GetWarningMessage("onetwothree.skill_err"));
+                return false;
+            }
+        }
         try {
             if (!OneTwoThreeAPI.mode.containsKey(player)) {
                 OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_KUROVIEW);

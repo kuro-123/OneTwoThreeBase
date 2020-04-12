@@ -180,17 +180,18 @@ public class EventListener implements Listener {
         player.setGamemode(Player.SURVIVAL);
         int rank = api.GetRank(player);
         api.play_rank.put(player, rank);
-        if (rank > 1) {
+        if (rank >= 1) {
             player.setOp(true);
         }
-        if (rank > 3) {
-            player.setGamemode(Player.CREATIVE);
-        }
 
-        // クリエ許可ワールド取得
-        String allowname = api.getConfig().getString("GameSettings.AllowCreative");
-        Level lv = api.getServer().getLevelByName(allowname);
-        player.setSpawn(lv.getSpawnLocation());
+        // 初期値設定
+        if (rank >= 1) {
+            String second = api.getConfig().getString("GameSettings.SecondSpawn");
+            player.setSpawn(api.getServer().getLevelByName(second).getSpawnLocation());
+        } else {
+            String first = api.getConfig().getString("GameSettings.FirstSpawn");
+            player.setSpawn(api.getServer().getLevelByName(first).getSpawnLocation());
+        }
 
         api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin014, 0, false); // ドアノック
 
@@ -463,12 +464,14 @@ public class EventListener implements Listener {
             }
 
             // 建築許可チェック
-            WorldInfo worldinfo = api.GetWorldInfo(player);
-            if (!worldinfo.bplace) {
-                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                event.setCancelled();
-                return;
+            if (!api.IsGameMaster(player)) {
+                WorldInfo worldinfo = api.GetWorldInfo(player);
+                if (!worldinfo.bplace) {
+                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    event.setCancelled();
+                    return;
+                }
             }
 
             // ブロックログ
@@ -522,11 +525,13 @@ public class EventListener implements Listener {
 
         // PVP許可チェック
         Player player = (Player)damager;
-        WorldInfo worldinfo = api.GetWorldInfo(player);
-        if (!worldinfo.pvp) {
-            player.sendMessage(api.GetWarningMessage("onetwothree.not_pvp"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            event.setCancelled();
+        if (!api.IsGameMaster(player)) {
+            WorldInfo worldinfo = api.GetWorldInfo(player);
+            if (!worldinfo.pvp) {
+                player.sendMessage(api.GetWarningMessage("onetwothree.not_pvp"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                event.setCancelled();
+            }
         }
     }
 
@@ -797,6 +802,8 @@ public class EventListener implements Listener {
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
         try {
+            if (api.IsGameMaster(player)) return;
+
             // ゲームモードチェック
             WorldInfo worldinfo = api.GetWorldInfo(player);
             int newmode = event.getNewGamemode();
@@ -816,6 +823,17 @@ public class EventListener implements Listener {
                         event.setCancelled();
                         return;
                     }
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(TextFormat.YELLOW);
+                    sb.append("[");
+                    sb.append(TextFormat.WHITE);
+                    sb.append(player.getDisplayName());
+                    sb.append(TextFormat.YELLOW);
+                    sb.append("] さんがクリエになりました");
+                    String message = new String(sb);
+                    api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin011, 0, false); // SUCCESS
+                    api.getServer().broadcastMessage(message);
+                    api.sendDiscordYellowMessage(message);
                     break;
                 case Player.SPECTATOR:
                     if (!worldinfo.spectator) {
@@ -826,13 +844,10 @@ public class EventListener implements Listener {
                     }
                     break;
                 case Player.ADVENTURE:
-                    if (!worldinfo.adventure) {
-                        player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
-                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        event.setCancelled();
-                        return;
-                    }
-                    break;
+                    player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    event.setCancelled();
+                    return;
             }
 
         } catch (Exception e) {

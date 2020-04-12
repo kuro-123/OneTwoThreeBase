@@ -35,6 +35,15 @@ public class CallCommand extends CommandBase {
                 player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
                 return false;
             }
+            // スキルチェック
+            if (!api.IsGameMaster(player)) {
+                int count = api.GetChatCount(player);
+                if (count < 7000) {
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    player.sendMessage(api.GetWarningMessage("onetwothree.skill_err"));
+                    return false;
+                }
+            }
             // クールダウンチェック
             if (OneTwoThreeAPI.systemcall_timing != 0) {
                 long now = System.currentTimeMillis();
