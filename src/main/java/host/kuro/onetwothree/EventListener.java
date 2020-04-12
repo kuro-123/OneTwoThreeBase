@@ -402,11 +402,13 @@ public class EventListener implements Listener {
 
             // 整地許可チェック
             WorldInfo worldinfo = api.GetWorldInfo(player);
-            if (!worldinfo.bbreak) {
-                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                event.setCancelled();
-                return;
+            if (!api.IsGameMaster(player)) {
+                if (!worldinfo.bbreak) {
+                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    event.setCancelled();
+                    return;
+                }
             }
 
             // タグアイテム許可の場合はタグ付けする
@@ -806,47 +808,58 @@ public class EventListener implements Listener {
 
             // ゲームモードチェック
             WorldInfo worldinfo = api.GetWorldInfo(player);
+            if (worldinfo == null) return;
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(TextFormat.RED);
+            sb.append("【強制ログアウト】 [");
+            sb.append(TextFormat.WHITE);
+            sb.append(player.getDisplayName());
+            sb.append(TextFormat.RED);
+            sb.append("] さんがゲームモードを変更しようとしたため強制的にログアウトされました");
+
             int newmode = event.getNewGamemode();
             switch (newmode) {
                 case Player.SURVIVAL:
                     if (!worldinfo.survival) {
-                        player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
-                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
                         event.setCancelled();
+                        player.close("", "ゲームモードの変更は許可されていないため閉じられました。リログしてください", true);
+                        String message = new String(sb);
+                        api.getServer().broadcastMessage(message);
+                        api.sendDiscordRedMessage(message);
                         return;
                     }
                     break;
                 case Player.CREATIVE:
                     if (!worldinfo.creative) {
-                        player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
-                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
                         event.setCancelled();
+                        player.close("", "ゲームモードの変更は許可されていないため閉じられました。リログしてください", true);
+                        String message = new String(sb);
+                        api.getServer().broadcastMessage(message);
+                        api.sendDiscordRedMessage(message);
                         return;
                     }
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(TextFormat.YELLOW);
-                    sb.append("[");
-                    sb.append(TextFormat.WHITE);
-                    sb.append(player.getDisplayName());
-                    sb.append(TextFormat.YELLOW);
-                    sb.append("] さんがクリエになりました");
-                    String message = new String(sb);
-                    api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin011, 0, false); // SUCCESS
-                    api.getServer().broadcastMessage(message);
-                    api.sendDiscordYellowMessage(message);
                     break;
                 case Player.SPECTATOR:
                     if (!worldinfo.spectator) {
-                        player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
-                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
                         event.setCancelled();
+                        player.close("", "ゲームモードの変更は許可されていないため閉じられました。リログしてください", true);
+                        String message = new String(sb);
+                        api.getServer().broadcastMessage(message);
+                        api.sendDiscordRedMessage(message);
                         return;
                     }
                     break;
                 case Player.ADVENTURE:
-                    player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
                     event.setCancelled();
+                    player.close("", "ゲームモードの変更は許可されていないため閉じられました。リログしてください", true);
+                    String message = new String(sb);
+                    api.getServer().broadcastMessage(message);
+                    api.sendDiscordRedMessage(message);
                     return;
             }
 
@@ -907,12 +920,29 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerBedEnter(PlayerBedEnterEvent event) {
+        Player player = event.getPlayer();
+        // ベッド許可チェック
+        WorldInfo worldinfo = api.GetWorldInfo(player);
+        if (worldinfo == null) return;
+        if (!worldinfo.bed) {
+            event.setCancelled();
+        }
+    }
+
+    @EventHandler
     public void onItemFrameDropItem(ItemFrameDropItemEvent event) {
         Player player = event.getPlayer();
         // BANアイテム
         if (api.IsBanItem(player, event.getItem())) {
             event.setCancelled();
             return;
+        }
+        // 破壊チェック
+        WorldInfo worldinfo = api.GetWorldInfo(player);
+        if (worldinfo == null) return;
+        if (!worldinfo.bbreak) {
+            event.setCancelled();
         }
     }
 
@@ -997,7 +1027,52 @@ public class EventListener implements Listener {
                 break;
             }
         }
+
         Player player = event.getPlayer();
+
+        if ((cmd.equals("plugins")) ||
+            (cmd.equals("seed")) ||
+            (cmd.equals("help")) ||
+            (cmd.equals("stop")) ||
+            (cmd.equals("defaultgamemode")) ||
+            (cmd.equals("ban")) ||
+            (cmd.equals("ban-ip")) ||
+            (cmd.equals("banlist")) ||
+            (cmd.equals("pardon")) ||
+            (cmd.equals("pardon-ip")) ||
+            (cmd.equals("me")) ||
+            (cmd.equals("difficulty")) ||
+            (cmd.equals("kick")) ||
+            (cmd.equals("op")) ||
+            (cmd.equals("deop")) ||
+            (cmd.equals("whitelist")) ||
+            (cmd.equals("save-on")) ||
+            (cmd.equals("save-off")) ||
+            (cmd.equals("save-all")) ||
+            (cmd.equals("give")) ||
+            (cmd.equals("effect")) ||
+            (cmd.equals("enchant")) ||
+            (cmd.equals("particle")) ||
+            (cmd.equals("gamerule")) ||
+            (cmd.equals("gamemode")) ||
+            (cmd.equals("kill")) ||
+            (cmd.equals("spawnpoint")) ||
+            (cmd.equals("setworldspawn")) ||
+            (cmd.equals("tp")) ||
+            (cmd.equals("time")) ||
+            (cmd.equals("title")) ||
+            (cmd.equals("reload")) ||
+            (cmd.equals("weather")) ||
+            (cmd.equals("xp")) ||
+            (cmd.equals("status")) ||
+            (cmd.equals("timings"))) {
+            if (!api.IsGameMaster(player)) {
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                return;
+            }
+        }
+
         api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
     }
 }

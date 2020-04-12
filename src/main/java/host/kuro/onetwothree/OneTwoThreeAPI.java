@@ -465,6 +465,10 @@ public class OneTwoThreeAPI {
     public boolean IsNushi(Player player) {
         if (player == null) return false;
         if (play_rank != null) {
+            if (play_rank.size() == 0) {
+                int rank = GetRank(player);
+                play_rank.put(player, rank);
+            }
             int rank = play_rank.get(player);
             if (rank < 4) {
                 return false;
@@ -476,21 +480,34 @@ public class OneTwoThreeAPI {
     }
     public boolean IsGameMaster(Player player) {
         if (player == null) return false;
-        if (play_rank != null) {
-            int rank = play_rank.get(player);
-            if (rank < 3) {
+        try {
+            if (play_rank.size() == 0) {
+                int rank = GetRank(player);
+                play_rank.put(player, rank);
+            }
+            if (play_rank != null) {
+                int rank = play_rank.get(player);
+                if (rank < 2) {
+                    return false;
+                }
+            } else {
                 return false;
             }
-        } else {
+            return true;
+
+        } catch (Exception ex) {
             return false;
         }
-        return true;
     }
     public boolean IsJyumin(Player player) {
         if (player == null) return false;
         if (play_rank != null) {
+            if (play_rank.size() == 0) {
+                int rank = GetRank(player);
+                play_rank.put(player, rank);
+            }
             int rank = play_rank.get(player);
-            if (rank < 2) {
+            if (rank < 1) {
                 return false;
             }
         } else {
@@ -501,14 +518,18 @@ public class OneTwoThreeAPI {
     public boolean IsVisitor(Player player) {
         if (player == null) return false;
         if (play_rank != null) {
+            if (play_rank.size() == 0) {
+                int rank = GetRank(player);
+                play_rank.put(player, rank);
+            }
             int rank = play_rank.get(player);
-            if (rank < 1) {
-                return false;
+            if (rank == 0) {
+                return true;
             }
         } else {
             return false;
         }
-        return true;
+        return false;
     }
 
     public void sendDiscordMessage(Player player, String message) {

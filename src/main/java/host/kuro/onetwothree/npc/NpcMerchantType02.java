@@ -47,6 +47,13 @@ public class NpcMerchantType02 extends NpcType {
             return;
         }
         ItemInfo ip = api.item_info.get(item.getId());
+        if (ip == null) {
+            // 価格が0以下はエラー
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin021, 0, false); // 失敗
+            SimpleForm form = new SimpleForm(this.getName(), "そのアイテムは価格設定されていないみたいです");
+            form.send(player, (targetPlayer, targetForm, data) -> {});
+            return;
+        }
         int price = ip.price;
         if (price <= 0) {
             // 価格が0以下はエラー

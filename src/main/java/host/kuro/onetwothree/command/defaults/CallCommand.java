@@ -76,7 +76,7 @@ public class CallCommand extends CommandBase {
             api.getServer().broadcastMessage(message);
             api.sendDiscordYellowMessage(message);
 
-            player.sendMessage(api.GetInfoMessage("commands.name.success"));
+            player.sendMessage(api.GetInfoMessage("commands.call.success"));
 
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
