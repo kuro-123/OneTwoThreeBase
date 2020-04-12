@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
@@ -429,10 +430,10 @@ public class OneTwoThreeAPI {
         if (play_rank != null) {
             int rank = play_rank.get(player);
             switch (rank) {
-                case 0: return "なし";
-                case 1: return "一般";
-                case 2: return "信任";
-                case 3: return "管理";
+                case 0: return "訪問";
+                case 1: return "住民";
+                case 2: return "ＧＭ";
+                case 3: return "パイ";
                 case 4: return "鯖主";
             }
         }
@@ -448,8 +449,8 @@ public class OneTwoThreeAPI {
                 switch (rank) {
                     case 0: return ""+TextFormat.GRAY;
                     case 1: return ""+TextFormat.WHITE;
-                    case 2: return ""+TextFormat.AQUA;
-                    case 3: return ""+TextFormat.GREEN;
+                    case 2: return ""+TextFormat.GREEN;
+                    case 3: return ""+TextFormat.GOLD;
                     case 4: return ""+TextFormat.MINECOIN_GOLD;
                 }
             }
@@ -473,7 +474,7 @@ public class OneTwoThreeAPI {
         }
         return true;
     }
-    public boolean IsKanri(Player player) {
+    public boolean IsGameMaster(Player player) {
         if (player == null) return false;
         if (play_rank != null) {
             int rank = play_rank.get(player);
@@ -486,6 +487,18 @@ public class OneTwoThreeAPI {
         return true;
     }
     public boolean IsJyumin(Player player) {
+        if (player == null) return false;
+        if (play_rank != null) {
+            int rank = play_rank.get(player);
+            if (rank < 2) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+    public boolean IsVisitor(Player player) {
         if (player == null) return false;
         if (play_rank != null) {
             int rank = play_rank.get(player);
@@ -744,5 +757,17 @@ public class OneTwoThreeAPI {
             null,
             yaw,
             pitch);
+    }
+
+    public WorldInfo GetWorldInfo(Player player) {
+        if (player == null) return null;
+        String levelname = player.getLevel().getName();
+        if (!world_info.containsKey(levelname)) return null;
+        return world_info.get(levelname);
+    }
+    public WorldInfo GetWorldInfo(Level level) {
+        if (level == null) return null;
+        if (!world_info.containsKey(level.getName())) return null;
+        return world_info.get(level.getName());
     }
 }

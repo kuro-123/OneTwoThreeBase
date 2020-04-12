@@ -39,7 +39,6 @@ public class XboxCommand extends CommandBase {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
-
         if (args.length != 1) {
             this.sendUsage(sender);
             return false;

@@ -38,7 +38,7 @@ public class KcCommand extends CommandBase {
         try {
             // 権限チェック
             if (player != null) {
-                if (!api.IsKanri(player)) {
+                if (!api.IsGameMaster(player)) {
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
                     return false;

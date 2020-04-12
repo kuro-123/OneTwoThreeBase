@@ -30,19 +30,24 @@ public class RebootCommand extends CommandBase {
         // コマンドチェック
         if (!this.testPermission(sender)) return false;
 
-        // ブロードキャスト通知
-        StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.GOLD);
-        sb.append(TextFormat.BOLD);
-        sb.append("==== [鯖主再起動] ====");
-        sb.append(TextFormat.GOLD);
-        String message = new String(sb);
-        api.getServer().broadcastMessage(message);
-        api.sendDiscordRedMessage(message);
+        Player player = null;
+        if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
 
-        // リブートタスク起動
-        api.getServer().getScheduler().scheduleRepeatingTask(new RebootTask(api), 200);
-        if (!api.getDebug()) api.getTwitter().Tweet("【123鯖情報】 再起動を行います！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
+        if (player == null) {
+            // ブロードキャスト通知
+            StringBuilder sb = new StringBuilder();
+            sb.append(TextFormat.GOLD);
+            sb.append(TextFormat.BOLD);
+            sb.append("==== [鯖主再起動] ====");
+            sb.append(TextFormat.GOLD);
+            String message = new String(sb);
+            api.getServer().broadcastMessage(message);
+            api.sendDiscordRedMessage(message);
+
+            // リブートタスク起動
+            api.getServer().getScheduler().scheduleRepeatingTask(new RebootTask(api), 200);
+            if (!api.getDebug()) api.getTwitter().Tweet("【123鯖情報】 再起動を行います！アプデ内容等はゲーム内！WEBで！\n\n#123鯖");
+        }
         return true;
     }
 }

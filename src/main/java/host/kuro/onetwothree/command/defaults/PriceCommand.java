@@ -35,7 +35,7 @@ public class PriceCommand extends CommandBase {
             return false;
         }
         // 権限チェック
-        if (!api.IsKanri(player)) {
+        if (!api.IsGameMaster(player)) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;

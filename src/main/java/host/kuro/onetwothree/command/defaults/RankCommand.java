@@ -45,10 +45,10 @@ public class RankCommand extends CommandBase {
         try {
             // 時間がないのでとりあえず(後々修正)
             ArrayList<String> rank_list = new ArrayList<String>();
-            rank_list.add("0:指定なし");
-            rank_list.add("1:一般");
-            rank_list.add("2:信任");
-            rank_list.add("3:管理");
+            rank_list.add("0:訪問");
+            rank_list.add("1:住民");
+            rank_list.add("2:ＧＭ");
+            rank_list.add("3:パイ");
             if (rank >= 4) {
                 rank_list.add("4:鯖主");
             }
@@ -140,10 +140,10 @@ public class RankCommand extends CommandBase {
                             sb.append(" ] さんの権限を [ ");
                             sb.append(TextFormat.WHITE);
                             switch (iRank) {
-                                case 0: sb.append("0:なし"); break;
-                                case 1: sb.append("1:一般"); break;
-                                case 2: sb.append("2:信任"); break;
-                                case 3: sb.append("3:管理"); break;
+                                case 0: sb.append("0:訪問"); break;
+                                case 1: sb.append("1:住民"); break;
+                                case 2: sb.append("2:ＧＭ"); break;
+                                case 3: sb.append("3:パイ"); break;
                                 case 4: sb.append("4:鯖主"); break;
                             }
                             sb.append(TextFormat.YELLOW);

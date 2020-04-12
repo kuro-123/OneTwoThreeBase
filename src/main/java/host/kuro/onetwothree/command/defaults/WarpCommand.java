@@ -48,7 +48,12 @@ public class WarpCommand extends CommandBase {
             // 引数なしはフォーム選択
             return WarpWindow(player);
         }
-
+        // 権限チェック
+        if (!api.IsJyumin(player)) {
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            return false;
+        }
         String target = args[0].toLowerCase();
         for (Level lv : api.getServer().getLevels().values()) {
             if (target.equals(lv.getName().toLowerCase())) {

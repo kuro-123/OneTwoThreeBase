@@ -48,7 +48,6 @@ public class TagCommand extends CommandBase {
             player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;
         }
-
         // 現在のプレイヤー情報取得
         String tag = "";
         try {

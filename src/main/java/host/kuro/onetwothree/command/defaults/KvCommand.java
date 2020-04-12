@@ -32,7 +32,12 @@ public class KvCommand extends CommandBase {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
-
+        // 権限チェック
+        if (!api.IsJyumin(player)) {
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            return false;
+        }
         try {
             if (!OneTwoThreeAPI.mode.containsKey(player)) {
                 OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_KUROVIEW);

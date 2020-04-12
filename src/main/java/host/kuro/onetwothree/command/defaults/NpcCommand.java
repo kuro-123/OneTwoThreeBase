@@ -44,7 +44,7 @@ public class NpcCommand extends CommandBase {
             return false;
         }
         // 権限チェック
-        if (!api.IsNushi(player)) {
+        if (!api.IsGameMaster(player)) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;

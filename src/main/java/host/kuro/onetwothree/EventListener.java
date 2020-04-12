@@ -34,6 +34,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
+import host.kuro.onetwothree.datatype.WorldInfo;
 import host.kuro.onetwothree.forms.CustomFormResponse;
 import host.kuro.onetwothree.forms.Form;
 import host.kuro.onetwothree.forms.ModalFormResponse;
@@ -167,6 +168,12 @@ public class EventListener implements Listener {
 
         // 階段半ブロバグ対応
         player.setCheckMovement(false);
+
+        // 視界距離設定
+        WorldInfo worldinfo = api.GetWorldInfo(player);
+        if (worldinfo.viewdistance > 0) {
+            player.setViewDistance(worldinfo.viewdistance);
+        }
 
         // 権限設定
         player.setOp(false);
@@ -392,19 +399,17 @@ public class EventListener implements Listener {
                 return;
             }
 
-            // 一時しのぎ
-            if (player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city")) {
-                // 権限チェック
-                if (!api.IsKanri(player)) {
-                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    event.setCancelled();
-                    return;
-                }
+            // 整地許可チェック
+            WorldInfo worldinfo = api.GetWorldInfo(player);
+            if (!worldinfo.bbreak) {
+                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                event.setCancelled();
+                return;
             }
 
-            // 自然ワールドでドロップしたアイテムには印をつけておく
-            if (!(player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city"))) {
+            // タグアイテム許可の場合はタグ付けする
+            if (worldinfo.tagitem) {
                 String symbol = api.getConfig().getString("GameSettings.ItemTag");
                 if (symbol.length() > 0) {
                     Item[] drops = event.getDrops();
@@ -457,14 +462,13 @@ public class EventListener implements Listener {
                 return;
             }
 
-            // 一時しのぎ
-            if (player.getLevel().getName().equals("lobby") || player.getLevel().getName().equals("city")) {
-                if (!api.IsKanri(player)) {
-                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    event.setCancelled();
-                    return;
-                }
+            // 建築許可チェック
+            WorldInfo worldinfo = api.GetWorldInfo(player);
+            if (!worldinfo.bplace) {
+                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                event.setCancelled();
+                return;
             }
 
             // ブロックログ
@@ -505,6 +509,24 @@ public class EventListener implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
             api.getLogErr().Write(player, "onPlayerKick : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        Entity entity = event.getEntity();
+        if (!(entity instanceof Player)) return;
+
+        Entity damager = event.getDamager();
+        if (!(damager instanceof Player)) return;
+
+        // PVP許可チェック
+        Player player = (Player)damager;
+        WorldInfo worldinfo = api.GetWorldInfo(player);
+        if (!worldinfo.pvp) {
+            player.sendMessage(api.GetWarningMessage("onetwothree.not_pvp"));
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            event.setCancelled();
         }
     }
 
@@ -620,9 +642,9 @@ public class EventListener implements Listener {
     public void onEntityDeath(EntityDeathEvent event) {
         try {
             Entity entity = event.getEntity();
-
-            // 自然ワールドでドロップしたアイテムには印をつけておく
-            if (!(entity.getLevel().getName().equals("lobby") || entity.getLevel().getName().equals("city"))) {
+            // タグアイテム許可の場合はタグ付けする
+            WorldInfo worldinfo = api.GetWorldInfo(entity.getLevel());
+            if (worldinfo.tagitem) {
                 String symbol = api.getConfig().getString("GameSettings.ItemTag");
                 if (symbol.length() > 0) {
                     Item[] drops = event.getDrops();
@@ -652,6 +674,16 @@ public class EventListener implements Listener {
             String color = api.GetRankColor(player);
             event.setMessage(color + message);
 
+            // チャット分離
+            WorldInfo worldinfo = api.GetWorldInfo(player);
+            if (worldinfo.splitchat) {
+                for (Player p : player.getLevel().getPlayers().values()) {
+                    p.sendMessage(color + message);
+                }
+                event.setCancelled();
+                return;
+            }
+
             // プレイヤー情報更新(CHAT)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
@@ -672,14 +704,33 @@ public class EventListener implements Listener {
             String sFrom = event.getFrom().getLevel().getName();
             String sTo = event.getTo().getLevel().getName();
             if (sFrom.equals(sTo)) return;
-            String allowname = api.getConfig().getString("GameSettings.AllowCreative");
-            if (!event.getTo().getLevel().getName().equals("lobby") && !event.getTo().getLevel().getName().equals("city")) {
-                //if (!sTo.equals(allowname)) {
-                player.setGamemode(Player.SURVIVAL);
-                player.sendMessage(api.GetWarningMessage(Language.translate("onetwothree.forceSurvival")));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin005, 0, false); // forcemode
+
+            // モード違反があれば強制サバイバル
+            Level lv = event.getTo().getLevel();
+            if (lv == null) return;
+            WorldInfo worldinfo = api.GetWorldInfo(lv);
+            int gamemode = player.getGamemode();
+            switch (gamemode) {
+                case Player.SURVIVAL:
+                    break;
+                case Player.CREATIVE:
+                    if (!worldinfo.creative) {
+                        player.setGamemode(Player.SURVIVAL);
+                    }
+                    break;
+                case Player.SPECTATOR:
+                    if (!worldinfo.spectator) {
+                        player.setGamemode(Player.SURVIVAL);
+                    }
+                    break;
+                case Player.ADVENTURE:
+                    if (!worldinfo.adventure) {
+                        player.setGamemode(Player.SURVIVAL);
+                    }
+                    break;
             }
 
+            // 入場曲設定
             if (!sFrom.equals(sTo)) {
                 if (sTo.indexOf("nature") >=0) {
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin024, 2000, false); // 資源ワールドIN
@@ -699,14 +750,41 @@ public class EventListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         try {
-            String sRespawn = event.getRespawnPosition().getLevel().getName();
-            String allowname = api.getConfig().getString("GameSettings.AllowCreative");
-            if (!sRespawn.equals(allowname)) {
-                Level lv = api.getServer().getLevelByName(allowname);
-                if (lv != null) {
-                    event.setRespawnPosition(lv.getSpawnLocation());
-                    player.setSpawn(lv.getSpawnLocation());
-                }
+            // スポーン時にモード違反があれば強制サバイバル転送
+            Level lv = event.getRespawnPosition().getLevel();
+            if (lv == null) return;
+
+            WorldInfo worldinfo = api.GetWorldInfo(player);
+            int gamemode = player.getGamemode();
+            switch (gamemode) {
+                case Player.SURVIVAL:
+                    break;
+                case Player.CREATIVE:
+                    if (!worldinfo.creative) {
+                        player.setGamemode(Player.SURVIVAL);
+                        event.setRespawnPosition(lv.getSpawnLocation());
+                        player.setSpawn(lv.getSpawnLocation());
+                    }
+                    break;
+                case Player.SPECTATOR:
+                    if (!worldinfo.spectator) {
+                        player.setGamemode(Player.SURVIVAL);
+                        event.setRespawnPosition(lv.getSpawnLocation());
+                        player.setSpawn(lv.getSpawnLocation());
+                    }
+                    break;
+                case Player.ADVENTURE:
+                    if (!worldinfo.adventure) {
+                        player.setGamemode(Player.SURVIVAL);
+                        event.setRespawnPosition(lv.getSpawnLocation());
+                        player.setSpawn(lv.getSpawnLocation());
+                    }
+                    break;
+            }
+
+            // 視界距離設定
+            if (worldinfo.viewdistance > 0) {
+                player.setViewDistance(worldinfo.viewdistance);
             }
 
         } catch (Exception e) {
@@ -719,22 +797,42 @@ public class EventListener implements Listener {
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
         try {
-            // 一時しのぎ
-            if (!api.IsKanri(player)) {
-                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                event.setCancelled();
-                return;
-            }
+            // ゲームモードチェック
+            WorldInfo worldinfo = api.GetWorldInfo(player);
             int newmode = event.getNewGamemode();
-            String lvname = player.getLevel().getName();
-            String allowname = api.getConfig().getString("GameSettings.AllowCreative");
-            if (!lvname.equals("lobby") && !lvname.equals("city")) {
-                if (newmode != Player.SURVIVAL) {
-                    player.sendMessage(api.GetWarningMessage(Language.translate("onetwothree.gamemod_err")));
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    event.setCancelled();
-                }
+            switch (newmode) {
+                case Player.SURVIVAL:
+                    if (!worldinfo.survival) {
+                        player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        event.setCancelled();
+                        return;
+                    }
+                    break;
+                case Player.CREATIVE:
+                    if (!worldinfo.creative) {
+                        player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        event.setCancelled();
+                        return;
+                    }
+                    break;
+                case Player.SPECTATOR:
+                    if (!worldinfo.spectator) {
+                        player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        event.setCancelled();
+                        return;
+                    }
+                    break;
+                case Player.ADVENTURE:
+                    if (!worldinfo.adventure) {
+                        player.sendMessage(api.GetWarningMessage("onetwothree.mode_err"));
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        event.setCancelled();
+                        return;
+                    }
+                    break;
             }
 
         } catch (Exception e) {
@@ -887,5 +985,4 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
     }
-
 }

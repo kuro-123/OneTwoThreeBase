@@ -10,6 +10,7 @@ import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
+import host.kuro.onetwothree.datatype.WorldInfo;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.task.SoundTask;
 
@@ -46,7 +47,7 @@ public class AliasCommand extends CommandBase {
 
         // 権限チェック
         if (player != null) {
-            if (!api.IsKanri(player)) {
+            if (!api.IsGameMaster(player)) {
                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
                 return false;
