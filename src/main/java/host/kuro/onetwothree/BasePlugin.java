@@ -1,5 +1,6 @@
 package host.kuro.onetwothree;
 
+import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
@@ -184,6 +185,7 @@ public class BasePlugin extends PluginBase {
                     rs = null;
                 }
                 api.world_info.put(levelname, worldinfo);
+                lv.gameRules.setGameRule(GameRule.SHOW_COORDINATES, true);
             }
             if (ps != null) {
                 ps.close();

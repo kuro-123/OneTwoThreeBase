@@ -29,6 +29,7 @@ import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.inventory.Recipe;
 import cn.nukkit.inventory.transaction.CraftingTransaction;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Level;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
