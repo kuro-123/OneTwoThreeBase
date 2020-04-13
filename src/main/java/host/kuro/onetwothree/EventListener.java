@@ -238,6 +238,7 @@ public class EventListener implements Listener {
             event.setCancelled();
             api.getLogErr().Write(player, "onPlayerJoin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
         }
+        player.setDisplayName(player.getName());
         if (nickname != null) {
             if (nickname.length() > 0) {
                 player.setDisplayName(nickname);
@@ -1030,49 +1031,49 @@ public class EventListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if ((cmd.equals("plugins")) ||
-            (cmd.equals("seed")) ||
-            (cmd.equals("help")) ||
-            (cmd.equals("stop")) ||
-            (cmd.equals("defaultgamemode")) ||
-            (cmd.equals("ban")) ||
-            (cmd.equals("ban-ip")) ||
-            (cmd.equals("banlist")) ||
-            (cmd.equals("pardon")) ||
-            (cmd.equals("pardon-ip")) ||
-            (cmd.equals("me")) ||
-            (cmd.equals("difficulty")) ||
-            (cmd.equals("kick")) ||
-            (cmd.equals("op")) ||
-            (cmd.equals("deop")) ||
-            (cmd.equals("whitelist")) ||
-            (cmd.equals("save-on")) ||
-            (cmd.equals("save-off")) ||
-            (cmd.equals("save-all")) ||
-            (cmd.equals("give")) ||
-            (cmd.equals("effect")) ||
-            (cmd.equals("enchant")) ||
-            (cmd.equals("particle")) ||
-            (cmd.equals("gamerule")) ||
-            (cmd.equals("gamemode")) ||
-            (cmd.equals("kill")) ||
-            (cmd.equals("spawnpoint")) ||
-            (cmd.equals("setworldspawn")) ||
-            (cmd.equals("tp")) ||
-            (cmd.equals("time")) ||
-            (cmd.equals("title")) ||
-            (cmd.equals("reload")) ||
-            (cmd.equals("weather")) ||
-            (cmd.equals("xp")) ||
-            (cmd.equals("status")) ||
-            (cmd.equals("timings"))) {
+        if ((cmd.equals("/plugins")) ||
+            (cmd.equals("/seed")) ||
+            (cmd.equals("/help")) ||
+            (cmd.equals("/stop")) ||
+            (cmd.equals("/defaultgamemode")) ||
+            (cmd.equals("/ban")) ||
+            (cmd.equals("/ban-ip")) ||
+            (cmd.equals("/banlist")) ||
+            (cmd.equals("/pardon")) ||
+            (cmd.equals("/pardon-ip")) ||
+            (cmd.equals("/me")) ||
+            (cmd.equals("/difficulty")) ||
+            (cmd.equals("/kick")) ||
+            (cmd.equals("/op")) ||
+            (cmd.equals("/deop")) ||
+            (cmd.equals("/whitelist")) ||
+            (cmd.equals("/save-on")) ||
+            (cmd.equals("/save-off")) ||
+            (cmd.equals("/save-all")) ||
+            (cmd.equals("/give")) ||
+            (cmd.equals("/effect")) ||
+            (cmd.equals("/enchant")) ||
+            (cmd.equals("/particle")) ||
+            (cmd.equals("/gamerule")) ||
+            (cmd.equals("/gamemode")) ||
+            (cmd.equals("/kill")) ||
+            (cmd.equals("/spawnpoint")) ||
+            (cmd.equals("/setworldspawn")) ||
+            (cmd.equals("/tp")) ||
+            (cmd.equals("/time")) ||
+            (cmd.equals("/title")) ||
+            (cmd.equals("/reload")) ||
+            (cmd.equals("/weather")) ||
+            (cmd.equals("/xp")) ||
+            (cmd.equals("/status")) ||
+            (cmd.equals("/timings"))) {
             if (!api.IsGameMaster(player)) {
                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                event.setCancelled();
                 return;
             }
         }
-
         api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
     }
 }

@@ -27,7 +27,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new VersionCommand(api));
             map.register("OneTwoThreeBase", new PriceCommand(api));
             map.register("OneTwoThreeBase", new RankCommand(api));
-            map.register("OneTwoThreeBase", new SellCommand(api));
+            //map.register("OneTwoThreeBase", new SellCommand(api));
             map.register("OneTwoThreeBase", new RebootCommand(api));
             map.register("OneTwoThreeBase", new CallCommand(api));
             map.register("OneTwoThreeBase", new ListCommand(api));

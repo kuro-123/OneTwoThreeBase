@@ -852,4 +852,51 @@ public class OneTwoThreeAPI {
         }
         return ret;
     }
+
+    public int GetMoney(Player player) {
+        int ret = -1;
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0050"));
+            ResultSet rs = getDB().ExecuteQuery(ps, args);
+            args.clear();
+            args = null;
+            if (rs != null) {
+                while(rs.next()){
+                    ret = rs.getInt("money");
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, "GetMoney : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+        return ret;
+    }
+    public boolean PayMoney(Player player, int pay) {
+        int ret = -1;
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("i", ""+pay));
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0051"), args);
+            args.clear();
+            args = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, "PayMoney : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            return false;
+        }
+        return true;
+    }
 }

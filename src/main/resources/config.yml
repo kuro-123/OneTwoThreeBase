@@ -110,6 +110,8 @@ SqlStatement:
   Sql0046: "SELECT xuid, xname, name, tag, play_time, money, login, break, place, kick, death, kill, chat FROM v_player_info WHERE xuid=?"
   Sql0047: "SELECT * FROM world WHERE name=?"
   Sql0048: "INSERT INTO world (name, master, manager01, manager02, manager03, zone, viewdistance, splitchat, hunger_speed, survival, creative, spectator, adventure, fly, break, place, pvp, tagitem, crafting, bed, effect, enchant, mob, boss, updater, upd_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,current_timestamp) ON CONFLICT (name) DO UPDATE SET name=?, master=?, manager01=?, manager02=?, manager03=?, zone=?, viewdistance=?, splitchat=?, hunger_speed=?, survival=?, creative=?, spectator=?, adventure=?, fly=?, break=?, place=?, pvp=?, tagitem=?, crafting=?, bed=?, effect=?, enchant=?, mob=?, boss=?, updater=?, upd_date=current_timestamp"
-  Sql0049: "SELECT * FROM kuro.v_player_info WHERE xuid=?"
+  Sql0049: "SELECT * FROM v_player_info WHERE xuid=?"
+  Sql0050: "SELECT * FROM player_wallet WHERE xuid=?"
+  Sql0051: "UPDATE player_wallet SET money=money-? WHERE xuid=?"
 
 ConfigVersion: 1

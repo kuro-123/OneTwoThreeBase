@@ -12,6 +12,7 @@ import host.kuro.onetwothree.datatype.NpcInfo;
 import host.kuro.onetwothree.npc.NpcCommonType;
 import host.kuro.onetwothree.npc.NpcMerchantType01;
 import host.kuro.onetwothree.npc.NpcMerchantType02;
+import host.kuro.onetwothree.npc.NpcPortalType;
 import host.kuro.onetwothree.task.SoundTask;
 
 import javax.imageio.ImageIO;
@@ -30,6 +31,8 @@ public class NpcPlugin {
         KIND_COMMON_TYPE02,
         KIND_MERCHANT_TYPE01,
         KIND_MERCHANT_TYPE02,
+        KIND_PORTAL_TYPE01,
+        KIND_PORTAL_TYPE02,
     };
 
     private final OneTwoThreeAPI api;
@@ -54,6 +57,7 @@ public class NpcPlugin {
         Entity.registerEntity(NpcMerchantType01.class.getSimpleName(), NpcMerchantType01.class);
         Entity.registerEntity(NpcMerchantType02.class.getSimpleName(), NpcMerchantType02.class);
         Entity.registerEntity(NpcCommonType.class.getSimpleName(), NpcCommonType.class);
+        Entity.registerEntity(NpcPortalType.class.getSimpleName(), NpcPortalType.class);
     }
     public void SetPosition(Position pos) {
         this.p = pos;
@@ -198,6 +202,8 @@ public class NpcPlugin {
                 case KIND_COMMON_TYPE02: entity_namme = "NpcCommonType"; break;
                 case KIND_MERCHANT_TYPE01: entity_namme = "NpcMerchantType01"; break;
                 case KIND_MERCHANT_TYPE02: entity_namme = "NpcMerchantType02"; break;
+                case KIND_PORTAL_TYPE01: entity_namme = "NpcPortalType"; break;
+                case KIND_PORTAL_TYPE02: entity_namme = "NpcPortalType"; break;
             }
 
             // エンティティー生成
@@ -230,6 +236,18 @@ public class NpcPlugin {
                         break;
                     case KIND_MERCHANT_TYPE02:
                         data = new StringEntityData(777,"m02");
+                        npc.setDataProperty(data);
+                        fdata = new FloatEntityData(776,scale);
+                        npc.setDataProperty(fdata);
+                        break;
+                    case KIND_PORTAL_TYPE01:
+                        data = new StringEntityData(777,"p01");
+                        npc.setDataProperty(data);
+                        fdata = new FloatEntityData(776,scale);
+                        npc.setDataProperty(fdata);
+                        break;
+                    case KIND_PORTAL_TYPE02:
+                        data = new StringEntityData(777,"p02");
                         npc.setDataProperty(data);
                         fdata = new FloatEntityData(776,scale);
                         npc.setDataProperty(fdata);

@@ -44,15 +44,15 @@ public class WarpCommand extends CommandBase {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             return false;
         }
-        if (args.length != 1) {
-            // 引数なしはフォーム選択
-            return WarpWindow(player);
-        }
         // 権限チェック
         if (!api.IsJyumin(player)) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
             return false;
+        }
+        if (args.length != 1) {
+            // 引数なしはフォーム選択
+            return WarpWindow(player);
         }
         String target = args[0].toLowerCase();
         for (Level lv : api.getServer().getLevels().values()) {
@@ -98,7 +98,7 @@ public class WarpCommand extends CommandBase {
             }
 
             CustomForm form = new CustomForm("ワープウィンドウ")
-                    .addLabel("下記のいずれかを指定しワープします")
+                    .addLabel("下記のいずれかを指定しワープします 支払金額:200p")
                     .addDropDown("ワールドリスト", lvList)
                     .addDropDown("プレイヤーリスト", pList);
 
@@ -117,8 +117,29 @@ public class WarpCommand extends CommandBase {
                 if (!sworld.equals("指定なし")) {
                     Position pos = api.getServer().getLevelByName(sworld).getSpawnLocation();
                     if (pos != null) {
+                        int money = api.GetMoney(player);
+                        if (money == -1) {
+                            player.sendMessage(api.GetWarningMessage("commands.warp.err_money_01"));
+                            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            return;
+                        }
+                        if (money < 200) {
+                            player.sendMessage(api.GetWarningMessage("commands.warp.err_money_02"));
+                            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            return;
+                        }
+                        // ワールドへワープ
                         if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                            TeleportMessage(player, sworld);
+                            boolean ret = api.PayMoney(player, 200);
+                            if (!ret) {
+                                player.sendMessage(api.GetWarningMessage("commands.warp.err_money_03"));
+                                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                return;
+                            } else {
+                                TeleportMessage(player, sworld);
+                                money = api.GetMoney(player);
+                                player.sendMessage(TextFormat.YELLOW + "現在の所持金:" + money + "p");
+                            }
                             return;
                         }
                     }
@@ -155,8 +176,29 @@ public class WarpCommand extends CommandBase {
                         } else {
                             Position pos = target.getPosition();
                             if (pos != null) {
+                                int money = api.GetMoney(player);
+                                if (money == -1) {
+                                    player.sendMessage(api.GetWarningMessage("commands.warp.err_money_01"));
+                                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                    return;
+                                }
+                                if (money < 200) {
+                                    player.sendMessage(api.GetWarningMessage("commands.warp.err_money_02"));
+                                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                    return;
+                                }
+                                // 人へワープ
                                 if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                                    TeleportMessage(player, target.getDisplayName());
+                                    boolean ret = api.PayMoney(player, 200);
+                                    if (!ret) {
+                                        player.sendMessage(api.GetWarningMessage("commands.warp.err_money_03"));
+                                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                        return;
+                                    } else {
+                                        TeleportMessage(player, target.getDisplayName());
+                                        money = api.GetMoney(player);
+                                        player.sendMessage(TextFormat.YELLOW + "現在の所持金:" + money + "p");
+                                    }
                                     return;
                                 }
                             }

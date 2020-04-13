@@ -124,6 +124,8 @@ public class NpcCommand extends CommandBase {
             tlist.add("一般NPC-女性");
             tlist.add("商人NPC-男性");
             tlist.add("商人NPC-女性");
+            tlist.add("ポータルNPC-男性");
+            tlist.add("ポータルNPC-女性");
 
             ArrayList<String> slist = new ArrayList<String>();
             slist.add("指定なし");
@@ -150,6 +152,7 @@ public class NpcCommand extends CommandBase {
             slist.add("スキン21");
             slist.add("スキン22");
             slist.add("スキン23");
+            slist.add("スキン24");
 
             CustomForm form = new CustomForm("NPC設定")
                     .addLabel("設定後にタップした位置に設置できます")
@@ -185,6 +188,12 @@ public class NpcCommand extends CommandBase {
                         case "商人NPC-女性":
                             kind = NpcPlugin.NPC_KIND.KIND_MERCHANT_TYPE02;
                             break;
+                        case "ポータルNPC-男性":
+                            kind = NpcPlugin.NPC_KIND.KIND_PORTAL_TYPE01;
+                            break;
+                        case "ポータルNPC-女性":
+                            kind = NpcPlugin.NPC_KIND.KIND_PORTAL_TYPE02;
+                            break;
                         default:
                             targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.err_choise")));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
@@ -219,6 +228,7 @@ public class NpcCommand extends CommandBase {
                         case "スキン21": url = path + "skin/npc/skin21.png"; break;
                         case "スキン22": url = path + "skin/npc/skin22.png"; break;
                         case "スキン23": url = path + "skin/npc/skin23.png"; break;
+                        case "スキン24": url = path + "skin/npc/skin24.png"; break;
                         default:
                             targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.err_choise")));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
