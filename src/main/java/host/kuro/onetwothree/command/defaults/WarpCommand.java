@@ -98,7 +98,7 @@ public class WarpCommand extends CommandBase {
             }
 
             CustomForm form = new CustomForm("ワープウィンドウ")
-                    .addLabel("下記のいずれかを指定しワープします 支払金額:200p")
+                    .addLabel("下記のいずれかを指定しワープします 支払金額:150p")
                     .addDropDown("ワールドリスト", lvList)
                     .addDropDown("プレイヤーリスト", pList);
 
@@ -123,14 +123,14 @@ public class WarpCommand extends CommandBase {
                             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                             return;
                         }
-                        if (money < 200) {
-                            player.sendMessage(api.GetWarningMessage("commands.warp.err_money_02"));
-                            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                            return;
-                        }
+                        //if (money < 150) {
+                        //    player.sendMessage(api.GetWarningMessage("commands.warp.err_money_02"));
+                        //    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        //    return;
+                        //}
                         // ワールドへワープ
                         if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                            boolean ret = api.PayMoney(player, 200);
+                            boolean ret = api.PayMoney(player, 150);
                             if (!ret) {
                                 player.sendMessage(api.GetWarningMessage("commands.warp.err_money_03"));
                                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
@@ -182,14 +182,14 @@ public class WarpCommand extends CommandBase {
                                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                                     return;
                                 }
-                                if (money < 200) {
-                                    player.sendMessage(api.GetWarningMessage("commands.warp.err_money_02"));
-                                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                                    return;
-                                }
+                                //if (money < 150) {
+                                //    player.sendMessage(api.GetWarningMessage("commands.warp.err_money_02"));
+                                //    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                //    return;
+                                //}
                                 // 人へワープ
                                 if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                                    boolean ret = api.PayMoney(player, 200);
+                                    boolean ret = api.PayMoney(player, 150);
                                     if (!ret) {
                                         player.sendMessage(api.GetWarningMessage("commands.warp.err_money_03"));
                                         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL

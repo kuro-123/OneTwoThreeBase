@@ -48,3 +48,5 @@ permissions:
     default: true
   onetwothree.world:
     default: op
+  onetwothree.ri:
+     default: true
