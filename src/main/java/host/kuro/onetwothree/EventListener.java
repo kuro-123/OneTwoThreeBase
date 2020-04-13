@@ -713,6 +713,11 @@ public class EventListener implements Listener {
             String sTo = event.getTo().getLevel().getName();
             if (sFrom.equals(sTo)) return;
 
+            // クリエのままワープするとアイテム消去
+            if (player.isCreative()) {
+                player.getInventory().clearAll();
+            }
+
             // モード違反があれば強制サバイバル
             Level lv = event.getTo().getLevel();
             if (lv == null) return;
