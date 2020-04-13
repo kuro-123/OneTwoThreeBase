@@ -30,7 +30,7 @@ public class TimingTask extends AsyncTask {
                 // ワールドタスク起動
                 if (api.world_task_id == -1) {
                     WorldTask task = new WorldTask(api);
-                    TaskHandler th = api.getServer().getScheduler().scheduleRepeatingTask(task, 200);
+                    TaskHandler th = api.getServer().getScheduler().scheduleRepeatingTask(task, 1200);
                     api.world_task_id = th.getTaskId();
                 }
                 TIMING_SEQ = 0;

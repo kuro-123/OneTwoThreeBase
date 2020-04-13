@@ -32,13 +32,17 @@ public class WorldTask extends AsyncTask {
                 int rand_value = api.getRand().Next(1, 3);
                 level = api.getServer().getLevelByName("nature" + rand_value);
                 level_name = level.getName();
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> の再構築が20秒後に実施されます！";
+                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> の再構築が3分後に実施されます！";
                 break;
             case 2:
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 10秒前です！ご注意ください！";
+                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + ">  2分前です！ご注意ください！";
                 level.save(true);
                 break;
             case 3:
+                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + ">  1分前です！ご注意ください！";
+                level.save(true);
+                break;
+            case 4:
                 Level city = api.getServer().getLevelByName("city");
                 if (city != null) {
                     for (Entity entity : level.getEntities()) {
@@ -55,22 +59,20 @@ public class WorldTask extends AsyncTask {
                 message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> をアンロード…";
                 if (!api.getServer().unloadLevel(level)) {
                     message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> をアンロードに失敗しました";
-                    WORLD_SEQ = 6;
+                    WORLD_SEQ = 7;
                 }
                 break;
-
-            case 4:
+            case 5:
                 message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> を削除中…";
                 try {
                     String path = api.getServer().getDataPath() + "worlds/" + level_name;
                     deleteDir(path);
                 } catch (Exception ex) {
                     message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> の削除に失敗しました";
-                    WORLD_SEQ = 6;
+                    WORLD_SEQ = 7;
                 }
                 break;
-
-            case 5:
+            case 6:
                 long seed = api.getRand().Next();
                 Class<? extends Generator> generator = null;
                 generator = Generator.getGenerator("normal");
@@ -79,11 +81,11 @@ public class WorldTask extends AsyncTask {
                 message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> を生成中…";
                 if (!api.getServer().generateLevel(level_name, seed, generator)) {
                     message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> の生成に失敗しました";
-                    WORLD_SEQ = 6;
+                    WORLD_SEQ = 7;
                 }
                 break;
 
-            case 6:
+            case 7:
                 // ワールドLOAD
                 message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> をロード完了です！移動できます！";
                 if (!api.getServer().loadLevel(level_name)) {
@@ -97,7 +99,7 @@ public class WorldTask extends AsyncTask {
                 level.setSpawnLocation(level.getSafeSpawn());
                 break;
 
-            case 7:
+            case 8:
                 message = "";
                 if (this.id >= 0) {
                     api.getServer().getScheduler().cancelTask(id);
