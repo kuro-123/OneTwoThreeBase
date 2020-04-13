@@ -155,7 +155,7 @@ public class PayCommand extends CommandBase {
                 sb2.append(TextFormat.AQUA);
                 sb2.append("[ ");
                 sb2.append(TextFormat.WHITE);
-                sb2.append(responser.getDisplayName());
+                sb2.append(targetPlayer.getDisplayName());
                 sb2.append(TextFormat.AQUA);
                 sb2.append(" ] さんから [ ");
                 sb2.append(TextFormat.WHITE);
