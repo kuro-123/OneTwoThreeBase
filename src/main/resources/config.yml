@@ -83,7 +83,7 @@ SqlStatement:
   Sql0019: "SELECT xuid FROM player_info WHERE xuid=?"
   Sql0020: "UPDATE player_info SET login=login+1, upd_date=current_timestamp WHERE xuid=?"
   Sql0021: "SELECT D.name, P.xname FROM (SELECT xuid, xname FROM player) P INNER JOIN (SELECT xuid, name FROM player_display) D ON P.xuid = D.XUID WHERE LOWER(D.name) = ?"
-  Sql0022: "INSERT INTO item (id, meta, name, price, add_date, updater, upd_date) VALUES (?, 0, ?, 0, current_timestamp, '', current_timestamp)"
+  Sql0022: "INSERT INTO item (id, meta, name, price, add_date, updater, upd_date) VALUES (?, 0, ?, 0, current_timestamp, '', current_timestamp) ON CONFLICT (id,meta) DO UPDATE SET name=?, upd_date = current_timestamp"
   Sql0023: "SELECT id,name,price,CASE COALESCE(ban,0) WHEN 0 THEN '' ELSE '〇' END AS ban FROM item ORDER BY id"
   Sql0024: "UPDATE item SET price=?, updater=?, upd_date=current_timestamp WHERE id=? AND meta=0"
   Sql0025: "SELECT 名前, 元名, 権限 FROM v_player ORDER BY LOWER(名前)"
