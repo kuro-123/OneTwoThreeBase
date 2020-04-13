@@ -50,3 +50,5 @@ permissions:
     default: op
   onetwothree.ri:
      default: true
+  onetwothree.pay:
+    default: true

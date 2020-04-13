@@ -166,6 +166,39 @@ public class OneTwoThreeAPI {
         return Pattern.matches("^[0-9a-zA-Z]+$", target);
     }
 
+    // プレイヤー検索
+    public Player GetPlayerEx(String name) {
+        Player ret = null;
+        try {
+            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0053"));
+            ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
+            pargs.add(new DatabaseArgs("c", name.toLowerCase()));
+            pargs.add(new DatabaseArgs("c", name.toLowerCase()));
+            ResultSet rs = getDB().ExecuteQuery(ps, pargs);
+            pargs.clear();
+            pargs = null;
+            if (rs != null) {
+                while (rs.next()) {
+                    String namebuff = rs.getString("xname");
+                    ret = getServer().getPlayerExact(namebuff);
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+        return ret;
+    }
+
     // あいまいプレイヤー検索
     public String AmbiguousSearch(String name) {
         String ret = "";
@@ -898,6 +931,23 @@ public class OneTwoThreeAPI {
         } catch (Exception e) {
             e.printStackTrace();
             getLogErr().Write(player, "PayMoney : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            return false;
+        }
+        return true;
+    }
+    public boolean AddMoney(Player player, int add) {
+        int ret = -1;
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("i", ""+add));
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0052"), args);
+            args.clear();
+            args = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, "AddMoney : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
             return false;
         }
         return true;

@@ -113,5 +113,7 @@ SqlStatement:
   Sql0049: "SELECT * FROM v_player_info WHERE xuid=?"
   Sql0050: "SELECT * FROM player_wallet WHERE xuid=?"
   Sql0051: "UPDATE player_wallet SET money=money-? WHERE xuid=?"
+  Sql0052: "UPDATE player_wallet SET money=money+? WHERE xuid=?"
+  Sql0053: "SELECT xname FROM v_player_info WHERE LOWER(xname)=? OR LOWER(name)=?"
 
 ConfigVersion: 1
