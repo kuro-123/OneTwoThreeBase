@@ -31,6 +31,7 @@ import java.net.UnknownHostException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -49,6 +50,7 @@ public class OneTwoThreeAPI {
     // 各種メモリデータ
     public SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
     public SimpleDateFormat sdf_hms = new SimpleDateFormat("HH:mm:ss");
+    public NumberFormat comma_format = NumberFormat.getNumberInstance();
     public final Map<String, Long> play_time = new HashMap<>();
     public final Map<Player, Integer> play_rank = new HashMap<>();
     public static long systemcall_timing = 0;
@@ -65,6 +67,8 @@ public class OneTwoThreeAPI {
     public static HashMap<Player, Integer> select_seq = new HashMap<>();
     public static HashMap<Player, Location> select_one = new HashMap<>();
     public static HashMap<Player, Location> select_two = new HashMap<>();
+
+    public static HashMap<Player, Long> tip_wait = new HashMap<>();
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
@@ -455,9 +459,10 @@ public class OneTwoThreeAPI {
                     ZoneInfo zi = new ZoneInfo();
                     zi.level = rs.getString("level");
                     zi.x1 = rs.getInt("x1");
-                    zi.z1 = rs.getInt("x1");
-                    zi.x2 = rs.getInt("x1");
-                    zi.z2 = rs.getInt("x1");
+                    zi.z1 = rs.getInt("z1");
+                    zi.x2 = rs.getInt("x2");
+                    zi.z2 = rs.getInt("z2");
+                    zi.rank = rs.getString("rank");
                     zi.gm = rs.getString("gm");
                     zi.name = rs.getString("name");
                     zi.owner = rs.getString("owner");
@@ -1103,6 +1108,7 @@ public class OneTwoThreeAPI {
                 args.add(new DatabaseArgs("i", ""+l1.getFloorZ()));
                 args.add(new DatabaseArgs("i", ""+l2.getFloorX()));
                 args.add(new DatabaseArgs("i", ""+l2.getFloorZ()));
+                args.add(new DatabaseArgs("c", rank_name));
                 args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
                 args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
                 int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0054"), args);
@@ -1120,6 +1126,7 @@ public class OneTwoThreeAPI {
                 zi.z1 = l1.getFloorZ();
                 zi.x2 = l2.getFloorX();
                 zi.z2 = l2.getFloorZ();
+                zi.rank = rank_name;
                 zi.gm = targetPlayer.getDisplayName();
                 zi.updater = targetPlayer.getDisplayName();
                 String key = zi.level+zi.x1+zi.z1+zi.x2+zi.z2;
@@ -1186,5 +1193,21 @@ public class OneTwoThreeAPI {
             return false;
         }
         return true;
+    }
+    public ZoneInfo IsInsideInfo(Location target) {
+        for (String key : zone_info.keySet()) {
+            ZoneInfo zi = zone_info.get(key);
+            int minX = Math.min(zi.x1, zi.x2);
+            int minZ = Math.min(zi.z1, zi.z2);
+            int maxX = Math.max(zi.x1, zi.x2);
+            int maxZ = Math.max(zi.z1, zi.z2);
+            if (!zi.level.equals(target.getLevel().getName())) continue;
+            if (minX > target.getFloorX()) continue;
+            if (maxX < target.getFloorX()) continue;
+            if (minZ > target.getFloorZ()) continue;
+            if (maxZ < target.getFloorZ()) continue;
+            return zi;
+        }
+        return null;
     }
 }

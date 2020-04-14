@@ -1,15 +1,24 @@
 package host.kuro.onetwothree.command.defaults;
 
 import cn.nukkit.Player;
+import cn.nukkit.block.BlockConcrete;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
+import cn.nukkit.command.data.CommandParamType;
+import cn.nukkit.command.data.CommandParameter;
+import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
+import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.datatype.WorldInfo;
+import host.kuro.onetwothree.datatype.ZoneInfo;
 import host.kuro.onetwothree.task.SoundTask;
+
+import java.util.ArrayList;
 
 public class ZoneCommand extends CommandBase {
 
@@ -18,6 +27,9 @@ public class ZoneCommand extends CommandBase {
     public ZoneCommand(OneTwoThreeAPI api) {
         super("zone", api);
         commandParameters.clear();
+        this.commandParameters.put("default", new CommandParameter[] {
+                new CommandParameter("action", CommandParamType.STRING, true),
+        });
         this.api = api;
     }
 
@@ -38,13 +50,18 @@ public class ZoneCommand extends CommandBase {
             player.sendTitle("");
             return false;
         }
-        // 視界距離設定
+        // ゾーン許可設定
         WorldInfo worldinfo = api.GetWorldInfo(player);
         if (!worldinfo.zone) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
             player.sendMessage(api.GetWarningMessage(Language.translate("commands.zone.allow")));
             player.sendTitle("");
             return false;
+        }
+        if (args.length == 1) {
+            if (args[0].toLowerCase().equals("del")) {
+                return DeleteZone(player);
+            }
         }
         try {
             if (!OneTwoThreeAPI.mode.containsKey(player)) {
@@ -70,6 +87,51 @@ public class ZoneCommand extends CommandBase {
             return false;
         }
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+        return true;
+    }
+
+    private boolean DeleteZone(Player player) {
+        ZoneInfo zi = api.IsInsideInfo(player.getLocation());
+        if (zi == null) {
+            player.sendMessage(api.GetWarningMessage(Language.translate("commands.zone.inside")));
+            return false;
+        }
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", zi.level));
+            args.add(new DatabaseArgs("i", ""+zi.x1));
+            args.add(new DatabaseArgs("i", ""+zi.z1));
+            args.add(new DatabaseArgs("i", ""+zi.x2));
+            args.add(new DatabaseArgs("i", ""+zi.z2));
+            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0056"), args);
+            args.clear();
+            args = null;
+            if (ret <= 0) {
+                player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                return false;
+            }
+            String key = zi.level+zi.x1+zi.z1+zi.x2+zi.z2;
+            api.zone_info.remove(key);
+
+            // ブロードキャスト通知
+            StringBuilder sb = new StringBuilder();
+            sb.append(TextFormat.YELLOW);
+            sb.append("[ ");
+            sb.append(TextFormat.WHITE);
+            sb.append(player.getDisplayName());
+            sb.append(TextFormat.YELLOW);
+            sb.append(" ] さんがゾーン設定を削除しました");
+            String message = new String(sb);
+            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin011, 0, false); // SUCCESS
+            api.getServer().broadcastMessage(message);
+            api.sendDiscordYellowMessage(message);
+
+        } catch (Exception ex) {
+            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            return false;
+        }
         return true;
     }
 }

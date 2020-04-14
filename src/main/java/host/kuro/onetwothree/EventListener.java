@@ -35,6 +35,7 @@ import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.datatype.WorldInfo;
+import host.kuro.onetwothree.datatype.ZoneInfo;
 import host.kuro.onetwothree.forms.CustomFormResponse;
 import host.kuro.onetwothree.forms.Form;
 import host.kuro.onetwothree.forms.ModalFormResponse;
@@ -337,6 +338,7 @@ public class EventListener implements Listener {
         OneTwoThreeAPI.select_seq.remove(player);
         OneTwoThreeAPI.select_one.remove(player);
         OneTwoThreeAPI.select_two.remove(player);
+        OneTwoThreeAPI.tip_wait.remove(player);
         api.play_time.remove(player);
         api.play_rank.remove(player);
 
@@ -1096,5 +1098,35 @@ public class EventListener implements Listener {
             }
         }
         api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+
+        // 過度な処理を防ぐ
+        if (api.tip_wait.containsKey(player)) {
+            long tipwait = api.tip_wait.get(player);
+            if (System.currentTimeMillis()-tipwait <= 1500) {
+                return;
+            }
+        }
+
+        ZoneInfo zi = api.IsInsideInfo(player.getLocation());
+        if (zi == null) return;
+        // 土地価格表示
+        int minX = Math.min(zi.x1, zi.x2);
+        int minZ = Math.min(zi.z1, zi.z2);
+        int maxX = Math.max(zi.x1, zi.x2);
+        int maxZ = Math.max(zi.z1, zi.z2);
+        int price = (maxX - minX) * (maxZ - minZ);
+        switch (zi.rank) {
+            case "A": price = price * 1000; break;
+            case "B": price = price * 750; break;
+            case "C": price = price * 500; break;
+            case "D": price = price * 250; break;
+        }
+        player.sendTip(TextFormat.LIGHT_PURPLE + "物件情報 - [ " + TextFormat.YELLOW + zi.rank + "ランク" + TextFormat.LIGHT_PURPLE + " ] - 価格: " + api.comma_format.format(price) + "p");
+        api.tip_wait.put(player, System.currentTimeMillis());
     }
 }
