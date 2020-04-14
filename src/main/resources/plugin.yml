@@ -52,3 +52,5 @@ permissions:
      default: true
   onetwothree.pay:
     default: true
+  onetwothree.zone:
+    default: op

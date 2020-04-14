@@ -3,9 +3,13 @@ package host.kuro.onetwothree;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockConcrete;
+import cn.nukkit.block.BlockSignPost;
+import cn.nukkit.blockentity.BlockEntitySign;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
+import cn.nukkit.level.Position;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
@@ -13,6 +17,8 @@ import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
 import host.kuro.onetwothree.datatype.NpcInfo;
 import host.kuro.onetwothree.datatype.WorldInfo;
+import host.kuro.onetwothree.datatype.ZoneInfo;
+import host.kuro.onetwothree.forms.elements.CustomForm;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.datatype.ItemInfo;
 import host.kuro.onetwothree.task.SoundTask;
@@ -54,6 +60,11 @@ public class OneTwoThreeAPI {
     public static HashMap<Integer, String> player_list = new HashMap<>();
     public static HashMap<Player, NpcInfo> npc_info = new HashMap<>();
     public static HashMap<String, WorldInfo> world_info = new HashMap<>();
+    public static HashMap<String, ZoneInfo> zone_info = new HashMap<>();
+
+    public static HashMap<Player, Integer> select_seq = new HashMap<>();
+    public static HashMap<Player, Location> select_one = new HashMap<>();
+    public static HashMap<Player, Location> select_two = new HashMap<>();
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
@@ -98,6 +109,7 @@ public class OneTwoThreeAPI {
         MODE_TOUCH,
         MODE_KUROVIEW,
         MODE_NPC,
+        MODE_ZONE,
     };
 
     // IPアドレスを取得
@@ -418,6 +430,47 @@ public class OneTwoThreeAPI {
                     int price = rs.getInt("price");
                     String ban = rs.getString("ban");
                     item_info.put(id, new ItemInfo(id, name, price, ban));
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void SetupZoneInfo() {
+        try {
+            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0055"));
+            ResultSet rs = getDB().ExecuteQuery(ps, null);
+            if (rs != null) {
+                int i = 0;
+                while(rs.next()){
+                    ZoneInfo zi = new ZoneInfo();
+                    zi.level = rs.getString("level");
+                    zi.x1 = rs.getInt("x1");
+                    zi.z1 = rs.getInt("x1");
+                    zi.x2 = rs.getInt("x1");
+                    zi.z2 = rs.getInt("x1");
+                    zi.gm = rs.getString("gm");
+                    zi.name = rs.getString("name");
+                    zi.owner = rs.getString("owner");
+                    zi.message = rs.getString("message");
+                    zi.pub = rs.getBoolean("public");
+                    zi.sound = rs.getString("sound");
+                    zi.partner01 = rs.getString("partner01");
+                    zi.partner02 = rs.getString("partner02");
+                    zi.partner03 = rs.getString("partner03");
+                    zi.updater = rs.getString("updater");
+                    String key = rs.getString("level") + rs.getInt("x1") + rs.getInt("z1") + rs.getInt("x2") + rs.getInt("z2");
+                    zone_info.put(key, zi);
+                    i++;
                 }
             }
             if (ps != null) {
@@ -948,6 +1001,188 @@ public class OneTwoThreeAPI {
         } catch (Exception e) {
             e.printStackTrace();
             getLogErr().Write(player, "AddMoney : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            return false;
+        }
+        return true;
+    }
+
+    public int Selection(Player player, Location loc) {
+        if (select_seq == null) {
+            select_seq.put(player, 1);
+            select_one.put(player, loc);
+            player.sendMessage(TextFormat.YELLOW + "ポイント１を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+            return 1;
+        } else {
+            if (!select_seq.containsKey(player)) {
+                select_seq.put(player, 1);
+                select_one.put(player, loc);
+                player.sendMessage(TextFormat.YELLOW + "ポイント１を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+                return 1;
+            } else {
+                int seq = select_seq.get(player);
+                if (seq == 1) {
+                    select_seq.put(player, 2);
+                    select_two.put(player, loc);
+                    player.sendMessage(TextFormat.YELLOW + "ポイント２を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+                    return 2;
+                } else if (seq == 2) {
+                    select_seq.put(player, 1);
+                    select_one.put(player, loc);
+                    player.sendMessage(TextFormat.YELLOW + "ポイント１を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+                    return 1;
+                }
+            }
+        }
+        select_seq.put(player, 1);
+        select_one.put(player, loc);
+        player.sendMessage(TextFormat.YELLOW + "ポイント１を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+        return 1;
+    }
+
+    public void SetZoneRank(Player player) {
+        // 隣接チェック
+        Location loc1 = select_one.get(player);
+        if (!IsInside(loc1)) {
+            PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            player.sendMessage(GetWarningMessage("onetwothree.zone.err_colision"));
+            return;
+        }
+        Location loc2 = select_two.get(player);
+        if (!IsInside(loc2)) {
+            PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            player.sendMessage(GetWarningMessage("onetwothree.zone.err_colision"));
+            return;
+        }
+
+        // ゾーン設定ウィンドウ
+        List<String> zList = new ArrayList<String>();
+        zList.add("指定なし");
+        zList.add("土地の価値： Aﾗﾝｸ ﾌﾞﾛｯｸ単価： 1,000p");
+        zList.add("土地の価値： Bﾗﾝｸ ﾌﾞﾛｯｸ単価：   750p");
+        zList.add("土地の価値： Cﾗﾝｸ ﾌﾞﾛｯｸ単価：   500p");
+        zList.add("土地の価値： Dﾗﾝｸ ﾌﾞﾛｯｸ単価：   250p");
+        CustomForm form = new CustomForm("ゾーンランク設定")
+                .addLabel("指定したゾーンのランクを決めてください")
+                .addDropDown("土地ランク設定", zList);
+        PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
+        form.send(player, (targetPlayer, targetForm, data) -> {
+            try {
+                if (data == null) {
+                    PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_window"));
+                    return;
+                }
+                // ウィンドウログ
+                getLogWin().Write(targetPlayer, Language.translate("ゾーンランク設定"), data.get(1).toString(), "", "", "", "", "", targetPlayer.getDisplayName());
+
+                String rank_name = data.get(1).toString();
+                int rank_meta = 0;
+                if (rank_name.indexOf("A")>=0) {
+                    rank_name = "A";
+                    rank_meta = 4;
+                } else if (rank_name.indexOf("B")>=0) {
+                    rank_name = "B";
+                    rank_meta = 3;
+                } else if (rank_name.indexOf("C")>=0) {
+                    rank_name = "C";
+                    rank_meta = 1;
+                } else if (rank_name.indexOf("D")>=0) {
+                    rank_name = "D";
+                    rank_meta = 0;
+                } else {
+                    PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_choise"));
+                    return;
+                }
+                Location l1 = select_one.get(targetPlayer);
+                Location l2 = select_two.get(targetPlayer);
+
+                ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+                args.add(new DatabaseArgs("c", targetPlayer.getLevel().getName()));
+                args.add(new DatabaseArgs("i", ""+l1.getFloorX()));
+                args.add(new DatabaseArgs("i", ""+l1.getFloorZ()));
+                args.add(new DatabaseArgs("i", ""+l2.getFloorX()));
+                args.add(new DatabaseArgs("i", ""+l2.getFloorZ()));
+                args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
+                args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
+                int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0054"), args);
+                args.clear();
+                args = null;
+                if (ret <= 0) {
+                    PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_regist"));
+                    return;
+                }
+
+                ZoneInfo zi = new ZoneInfo();
+                zi.level = targetPlayer.getLevel().getName();
+                zi.x1 = l1.getFloorX();
+                zi.z1 = l1.getFloorZ();
+                zi.x2 = l2.getFloorX();
+                zi.z2 = l2.getFloorZ();
+                zi.gm = targetPlayer.getDisplayName();
+                zi.updater = targetPlayer.getDisplayName();
+                String key = zi.level+zi.x1+zi.z1+zi.x2+zi.z2;
+                zone_info.put(key, zi);
+
+                // 四点にコンクリートを建てる
+                int x1, y, z1;
+                int x2, z2;
+                int x3, z3;
+                int x4, z4;
+                x1 = loc1.getFloorX(); z1=loc1.getFloorZ(); y = loc1.getFloorY()+1;
+                x2 = loc1.getFloorX(); z2=loc2.getFloorZ();
+                x3 = loc2.getFloorX(); z3=loc1.getFloorZ();
+                x4 = loc2.getFloorX(); z4=loc2.getFloorZ();
+                targetPlayer.getLevel().setBlock(new Position(x1, y, z1), new BlockConcrete(rank_meta));
+                targetPlayer.getLevel().setBlock(new Position(x2, y, z2), new BlockConcrete(rank_meta));
+                targetPlayer.getLevel().setBlock(new Position(x3, y, z3), new BlockConcrete(rank_meta));
+                targetPlayer.getLevel().setBlock(new Position(x4, y, z4), new BlockConcrete(rank_meta));
+
+                // ブロードキャスト通知
+                StringBuilder sb = new StringBuilder();
+                sb.append(TextFormat.YELLOW);
+                sb.append("[ ");
+                sb.append(TextFormat.WHITE);
+                sb.append(targetPlayer.getDisplayName());
+                sb.append(TextFormat.YELLOW);
+                sb.append(" ] により、 [ ");
+                sb.append(TextFormat.RED);
+                sb.append(rank_name);
+                sb.append(TextFormat.YELLOW);
+                sb.append(" ] ランクゾーンが設定されました！");
+                String message = new String(sb);
+                PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin011, 0, false); // SUCCESS
+                getServer().broadcastMessage(message);
+                sendDiscordYellowMessage(message);
+                targetPlayer.sendTitle("ゾーン設定完了", TextFormat.RED + rank_name + "ランクゾーン", 10,80, 10);
+
+            } catch (Exception e) {
+                PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_regist"));
+                e.printStackTrace();
+                getLogErr().Write(targetPlayer, "SetZoneRank : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
+            }
+
+            OneTwoThreeAPI.mode.put(targetPlayer, OneTwoThreeAPI.TAP_MODE.MODE_NONE);
+            OneTwoThreeAPI.select_seq.remove(targetPlayer);
+            OneTwoThreeAPI.select_one.remove(targetPlayer);
+            OneTwoThreeAPI.select_two.remove(targetPlayer);
+        });
+    }
+
+    public boolean IsInside(Location target) {
+        for (String key : zone_info.keySet()) {
+            ZoneInfo zi = zone_info.get(key);
+            int minX = Math.min(zi.x1, zi.x2);
+            int minZ = Math.min(zi.z1, zi.z2);
+            int maxX = Math.max(zi.x1, zi.x2);
+            int maxZ = Math.max(zi.z1, zi.z2);
+            if (!zi.level.equals(target.getLevel().getName())) continue;
+            if (minX > target.getFloorX()) continue;
+            if (maxX < target.getFloorX()) continue;
+            if (minZ > target.getFloorZ()) continue;
+            if (maxZ < target.getFloorZ()) continue;
             return false;
         }
         return true;

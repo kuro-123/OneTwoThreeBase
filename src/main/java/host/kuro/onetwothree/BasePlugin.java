@@ -65,8 +65,11 @@ public class BasePlugin extends PluginBase {
         // IP表示
         this.getLogger().info(Language.translate("onetwothree.disp_ip") + " " + this.api.GetIpInfo());
         // アイテムデータセットアップ
-        this.getLogger().info(Language.translate("onetwothree.init_data"));
+        this.getLogger().info(Language.translate("onetwothree.init_item"));
         api.SetupNukkitItems();
+        // ゾーンデータセットアップ
+        this.getLogger().info(Language.translate("onetwothree.init_zone"));
+        api.SetupZoneInfo();
         // NPCプラグイン
         this.getLogger().info(Language.translate("onetwothree.init_npc"));
         npc = new NpcPlugin(this.api);

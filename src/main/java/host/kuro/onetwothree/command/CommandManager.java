@@ -44,6 +44,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new WorldCommand(api));
             map.register("OneTwoThreeBase", new RiCommand(api));
             map.register("OneTwoThreeBase", new PayCommand(api));
+            map.register("OneTwoThreeBase", new ZoneCommand(api));
 
         } catch (Exception e) {
             e.printStackTrace();

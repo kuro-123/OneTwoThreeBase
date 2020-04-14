@@ -39,6 +39,7 @@ import host.kuro.onetwothree.forms.CustomFormResponse;
 import host.kuro.onetwothree.forms.Form;
 import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
+import host.kuro.onetwothree.forms.elements.CustomForm;
 import host.kuro.onetwothree.npc.NpcMerchantType01;
 import host.kuro.onetwothree.npc.NpcMerchantType02;
 import host.kuro.onetwothree.npc.NpcType;
@@ -333,6 +334,9 @@ public class EventListener implements Listener {
         Form.playersForm.remove(player.getName());
         OneTwoThreeAPI.mode.remove(player);
         OneTwoThreeAPI.npc_info.remove(player);
+        OneTwoThreeAPI.select_seq.remove(player);
+        OneTwoThreeAPI.select_one.remove(player);
+        OneTwoThreeAPI.select_two.remove(player);
         api.play_time.remove(player);
         api.play_rank.remove(player);
 
@@ -374,6 +378,18 @@ public class EventListener implements Listener {
                         Block block = event.getBlock();
                         api.SpawnNpc(player, block);
                         event.setCancelled();
+                        return;
+                    }
+                    else if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_ZONE) {
+                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin053, 0, false); // point
+                        Block block = event.getBlock();
+                        int ret = api.Selection(player, block.getLocation());
+                        if (ret == 1) {
+                            player.sendTitle("ゾーンモード", TextFormat.YELLOW + "ポイント２を選択してください", 10, 100, 10);
+                        } else if (ret == 2) {
+                            // 2点設定完了
+                            api.SetZoneRank(player);
+                        }
                         return;
                     }
                 }
