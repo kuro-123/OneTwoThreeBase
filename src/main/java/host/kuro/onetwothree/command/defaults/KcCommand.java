@@ -68,9 +68,8 @@ public class KcCommand extends CommandBase {
 
             String message = new String(sb);
             for (Player p : api.getServer().getOnlinePlayers().values()) {
-                if (api.GetRank(p) >= 3) {
-                    p.sendMessage(message);
-                }
+                if (!api.IsGameMaster(p)) continue;
+                p.sendMessage(message);
             }
             api.getServer().getLogger().info(message);
 
