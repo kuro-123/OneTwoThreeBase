@@ -143,7 +143,7 @@ public class EventListener implements Listener {
                 rs = null;
             }
             if (!hit) {
-                // なければ登録
+                // なければ登録 info
                 ArrayList<DatabaseArgs> iargs = new ArrayList<DatabaseArgs>();
                 iargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
                 iargs.add(new DatabaseArgs("i", "0"));
@@ -156,6 +156,37 @@ public class EventListener implements Listener {
                 ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0018"), iargs);
                 iargs.clear();
                 iargs = null;
+            }
+
+            // プレイヤー財布チェック
+            hit = false;
+            ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0059"));
+            ArrayList<DatabaseArgs> waargs = new ArrayList<DatabaseArgs>();
+            waargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            ResultSet rs_wa = api.getDB().ExecuteQuery(ps, waargs);
+            waargs.clear();
+            waargs = null;
+            if (rs_wa != null) {
+                while (rs_wa.next()) {
+                    hit = true;
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs_wa != null) {
+                rs_wa.close();
+                rs_wa = null;
+            }
+            if (!hit) {
+                // なければ登録 wallet
+                ArrayList<DatabaseArgs> wargs = new ArrayList<DatabaseArgs>();
+                wargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+                ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0058"), wargs);
+                wargs.clear();
+                wargs = null;
             }
 
         } catch (Exception e) {

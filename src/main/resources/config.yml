@@ -119,5 +119,7 @@ SqlStatement:
   Sql0055: "SELECT * FROM zone"
   Sql0056: "DELETE FROM zone WHERE level=? AND x1=? AND z1=? AND x2=? AND z2=?"
   Sql0057: "INSERT INTO log_pay (log_date, xuid, rank, action, kind, amount) VALUES (current_timestamp,?,?,?,?,?)"
+  Sql0058: "INSERT INTO player_wallet (xuid, money, add_date, upd_date) VALUES(?,0,current_timestamp,current_timestamp)"
+  Sql0059: "SELECT xuid FROM player_wallet WHERE xuid=?"
 
 ConfigVersion: 1

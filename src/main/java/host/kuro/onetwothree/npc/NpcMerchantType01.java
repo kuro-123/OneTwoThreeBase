@@ -106,6 +106,7 @@ public class NpcMerchantType01 extends NpcType {
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return;
                 }
+                api.getLogPay().Write(targetPlayer, this.getName(), "plus", ""+sell_kingaku);
 
                 // アイテムクリア
                 targetPlayer.getInventory().setItemInHand(new ItemBlock(new BlockAir()));
