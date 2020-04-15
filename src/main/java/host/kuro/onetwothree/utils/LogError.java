@@ -30,7 +30,7 @@ public class LogError {
         args.add(new DatabaseArgs("c", place));
         args.add(new DatabaseArgs("c", error));
         args.add(new DatabaseArgs("c", message));
-        api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0032"), args);
+        api.getDB().ExecuteUpdate(Language.translate("Sql0032"), args);
         args.clear();
         args = null;
     }

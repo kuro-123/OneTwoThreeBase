@@ -7,6 +7,7 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -82,7 +83,7 @@ public class AliasCommand extends CommandBase {
         StringBuilder sb = new StringBuilder() ;
         try {
             String xname="", host="", ip="", cid="", device_id="";
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0037"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0037"));
             ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
             pargs.add(new DatabaseArgs("c", "%" + name.toLowerCase() + "%"));
             pargs.add(new DatabaseArgs("c", "%" + name.toLowerCase() + "%"));
@@ -140,10 +141,10 @@ public class AliasCommand extends CommandBase {
         try {
             String sql = "";
             switch (kbn) {
-                case "ip"       : sql = api.getConfig().getString("SqlStatement.Sql0038"); break;
-                case "host"     : sql = api.getConfig().getString("SqlStatement.Sql0039"); break;
-                case "cid"      : sql = api.getConfig().getString("SqlStatement.Sql0040"); break;
-                case "device_id": sql = api.getConfig().getString("SqlStatement.Sql0041"); break;
+                case "ip"       : sql = Language.translate("Sql0038"); break;
+                case "host"     : sql = Language.translate("Sql0039"); break;
+                case "cid"      : sql = Language.translate("Sql0040"); break;
+                case "device_id": sql = Language.translate("Sql0041"); break;
             }
             if (sql.length()<=0) return;
 

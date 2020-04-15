@@ -116,14 +116,14 @@ public class EventListener implements Listener {
                 args.add(new DatabaseArgs("c", player.getLoginChainData().getGameVersion()));       // version
                 args.add(new DatabaseArgs("c", ""));       // play_status
                 args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
-                ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0005"), args);
+                ret = api.getDB().ExecuteUpdate(Language.translate("Sql0005"), args);
                 args.clear();
                 args = null;
             }
 
             // プレイヤー情報チェック
             boolean hit = false;
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0019"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0019"));
             ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
             pargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
             ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);
@@ -154,14 +154,14 @@ public class EventListener implements Listener {
                 iargs.add(new DatabaseArgs("i", "0"));
                 iargs.add(new DatabaseArgs("i", "0"));
                 iargs.add(new DatabaseArgs("i", "0"));
-                ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0018"), iargs);
+                ret = api.getDB().ExecuteUpdate(Language.translate("Sql0018"), iargs);
                 iargs.clear();
                 iargs = null;
             }
 
             // プレイヤー財布チェック
             hit = false;
-            ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0059"));
+            ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0059"));
             ArrayList<DatabaseArgs> waargs = new ArrayList<DatabaseArgs>();
             waargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
             ResultSet rs_wa = api.getDB().ExecuteQuery(ps, waargs);
@@ -185,7 +185,7 @@ public class EventListener implements Listener {
                 // なければ登録 wallet
                 ArrayList<DatabaseArgs> wargs = new ArrayList<DatabaseArgs>();
                 wargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-                ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0058"), wargs);
+                ret = api.getDB().ExecuteUpdate(Language.translate("Sql0058"), wargs);
                 wargs.clear();
                 wargs = null;
             }
@@ -232,14 +232,14 @@ public class EventListener implements Listener {
         // ステータス更新
         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
         args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
-        int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0006"), args);
+        int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0006"), args);
         args.clear();
         args = null;
 
         // プレイヤー情報更新(LOGIN)
         ArrayList<DatabaseArgs> largs = new ArrayList<DatabaseArgs>();
         largs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-        ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0020"), largs);
+        ret = api.getDB().ExecuteUpdate(Language.translate("Sql0020"), largs);
         largs.clear();
         largs = null;
 
@@ -247,7 +247,7 @@ public class EventListener implements Listener {
         String nickname = "";
         String tag = "";
         try {
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0009"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0009"));
             ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
             xargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
             ResultSet rs_name = api.getDB().ExecuteQuery(ps, xargs);
@@ -341,10 +341,10 @@ public class EventListener implements Listener {
         if (ptime > 0) {
             args.add(new DatabaseArgs("i", "" + ptime));
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0007"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0007"), args);
         } else {
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));       // xuid
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0008"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0008"), args);
         }
         args.clear();
         args = null;
@@ -492,7 +492,7 @@ public class EventListener implements Listener {
             // プレイヤー情報更新(BREAK)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0012"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0012"), args);
             args.clear();
             args = null;
 
@@ -546,7 +546,7 @@ public class EventListener implements Listener {
             // プレイヤー情報更新(PLACE)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0013"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0013"), args);
             args.clear();
             args = null;
 
@@ -563,7 +563,7 @@ public class EventListener implements Listener {
             // プレイヤー情報更新(KICK)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0014"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0014"), args);
             args.clear();
             args = null;
 
@@ -607,7 +607,7 @@ public class EventListener implements Listener {
             // プレイヤー情報更新(DEATH)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));          // xuid
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0016"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0016"), args);
             args.clear();
             args = null;
 
@@ -627,7 +627,7 @@ public class EventListener implements Listener {
                         // プレイヤー情報更新(KILL)
                         ArrayList<DatabaseArgs> kargs = new ArrayList<DatabaseArgs>();
                         kargs.add(new DatabaseArgs("c", killer.getLoginChainData().getXUID()));          // xuid
-                        ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0015"), kargs);
+                        ret = api.getDB().ExecuteUpdate(Language.translate("Sql0015"), kargs);
                         kargs.clear();
                         kargs = null;
                     }
@@ -751,7 +751,7 @@ public class EventListener implements Listener {
             // プレイヤー情報更新(CHAT)
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", event.getPlayer().getLoginChainData().getXUID()));          // xuid
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0017"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0017"), args);
             args.clear();
             args = null;
 

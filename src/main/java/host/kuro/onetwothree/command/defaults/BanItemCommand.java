@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.utils.Config;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -98,7 +99,7 @@ public class BanItemCommand extends CommandBase {
                         args.add(new DatabaseArgs("i", ""+iban));
                         args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
                         args.add(new DatabaseArgs("i",""+ip.id));
-                        int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0045"), args);
+                        int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0045"), args);
                         args.clear();
                         args = null;
                         if (ret > 0) {

@@ -30,7 +30,7 @@ public class LogBlock {
         args.add(new DatabaseArgs("i", block_meta));
         args.add(new DatabaseArgs("c", block_name));
         args.add(new DatabaseArgs("c", custom_name));
-        api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0033"), args);
+        api.getDB().ExecuteUpdate(Language.translate("Sql0033"), args);
         args.clear();
         args = null;
     }

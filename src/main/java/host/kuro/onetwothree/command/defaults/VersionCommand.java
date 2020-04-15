@@ -5,6 +5,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
@@ -35,7 +36,7 @@ public class VersionCommand extends CommandBase {
         }
         StringBuilder sb = new StringBuilder();
         try {
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0010"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0010"));
             ResultSet rs = api.getDB().ExecuteQuery(ps, null);
             if (rs != null) {
                 while(rs.next()){
