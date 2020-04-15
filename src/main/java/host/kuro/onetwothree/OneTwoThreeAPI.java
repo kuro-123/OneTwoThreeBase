@@ -4,8 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockConcrete;
-import cn.nukkit.block.BlockSignPost;
-import cn.nukkit.blockentity.BlockEntitySign;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
@@ -71,6 +69,9 @@ public class OneTwoThreeAPI {
     public static HashMap<Player, Location> select_two = new HashMap<>();
 
     public static HashMap<Player, Long> tip_wait = new HashMap<>();
+
+    public static HashMap<String, String> black_cid = new HashMap<>();
+    public static HashMap<String, String> black_xuid = new HashMap<>();
 
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
@@ -201,6 +202,37 @@ public class OneTwoThreeAPI {
                 while (rs.next()) {
                     String namebuff = rs.getString("xname");
                     ret = getServer().getPlayerExact(namebuff);
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+        return ret;
+    }
+
+    public String GetAmbiguousXuid(String name) {
+        String ret = "";
+        try {
+            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0060"));
+            ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
+            pargs.add(new DatabaseArgs("c", "%" + name.toLowerCase() + "%"));
+            pargs.add(new DatabaseArgs("c", "%" + name.toLowerCase() + "%"));
+            ResultSet rs = getDB().ExecuteQuery(ps, pargs);
+            pargs.clear();
+            pargs = null;
+            if (rs != null) {
+                while (rs.next()) {
+                    ret = rs.getString("xuid");
                     break;
                 }
             }

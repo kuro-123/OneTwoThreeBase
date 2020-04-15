@@ -3,8 +3,11 @@ package host.kuro.onetwothree.command.defaults;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
+import cn.nukkit.command.data.CommandParamType;
+import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -24,6 +27,9 @@ public class InfoCommand extends CommandBase {
         super("info", api);
         this.setAliases(new String[]{"if"});
         commandParameters.clear();
+        this.commandParameters.put("default", new CommandParameter[] {
+                new CommandParameter("target", CommandParamType.STRING, true),
+        });
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
@@ -37,6 +43,18 @@ public class InfoCommand extends CommandBase {
             return false;
         }
 
+        String xuid = player.getLoginChainData().getXUID();
+        if (api.IsGameMaster(player)) {
+            if (args.length == 1) {
+                xuid = api.GetAmbiguousXuid(args[0]);
+                if (xuid.length() <= 0) {
+                    player.sendMessage(api.GetInfoMessage(Language.translate("commands.info.nothing")));
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    return false;
+                }
+            }
+        }
+
         // プレイヤー情報チェック
         try {
             String s_xuid = "";
@@ -44,6 +62,10 @@ public class InfoCommand extends CommandBase {
             String s_name = "";
             String s_tag = "";
             String s_play_time = "";
+            String s_rank = "";
+            String s_ip = "";
+            String s_cid = "";
+            String s_upd_date = "";
             String s_money = "";
             String s_login = "";
             String s_break = "";
@@ -54,7 +76,7 @@ public class InfoCommand extends CommandBase {
             String s_chat = "";
             PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0046"));
             ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
-            pargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            pargs.add(new DatabaseArgs("c", xuid));
             ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);
             pargs.clear();
             pargs = null;
@@ -65,6 +87,10 @@ public class InfoCommand extends CommandBase {
                     s_name = rs.getString("name");
                     s_tag = rs.getString("tag");
                     s_play_time = rs.getString("play_time");
+                    s_rank = rs.getString("rank");
+                    s_ip = rs.getString("ip");
+                    s_cid = rs.getString("cid");
+                    s_upd_date = rs.getString("upd_date");
                     s_money = rs.getString("money");
                     s_login = rs.getString("login");
                     s_break = rs.getString("break");
@@ -84,12 +110,22 @@ public class InfoCommand extends CommandBase {
                 rs.close();
                 rs = null;
             }
+            switch (s_rank) {
+                case "0": s_rank = "訪問"; break;
+                case "1": s_rank = "住民"; break;
+                case "2": s_rank = "ＧＭ"; break;
+                case "3": s_rank = "パイ"; break;
+                case "4": s_rank = "鯖主"; break;
+            }
             StringBuilder sb = new StringBuilder();
+            sb.append("最終更新日 : " + s_upd_date + "\n");
             sb.append("XBOX ID : " + s_xuid + "\n");
             sb.append("XBOX名 : " + s_xname + "\n");
             sb.append("表示名 : " + s_name + "\n");
-            sb.append("タグ : " + s_tag + "\n\n");
-
+            sb.append("タグ : " + s_tag + "\n");
+            sb.append("ランク : " + s_rank + "\n");
+            sb.append("IP : " + s_ip + "\n");
+            sb.append("CID : " + s_cid + "\n\n");
             int sumtime = Integer.parseInt(s_play_time);
             long byou = sumtime % 60;
             long hun = (sumtime / 60);
