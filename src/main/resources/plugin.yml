@@ -54,3 +54,5 @@ permissions:
     default: true
   onetwothree.zone:
     default: op
+  onetwothree.vi:
+    default: op
