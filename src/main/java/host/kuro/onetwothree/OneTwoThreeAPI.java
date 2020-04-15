@@ -20,7 +20,9 @@ import host.kuro.onetwothree.datatype.ZoneInfo;
 import host.kuro.onetwothree.forms.elements.CustomForm;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.datatype.ItemInfo;
+import host.kuro.onetwothree.task.AfkTask;
 import host.kuro.onetwothree.task.SoundTask;
+import host.kuro.onetwothree.task.TimingTask;
 import host.kuro.onetwothree.utils.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -73,6 +75,8 @@ public class OneTwoThreeAPI {
     public static HashMap<String, String> black_cid = new HashMap<>();
     public static HashMap<String, String> black_xuid = new HashMap<>();
 
+    private AfkTask task_afk = null;
+
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
     	instance = this;
@@ -83,6 +87,9 @@ public class OneTwoThreeAPI {
         this.log_err = new LogError(this);
         this.log_block = new LogBlock(this);
         this.log_pay = new LogPay(this);
+
+        task_afk = new AfkTask(this);
+        getServer().getScheduler().scheduleRepeatingTask(task_afk, 20 * 60 * 10);
     }
     public static OneTwoThreeAPI getInstance() {
         return instance;
@@ -105,6 +112,7 @@ public class OneTwoThreeAPI {
     public TwitterPlugin getTwitter() { return plugin.getTwitter(); }
     public MtRand getRand() { return random; }
     public boolean getDebug() { return plugin.getDebug(); }
+    public AfkTask getAfk() { return task_afk; }
 
     public LogCommand getLogCmd() { return log_cmd; }
     public LogWindow getLogWin() { return log_win; }

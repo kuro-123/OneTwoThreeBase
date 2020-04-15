@@ -323,6 +323,7 @@ public class EventListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
 
         // 経過時間計測
         int ptime = 0;
@@ -443,6 +444,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
         try {
             if (api.IsTouchmode(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
                 api.GetWarningMessage(Language.translate("onetwothree.othermode"));
@@ -502,6 +504,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
         try {
             if (api.IsTouchmode(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
                 api.GetWarningMessage(Language.translate("onetwothree.othermode"));
@@ -721,6 +724,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event) {
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
         try {
             String message = event.getMessage();
 
@@ -759,6 +763,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
         try {
             String sFrom = event.getFrom().getLevel().getName();
             String sTo = event.getTo().getLevel().getName();
@@ -813,6 +818,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
         try {
             // スポーン時にモード違反があれば強制サバイバル転送
             Level lv = event.getRespawnPosition().getLevel();
@@ -860,6 +866,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
         try {
             if (api.IsGameMaster(player)) return;
 
@@ -1086,6 +1093,7 @@ public class EventListener implements Listener {
         }
 
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
 
         if ((cmd.equals("/plugins")) ||
             (cmd.equals("/seed")) ||
@@ -1136,6 +1144,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        api.getAfk().ResetAfk(player);
 
         // 過度な処理を防ぐ
         if (api.tip_wait.containsKey(player)) {
