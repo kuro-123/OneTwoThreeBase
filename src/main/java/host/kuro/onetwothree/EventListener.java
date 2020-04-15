@@ -81,6 +81,19 @@ public class EventListener implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
         try {
+            if (!api.CheckCid(player)) {
+                api.getServer().getLogger().info("過去バン:" + player.getDisplayName());
+                player.close("", "過去にバンされているためログインできません", true);
+                event.setCancelled();
+                return;
+            }
+            if (!api.CheckXuid(player)) {
+                api.getServer().getLogger().info("過去バン:" + player.getDisplayName());
+                player.close("", "過去にバンされているためログインできません", true);
+                event.setCancelled();
+                return;
+            }
+
             // ネットワーク取得
             String ip = player.getAddress();
             //String host = api.GetHostInfo(ip);

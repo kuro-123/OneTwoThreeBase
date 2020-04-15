@@ -1290,4 +1290,64 @@ public class OneTwoThreeAPI {
             return;
         }
     }
+
+    public boolean CheckCid(Player player) {
+        boolean ret = true;
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", ""+player.getLoginChainData().getClientId()));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0065"));
+            ResultSet rs = getDB().ExecuteQuery(ps, args);
+            args.clear();
+            args = null;
+            if (rs != null) {
+                while(rs.next()){
+                    ret = false;
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, "CheckCid : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+        return ret;
+    }
+
+    public boolean CheckXuid(Player player) {
+        boolean ret = true;
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0066"));
+            ResultSet rs = getDB().ExecuteQuery(ps, args);
+            args.clear();
+            args = null;
+            if (rs != null) {
+                while(rs.next()){
+                    ret = false;
+                    break;
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            getLogErr().Write(player, "CheckXuid : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+        }
+        return ret;
+    }
 }
