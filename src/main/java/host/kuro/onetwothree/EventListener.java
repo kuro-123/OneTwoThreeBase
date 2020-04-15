@@ -439,6 +439,8 @@ public class EventListener implements Listener {
                         item.setCustomName(item.getName()+symbol);
                     }
                 }
+                // ランダムプレゼント抽選
+                api.RandomPresent(player, symbol);
             }
 
             // ブロックログ

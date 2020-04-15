@@ -10,6 +10,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
+import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
@@ -1212,5 +1213,37 @@ public class OneTwoThreeAPI {
             return zi;
         }
         return null;
+    }
+
+    public void RandomPresent(Player player, String symbol) {
+        int value = getRand().Next(0, 30000);
+        if (value != 1) return;
+
+        int count = 0;
+        while(count<50) {
+            count++;
+            int rand_id = getRand().Next(1, 512);
+
+            if (!item_info.containsKey(rand_id)) continue;
+            ItemInfo ii = item_info.get(rand_id);
+
+            if (ii.ban.equals("1")) continue;
+            if (ii.price <= 0) continue;
+
+            Item item = Item.get(ii.id, 0 , 1);
+            item.setCustomName(item.getName()+symbol);
+
+            Location loc = player.getLocation();
+            int x = loc.getFloorX() + getRand().Next(-2, 2);
+            int y = loc.getFloorY() + getRand().Next( 0, 2);
+            int z = loc.getFloorZ() + getRand().Next(-2, 2);
+            player.getLevel().dropItem(new Vector3(x, y, z), item);
+
+            String message = TextFormat.LIGHT_PURPLE + "[ " + TextFormat.WHITE + player.getDisplayName() + TextFormat.LIGHT_PURPLE + " ] さんの近くに [ " + TextFormat.GOLD + item.getName() + TextFormat.LIGHT_PURPLE + "] がドロップした！";
+            PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin019, 0, false); // DROP
+            getServer().broadcastMessage(message);
+            sendDiscordYellowMessage(message);
+            return;
+        }
     }
 }
