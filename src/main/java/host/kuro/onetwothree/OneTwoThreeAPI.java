@@ -1102,10 +1102,12 @@ public class OneTwoThreeAPI {
         // ゾーン設定ウィンドウ
         List<String> zList = new ArrayList<String>();
         zList.add("指定なし");
-        zList.add("土地の価値： Aﾗﾝｸ ﾌﾞﾛｯｸ単価： 1,000p");
-        zList.add("土地の価値： Bﾗﾝｸ ﾌﾞﾛｯｸ単価：   750p");
-        zList.add("土地の価値： Cﾗﾝｸ ﾌﾞﾛｯｸ単価：   500p");
-        zList.add("土地の価値： Dﾗﾝｸ ﾌﾞﾛｯｸ単価：   250p");
+        zList.add("土地の価値： Aﾗﾝｸ ﾌﾞﾛｯｸ単価： 960p");
+        zList.add("土地の価値： Bﾗﾝｸ ﾌﾞﾛｯｸ単価： 640p");
+        zList.add("土地の価値： Cﾗﾝｸ ﾌﾞﾛｯｸ単価： 320p");
+        zList.add("土地の価値： Dﾗﾝｸ ﾌﾞﾛｯｸ単価： 160p");
+        zList.add("土地の価値： Eﾗﾝｸ ﾌﾞﾛｯｸ単価：  80p");
+        zList.add("土地の価値： Fﾗﾝｸ ﾌﾞﾛｯｸ単価：  40p");
         CustomForm form = new CustomForm("ゾーンランク設定")
                 .addLabel("指定したゾーンのランクを決めてください")
                 .addDropDown("土地ランク設定", zList);
@@ -1124,16 +1126,22 @@ public class OneTwoThreeAPI {
                 int rank_meta = 0;
                 if (rank_name.indexOf("A")>=0) {
                     rank_name = "A";
-                    rank_meta = 4;
+                    rank_meta = 6;
                 } else if (rank_name.indexOf("B")>=0) {
                     rank_name = "B";
-                    rank_meta = 3;
+                    rank_meta = 4;
                 } else if (rank_name.indexOf("C")>=0) {
                     rank_name = "C";
-                    rank_meta = 1;
+                    rank_meta = 3;
                 } else if (rank_name.indexOf("D")>=0) {
                     rank_name = "D";
+                    rank_meta = 1;
+                } else if (rank_name.indexOf("E")>=0) {
+                    rank_name = "E";
                     rank_meta = 0;
+                } else if (rank_name.indexOf("F")>=0) {
+                    rank_name = "F";
+                    rank_meta = 8;
                 } else {
                     PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_choise"));

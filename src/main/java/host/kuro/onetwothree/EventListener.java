@@ -1179,10 +1179,12 @@ public class EventListener implements Listener {
         int maxZ = Math.max(zi.z1, zi.z2);
         int price = (maxX - minX) * (maxZ - minZ);
         switch (zi.rank) {
-            case "A": price = price * 1000; break;
-            case "B": price = price * 750; break;
-            case "C": price = price * 500; break;
-            case "D": price = price * 250; break;
+            case "A": price = price * 960; break;
+            case "B": price = price * 640; break;
+            case "C": price = price * 320; break;
+            case "D": price = price * 160; break;
+            case "E": price = price *  80; break;
+            case "F": price = price *  40; break;
         }
         player.sendTip(TextFormat.LIGHT_PURPLE + "物件情報 - [ " + TextFormat.YELLOW + zi.rank + "ランク" + TextFormat.LIGHT_PURPLE + " ] - 価格: " + api.comma_format.format(price) + "p");
         api.tip_wait.put(player, System.currentTimeMillis());
