@@ -17,8 +17,6 @@ import java.util.Iterator;
 
 public class BanItemCommand extends CommandBase {
 
-    private Config cfg;
-
     public BanItemCommand(OneTwoThreeAPI api) {
         super("banitem", api);
         this.setAliases(new String[]{"bi"});
@@ -79,7 +77,7 @@ public class BanItemCommand extends CommandBase {
                     } catch (Exception e) {
                         player.sendMessage(api.GetWarningMessage("commands.banitem.id_err"));
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        api.getLogErr().Write(player, "BanItemWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                        api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                         return;
                     }
 
@@ -121,16 +119,14 @@ public class BanItemCommand extends CommandBase {
                 } catch (Exception e) {
                     this.sendUsage(targetPlayer);
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    e.printStackTrace();
-                    api.getLogErr().Write(player, "BanItemWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            api.getLogErr().Write(player, "BanItemWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
         return true;
     }

@@ -23,13 +23,10 @@ import java.util.List;
 
 public class TagCommand extends CommandBase {
 
-    private Config cfg;
-
     public TagCommand(OneTwoThreeAPI api) {
         super("tag", api);
         this.setAliases(new String[]{"tg"});
         commandParameters.clear();
-        cfg = api.getConfig();
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
@@ -82,7 +79,7 @@ public class TagCommand extends CommandBase {
                 rs = null;
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, "TagCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
 
         // 設定ウィンドウ
@@ -129,8 +126,7 @@ public class TagCommand extends CommandBase {
             } catch (Exception e) {
                 this.sendUsage(targetPlayer);
                 api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                e.printStackTrace();
-                api.getLogErr().Write(targetPlayer, "TagCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
+                api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
             }
         });
         return true;

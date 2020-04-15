@@ -67,8 +67,7 @@ public class TwitterTask extends Task {
             api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin015, 0, false); // INFO
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "TwitterTask : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
     }
 }

@@ -434,8 +434,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "OpenKuroView : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
         }
     }
 
@@ -493,7 +492,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogErr().Write(null, GetErrorMessage(e));
         }
     }
 
@@ -535,7 +534,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogErr().Write(null, GetErrorMessage(e));
         }
     }
 
@@ -562,8 +561,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "GetRank : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(null, GetErrorMessage(e));
         }
         return ret;
     }
@@ -598,8 +596,7 @@ public class OneTwoThreeAPI {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "GetRankColor : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
         }
         return ""+TextFormat.GRAY;
     }
@@ -637,7 +634,8 @@ public class OneTwoThreeAPI {
             }
             return true;
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
+            getLogErr().Write(player, GetErrorMessage(e));
             return false;
         }
     }
@@ -694,8 +692,7 @@ public class OneTwoThreeAPI {
                 channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "sendDiscordMessage : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
         }
     }
     public void sendDiscordRedMessage(String message) {
@@ -716,7 +713,7 @@ public class OneTwoThreeAPI {
                 channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogErr().Write(null, GetErrorMessage(e));
         }
     }
     public void sendDiscordBlueMessage(String message) {
@@ -737,7 +734,7 @@ public class OneTwoThreeAPI {
                 channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogErr().Write(null, GetErrorMessage(e));
         }
     }
     public void sendDiscordGreenMessage(String message) {
@@ -758,7 +755,7 @@ public class OneTwoThreeAPI {
                 channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogErr().Write(null, GetErrorMessage(e));
         }
     }
     public void sendDiscordYellowMessage(String message) {
@@ -779,7 +776,7 @@ public class OneTwoThreeAPI {
                 channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogErr().Write(null, GetErrorMessage(e));
         }
     }
     public void sendDiscordGrayMessage(String message) {
@@ -800,7 +797,7 @@ public class OneTwoThreeAPI {
                 channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogErr().Write(null, GetErrorMessage(e));
         }
     }
     public void sendDiscordBanMessage(String message) {
@@ -821,7 +818,7 @@ public class OneTwoThreeAPI {
                 channel.sendMessage(new String(sb)).queue();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogErr().Write(null, GetErrorMessage(e));
         }
     }
     public String CutSection(String message) {
@@ -958,8 +955,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "GetChatCOunt : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
         }
         return ret;
     }
@@ -989,8 +985,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "GetBreakPlaceCount : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
         }
         return ret;
     }
@@ -1019,8 +1014,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "GetMoney : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
         }
         return ret;
     }
@@ -1035,8 +1029,7 @@ public class OneTwoThreeAPI {
             args = null;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "PayMoney : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
             return false;
         }
         return true;
@@ -1052,8 +1045,7 @@ public class OneTwoThreeAPI {
             args = null;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "AddMoney : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
             return false;
         }
         return true;
@@ -1215,8 +1207,7 @@ public class OneTwoThreeAPI {
             } catch (Exception e) {
                 PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                 targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_regist"));
-                e.printStackTrace();
-                getLogErr().Write(targetPlayer, "SetZoneRank : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
+                getLogErr().Write(targetPlayer, GetErrorMessage(e));
             }
 
             OneTwoThreeAPI.mode.put(targetPlayer, OneTwoThreeAPI.TAP_MODE.MODE_NONE);
@@ -1315,8 +1306,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "CheckCid : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
         }
         return ret;
     }
@@ -1345,9 +1335,13 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            getLogErr().Write(player, "CheckXuid : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            getLogErr().Write(player, GetErrorMessage(e));
         }
         return ret;
+    }
+
+    public String GetErrorMessage(Exception ex) {
+        StackTraceElement[] ste = ex.getStackTrace();
+        return "[ " + ste[ste.length-1] + "] " + ex.getClass().getName() + ": "+ ex.getMessage();
     }
 }

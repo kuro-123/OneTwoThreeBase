@@ -59,8 +59,8 @@ public class NpcPortalType extends NpcType {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
             form.send(player, (targetPlayer, targetForm, data) -> {
                 if(data == null) {
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    player.sendMessage(api.GetWarningMessage("onetwothree.warp_err"));
+                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    targetPlayer.sendMessage(api.GetWarningMessage("onetwothree.warp_err"));
                     return;
                 }
                 // ウィンドウログ
@@ -71,8 +71,8 @@ public class NpcPortalType extends NpcType {
                 if (!sworld.equals("指定なし")) {
                     Position pos = api.getServer().getLevelByName(sworld).getSpawnLocation();
                     if (pos != null) {
-                        if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                            TeleportMessage(player, sworld);
+                        if (targetPlayer.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
+                            TeleportMessage(targetPlayer, sworld);
                             return;
                         }
                     }
@@ -104,31 +104,29 @@ public class NpcPortalType extends NpcType {
                         }
 
                         Player target = api.getServer().getPlayerExact(splayer);
-                        if (target.getDisplayName().equalsIgnoreCase(player.getDisplayName())) {
-                            player.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
+                        if (target.getDisplayName().equalsIgnoreCase(targetPlayer.getDisplayName())) {
+                            targetPlayer.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
                         } else {
                             Position pos = target.getPosition();
                             if (pos != null) {
-                                if (player.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
-                                    TeleportMessage(player, target.getDisplayName());
+                                if (targetPlayer.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
+                                    TeleportMessage(targetPlayer, target.getDisplayName());
                                     return;
                                 }
                             }
                         }
-                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
 
                     } catch (SQLException e){
-                        e.printStackTrace();
-                        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        api.getLogErr().Write(player, "WarpWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                     }
                 }
             });
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            api.getLogErr().Write(player, "WarpWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         return true;

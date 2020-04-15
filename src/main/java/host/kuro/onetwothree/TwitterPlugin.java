@@ -57,8 +57,7 @@ public class TwitterPlugin {
             plugin.getServer().getScheduler().scheduleRepeatingTask(plugin, new TwitterTask(plugin, api, twitter), 20*60*60); // 1時間おき
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "Register : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
         return true;
     }
@@ -68,8 +67,7 @@ public class TwitterPlugin {
             twitter.updateStatus(message);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "Tweet : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
         return true;
     }

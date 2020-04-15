@@ -21,8 +21,6 @@ import java.util.ArrayList;
 
 public class InfoCommand extends CommandBase {
 
-    private Config cfg;
-
     public InfoCommand(OneTwoThreeAPI api) {
         super("info", api);
         this.setAliases(new String[]{"if"});
@@ -146,8 +144,10 @@ public class InfoCommand extends CommandBase {
             form.send(player, (targetPlayer, targetForm, data) -> {});
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "VersionCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            return false;
         }
         return true;
     }

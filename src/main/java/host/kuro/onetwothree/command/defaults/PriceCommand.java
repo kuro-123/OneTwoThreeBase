@@ -17,8 +17,6 @@ import java.util.Iterator;
 
 public class PriceCommand extends CommandBase {
 
-    private Config cfg;
-
     public PriceCommand(OneTwoThreeAPI api) {
         super("price", api);
         this.setAliases(new String[]{"pr", "p"});
@@ -74,14 +72,14 @@ public class PriceCommand extends CommandBase {
                             sprice = data.get(2).toString();
                             price = Integer.parseInt(sprice);
                             if (!(0 <= price && price <= 100)) {
-                                player.sendMessage(api.GetWarningMessage("commands.price.price_err"));
+                                targetPlayer.sendMessage(api.GetWarningMessage("commands.price.price_err"));
                                 api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                                 return;
                             }
                         } catch (Exception e) {
-                            player.sendMessage(api.GetWarningMessage("commands.price.price_err"));
+                            targetPlayer.sendMessage(api.GetWarningMessage("commands.price.price_err"));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                            api.getLogErr().Write(player, "PriceWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                            api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                             return;
                         }
 
@@ -96,9 +94,9 @@ public class PriceCommand extends CommandBase {
                             id = Integer.parseInt(itemid);
 
                         } catch (Exception e) {
-                            player.sendMessage(api.GetWarningMessage("commands.price.id_err"));
+                            targetPlayer.sendMessage(api.GetWarningMessage("commands.price.id_err"));
                             api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                            api.getLogErr().Write(player, "PriceWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                            api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                             return;
                         }
 
@@ -120,10 +118,10 @@ public class PriceCommand extends CommandBase {
                                 iteminfo.price = Integer.parseInt(sprice);
                                 api.item_info.put(id, iteminfo);
 
-                                player.sendMessage(api.GetWarningMessage("commands.price.success"));
-                                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+                                targetPlayer.sendMessage(api.GetWarningMessage("commands.price.success"));
+                                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
                             } else {
-                                player.sendMessage(api.GetWarningMessage("commands.price.fail"));
+                                targetPlayer.sendMessage(api.GetWarningMessage("commands.price.fail"));
                                 api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                             }
                         }
@@ -131,16 +129,14 @@ public class PriceCommand extends CommandBase {
                     } catch (Exception e) {
                         this.sendUsage(targetPlayer);
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        e.printStackTrace();
-                        api.getLogErr().Write(player, "PriceWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                        api.getLogErr().Write(player, api.GetErrorMessage(e));
                     }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            api.getLogErr().Write(player, "PriceWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
         return true;
     }

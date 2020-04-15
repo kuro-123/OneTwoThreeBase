@@ -39,8 +39,7 @@ public class LogSign {
             args.clear();
             args = null;
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "LogSign : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 }

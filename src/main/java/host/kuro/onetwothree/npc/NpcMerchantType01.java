@@ -132,7 +132,7 @@ public class NpcMerchantType01 extends NpcType {
             } catch (Exception e) {
                 targetPlayer.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
                 api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                api.getLogErr().Write(targetPlayer, "SellCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
+                api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                 return;
             }
         });

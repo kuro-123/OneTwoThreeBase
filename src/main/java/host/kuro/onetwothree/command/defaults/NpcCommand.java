@@ -90,28 +90,26 @@ public class NpcCommand extends CommandBase {
 
                     // タイプ
                     String entity_name = data.get(1).toString();
-                    for (Entity entity : player.getLevel().getEntities()) {
+                    for (Entity entity : targetPlayer.getLevel().getEntities()) {
                         if (entity instanceof NpcType) {
                             if (entity.getName().equals(entity_name)) {
                                 entity.close();
                             }
                         }
                     }
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
 
                 } catch (Exception e) {
                     this.sendUsage(targetPlayer);
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    e.printStackTrace();
-                    api.getLogErr().Write(targetPlayer, "NpcDeleteWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            api.getLogErr().Write(player, "NpcDeleteWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
         return true;
     }
@@ -249,9 +247,10 @@ public class NpcCommand extends CommandBase {
                     String buff = data.get(5).toString();
                     try {
                         scale = Float.parseFloat(buff);
-                    } catch (Exception ex) {
+                    } catch (Exception e) {
                         targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.err_scale")));
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getLogErr().Write(player, api.GetErrorMessage(e));
                         return;
                     }
                     if (!(0.5F <= scale && scale <= 1.5F)) {
@@ -272,16 +271,14 @@ public class NpcCommand extends CommandBase {
                 } catch (Exception e) {
                     this.sendUsage(targetPlayer);
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    e.printStackTrace();
-                    api.getLogErr().Write(targetPlayer, "NpcWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            api.getLogErr().Write(player, "NpcWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
         return true;
     }

@@ -209,17 +209,15 @@ public class WarpCommand extends CommandBase {
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
 
                     } catch (SQLException e){
-                        e.printStackTrace();
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        api.getLogErr().Write(targetPlayer, "WarpWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
+                        api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                     }
                 }
             });
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            api.getLogErr().Write(player, "WarpWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         return true;

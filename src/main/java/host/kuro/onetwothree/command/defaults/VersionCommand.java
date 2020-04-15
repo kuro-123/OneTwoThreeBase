@@ -16,8 +16,6 @@ import java.sql.ResultSet;
 
 public class VersionCommand extends CommandBase {
 
-    private Config cfg;
-
     public VersionCommand(OneTwoThreeAPI api) {
         super("version", api);
         this.setAliases(new String[]{"ver", "v"});
@@ -67,8 +65,7 @@ public class VersionCommand extends CommandBase {
                 });
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "VersionCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
         return true;
     }

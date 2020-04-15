@@ -91,7 +91,7 @@ public class IdkCommand extends CommandBase {
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, "IdkCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         return true;

@@ -47,8 +47,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new ZoneCommand(api));
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "registerAll : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
     }
 }

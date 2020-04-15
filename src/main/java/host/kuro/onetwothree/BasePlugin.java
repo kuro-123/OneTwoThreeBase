@@ -91,7 +91,7 @@ public class BasePlugin extends PluginBase {
                 }
                 api.sendDiscordGreenMessage("【123鯖情報】 起動しました！");
             } catch (InterruptedException | LoginException e) {
-                e.printStackTrace();
+                api.getLogErr().Write(null, api.GetErrorMessage(e));
             }
         }
 
@@ -196,8 +196,7 @@ public class BasePlugin extends PluginBase {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "InitWorld : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
         return true;
     }
@@ -224,8 +223,7 @@ public class BasePlugin extends PluginBase {
                 f.setWritable(true);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "InitDirectory : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
         return true;
     }

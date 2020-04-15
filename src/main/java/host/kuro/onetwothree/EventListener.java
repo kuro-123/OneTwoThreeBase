@@ -72,8 +72,7 @@ public class EventListener implements Listener {
                 return;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerPreLogin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -204,8 +203,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerLogin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -283,7 +281,7 @@ public class EventListener implements Listener {
             }
         } catch (Exception e) {
             event.setCancelled();
-            api.getLogErr().Write(player, "onPlayerJoin : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
         player.setDisplayName(player.getName());
         if (nickname != null) {
@@ -450,8 +448,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerInteract : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -510,8 +507,7 @@ public class EventListener implements Listener {
             args = null;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onBlockBreak : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -564,8 +560,7 @@ public class EventListener implements Listener {
             args = null;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onBlockPlace : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -581,8 +576,7 @@ public class EventListener implements Listener {
             args = null;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerKick : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -709,8 +703,7 @@ public class EventListener implements Listener {
             api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin002, 0, false); // ボンッ
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerDeath : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -730,8 +723,7 @@ public class EventListener implements Listener {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "onEntityDeath : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
     }
 
@@ -769,8 +761,7 @@ public class EventListener implements Listener {
             args = null;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerChat : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -824,8 +815,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerTeleport : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -872,8 +862,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerRespawn : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -942,8 +931,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "onPlayerGameModeChange : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -992,8 +980,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "formResponded : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 
@@ -1279,8 +1266,7 @@ public class EventListener implements Listener {
             iargs = null;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(null, "onInventoryOpen : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
     }
 }

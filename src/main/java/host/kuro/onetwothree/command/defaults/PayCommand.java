@@ -90,7 +90,7 @@ public class PayCommand extends CommandBase {
                 int imoney = 0;
                 try {
                     imoney = Integer.parseInt(pmoney);
-                } catch (Exception ex) {
+                } catch (Exception e) {
                 }
                 if (imoney <= 0) {
                     targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_02"));
@@ -179,8 +179,7 @@ public class PayCommand extends CommandBase {
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            api.getLogErr().Write(player, "WarpWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         return true;

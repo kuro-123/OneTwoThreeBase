@@ -17,8 +17,6 @@ import java.sql.ResultSet;
 
 public class RandCommand extends CommandBase {
 
-    private Config cfg;
-
     public RandCommand(OneTwoThreeAPI api) {
         super("rand", api);
         commandParameters.clear();
@@ -104,8 +102,7 @@ public class RandCommand extends CommandBase {
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            //api.getLogErr().Write(player, "RandCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
         return true;
     }

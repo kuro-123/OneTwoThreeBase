@@ -169,15 +169,13 @@ public class RankCommand extends CommandBase {
                 } catch (Exception e) {
                     this.sendUsage(targetPlayer);
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    e.printStackTrace();
-                    api.getLogErr().Write(player, "RankWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            e.printStackTrace();
-            api.getLogErr().Write(player, "RankWindow : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         return true;

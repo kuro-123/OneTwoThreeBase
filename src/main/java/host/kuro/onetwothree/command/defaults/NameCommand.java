@@ -23,13 +23,10 @@ import java.util.List;
 
 public class NameCommand extends CommandBase {
 
-    private Config cfg;
-
     public NameCommand(OneTwoThreeAPI api) {
         super("name", api);
         this.setAliases(new String[]{"nm"});
         commandParameters.clear();
-        cfg = api.getConfig();
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
@@ -74,12 +71,12 @@ public class NameCommand extends CommandBase {
                 rs = null;
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, "NameCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
 
         // 経過時間が設定値日数を超えていなければ変更不可
         if (ts != null) {
-            int allow_days = cfg.getInt("NameCommand.AllowDays");
+            int allow_days = api.getConfig().getInt("NameCommand.AllowDays");
             Date dat_dt = new Date(ts.getTime());
             Date now_dt = new Date();
             long dateTimePast = dat_dt.getTime();
@@ -148,8 +145,7 @@ public class NameCommand extends CommandBase {
             } catch (Exception e) {
                 this.sendUsage(targetPlayer);
                 api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                e.printStackTrace();
-                api.getLogErr().Write(targetPlayer, "NameCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), targetPlayer.getDisplayName());
+                api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
             }
         });
         return true;
@@ -209,7 +205,7 @@ public class NameCommand extends CommandBase {
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, "IsDupli : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         return true;

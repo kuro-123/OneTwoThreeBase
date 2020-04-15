@@ -67,7 +67,8 @@ public class WorldTask extends AsyncTask {
                 try {
                     String path = api.getServer().getDataPath() + "worlds/" + level_name;
                     deleteDir(path);
-                } catch (Exception ex) {
+                } catch (Exception e) {
+                    api.getLogErr().Write(null, api.GetErrorMessage(e));
                     message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> の削除に失敗しました";
                     WORLD_SEQ = 7;
                 }

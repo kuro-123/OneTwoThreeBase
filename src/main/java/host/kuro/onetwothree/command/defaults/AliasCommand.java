@@ -21,7 +21,6 @@ import java.util.*;
 
 public class AliasCommand extends CommandBase {
 
-    private Config cfg;
     private Map<String, AliasInfo> info = null;
 
     public AliasCommand(OneTwoThreeAPI api) {
@@ -31,7 +30,6 @@ public class AliasCommand extends CommandBase {
         this.commandParameters.put("default", new CommandParameter[] {
                 new CommandParameter("name", CommandParamType.STRING, true),
         });
-        cfg = api.getConfig();
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
@@ -131,6 +129,7 @@ public class AliasCommand extends CommandBase {
                 sb.append(format);
             }
         } catch (Exception e) {
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
         info.clear();
         info = null;
@@ -196,6 +195,7 @@ public class AliasCommand extends CommandBase {
                 rs = null;
             }
         } catch (Exception e) {
+            api.getLogErr().Write(null, api.GetErrorMessage(e));
         }
     }
 }

@@ -84,6 +84,7 @@ public class ZoneCommand extends CommandBase {
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
@@ -127,9 +128,10 @@ public class ZoneCommand extends CommandBase {
             api.getServer().broadcastMessage(message);
             api.sendDiscordYellowMessage(message);
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         return true;

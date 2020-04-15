@@ -185,7 +185,8 @@ public class NpcType extends EntityHuman {
                 String sscale = getDataProperty(776).getData().toString();
                 Float scale = Float.parseFloat(sscale);
                 this.setScale(scale);
-            } catch (Exception ex) {
+            } catch (Exception e) {
+                api.getLogErr().Write(player, api.GetErrorMessage(e));
             }
         }
     }

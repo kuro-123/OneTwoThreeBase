@@ -19,8 +19,6 @@ import java.sql.ResultSet;
 
 public class LagCommand extends CommandBase {
 
-    private Config cfg;
-
     public LagCommand(OneTwoThreeAPI api) {
         super("lag", api);
         commandParameters.clear();

@@ -11,7 +11,6 @@ import host.kuro.onetwothree.task.SoundTask;
 
 public class KvCommand extends CommandBase {
 
-    private Config cfg;
     OneTwoThreeAPI api;
 
     public KvCommand(OneTwoThreeAPI api) {
@@ -19,7 +18,6 @@ public class KvCommand extends CommandBase {
         this.setAliases(new String[]{"kv", "k"});
         commandParameters.clear();
         this.api = api;
-        cfg = api.getConfig();
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
@@ -65,6 +63,7 @@ public class KvCommand extends CommandBase {
         } catch (Exception e) {
             player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return false;
         }
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS

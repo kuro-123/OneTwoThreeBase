@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 
 public class ListCommand extends CommandBase {
 
-    private Config cfg;
     private static OneTwoThreeAPI api;
 
     public ListCommand(OneTwoThreeAPI api) {
@@ -44,8 +43,7 @@ public class ListCommand extends CommandBase {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            api.getLogErr().Write(player, "ListCommand : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), player.getDisplayName());
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
         return true;
     }
@@ -84,7 +82,7 @@ public class ListCommand extends CommandBase {
             sb.append(""+onlineCount);
             sb.append("人 ]");
         } catch (Exception e) {
-            e.printStackTrace();
+            api.getLogErr().Write(player, api.GetErrorMessage(e));
             return "";
         }
         return new String(sb);

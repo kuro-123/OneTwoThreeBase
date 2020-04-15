@@ -43,7 +43,6 @@ public class DatabaseManager {
             return false;
         }
         catch (Exception e){
-            e.printStackTrace();
             return false;
         }
         api.getServer().getLogger().info(Language.translate("onetwothree.dbconnect"));
