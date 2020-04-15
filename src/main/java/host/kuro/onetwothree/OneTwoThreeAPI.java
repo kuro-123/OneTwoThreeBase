@@ -45,6 +45,7 @@ public class OneTwoThreeAPI {
     private LogWindow log_win;
     private LogError log_err;
     private LogBlock log_block;
+    private LogPay log_pay;
     private static final MtRand random = new MtRand(System.currentTimeMillis());
 
     // 各種メモリデータ
@@ -79,6 +80,7 @@ public class OneTwoThreeAPI {
         this.log_win = new LogWindow(this);
         this.log_err = new LogError(this);
         this.log_block = new LogBlock(this);
+        this.log_pay = new LogPay(this);
     }
     public static OneTwoThreeAPI getInstance() {
         return instance;
@@ -106,6 +108,7 @@ public class OneTwoThreeAPI {
     public LogWindow getLogWin() { return log_win; }
     public LogError getLogErr() { return log_err; }
     public LogBlock getLogBlock() { return log_block; }
+    public LogPay getLogPay() { return log_pay; }
 
     // タップモード
     public static enum TAP_MODE {

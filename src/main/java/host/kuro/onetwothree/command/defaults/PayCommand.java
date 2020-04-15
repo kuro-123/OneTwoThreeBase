@@ -107,17 +107,18 @@ public class PayCommand extends CommandBase {
                 }
                 if (money < imoney) {
                     targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_04"));
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return;
                 }
 
                 // 支払処理
-                boolean ret = api.PayMoney(player, imoney);
+                boolean ret = api.PayMoney(targetPlayer, imoney);
                 if (!ret) {
                     targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_05"));
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return;
                 }
+                api.getLogPay().Write(targetPlayer, "WarpCommand", "minus", ""+imoney);
 
                 NumberFormat nfNum = NumberFormat.getNumberInstance();
 
@@ -150,6 +151,8 @@ public class PayCommand extends CommandBase {
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return;
                 }
+                api.getLogPay().Write(responser, "PayCommand", "plus", ""+imoney);
+
                 int nowmoney = api.GetMoney(responser);
                 StringBuilder sb2 = new StringBuilder();
                 sb2.append(TextFormat.AQUA);

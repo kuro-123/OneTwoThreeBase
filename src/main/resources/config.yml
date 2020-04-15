@@ -118,5 +118,6 @@ SqlStatement:
   Sql0054: "INSERT INTO zone(level, x1, z1, x2, z2, rank, gm, name, owner, message, public, sound, partner01, partner02, partner03, updater, upd_date) VALUES (?, ?, ?, ?, ?, ?, ?, null, null, null, false, null, null, null, null, ?, current_timestamp)"
   Sql0055: "SELECT * FROM zone"
   Sql0056: "DELETE FROM zone WHERE level=? AND x1=? AND z1=? AND x2=? AND z2=?"
+  Sql0057: "INSERT INTO log_pay (log_date, xuid, rank, action, kind, amount) VALUES (current_timestamp,?,?,?,?,?)"
 
 ConfigVersion: 1

@@ -140,6 +140,7 @@ public class WarpCommand extends CommandBase {
                                 money = api.GetMoney(targetPlayer);
                                 targetPlayer.sendMessage(TextFormat.YELLOW + "現在の所持金:" + money + "p");
                             }
+                            api.getLogPay().Write(targetPlayer, "WarpCommand", "minus", ""+150);
                             return;
                         }
                     }
@@ -199,6 +200,7 @@ public class WarpCommand extends CommandBase {
                                         money = api.GetMoney(targetPlayer);
                                         targetPlayer.sendMessage(TextFormat.YELLOW + "現在の所持金:" + money + "p");
                                     }
+                                    api.getLogPay().Write(targetPlayer, "WarpCommand", "minus", ""+150);
                                     return;
                                 }
                             }
