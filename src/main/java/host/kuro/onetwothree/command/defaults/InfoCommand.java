@@ -63,7 +63,7 @@ public class InfoCommand extends CommandBase {
             String s_tag = "";
             String s_play_time = "";
             String s_rank = "";
-            String s_ip = "";
+            //String s_ip = "";
             String s_cid = "";
             String s_upd_date = "";
             String s_money = "";
@@ -88,7 +88,7 @@ public class InfoCommand extends CommandBase {
                     s_tag = rs.getString("tag");
                     s_play_time = rs.getString("play_time");
                     s_rank = rs.getString("rank");
-                    s_ip = rs.getString("ip");
+                    //s_ip = rs.getString("ip");
                     s_cid = rs.getString("cid");
                     s_upd_date = rs.getString("upd_date");
                     s_money = rs.getString("money");
@@ -124,7 +124,7 @@ public class InfoCommand extends CommandBase {
             sb.append("表示名 : " + s_name + "\n");
             sb.append("タグ : " + s_tag + "\n");
             sb.append("ランク : " + s_rank + "\n");
-            sb.append("IP : " + s_ip + "\n");
+            //sb.append("IP : " + s_ip + "\n");
             sb.append("CID : " + s_cid + "\n\n");
             int sumtime = Integer.parseInt(s_play_time);
             long byou = sumtime % 60;
