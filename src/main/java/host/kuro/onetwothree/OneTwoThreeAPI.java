@@ -1251,7 +1251,7 @@ public class OneTwoThreeAPI {
     }
 
     public void RandomPresent(Player player, String symbol) {
-        int value = getRand().Next(0, 30000);
+        int value = getRand().Next(0, 10000);
         if (value != 1) return;
 
         int count = 0;

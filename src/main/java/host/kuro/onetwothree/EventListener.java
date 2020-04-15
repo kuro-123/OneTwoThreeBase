@@ -30,6 +30,7 @@ import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.inventory.*;
 import cn.nukkit.inventory.transaction.CraftingTransaction;
 import cn.nukkit.item.Item;
+import cn.nukkit.item.ItemMap;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Level;
 import cn.nukkit.utils.TextFormat;
@@ -47,11 +48,15 @@ import host.kuro.onetwothree.npc.NpcMerchantType02;
 import host.kuro.onetwothree.npc.NpcType;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
+import host.kuro.onetwothree.utils.MapColor;
 import host.kuro.onetwothree.utils.Particle;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+import java.util.List;
 
 import static cn.nukkit.event.entity.EntityDamageEvent.DamageCause.SUICIDE;
 
@@ -444,6 +449,16 @@ public class EventListener implements Listener {
             // BANアイテム
             if (api.IsBanItem(player, event.getItem())) {
                 event.setCancelled();
+                return;
+            }
+
+            // MAP対応
+            if (event.getAction() != PlayerInteractEvent.Action.PHYSICAL) {
+                Item i = event.getItem();
+                if (i.getId() == Item.EMPTY_MAP) {
+                    player.getInventory().decreaseCount(player.getInventory().getHeldItemIndex());
+                    player.getInventory().addItem(new ItemMap());
+                }
                 return;
             }
 
@@ -1268,5 +1283,22 @@ public class EventListener implements Listener {
         } catch (Exception e) {
             api.getLogErr().Write(player, api.GetErrorMessage(e));
         }
+    }
+
+    @EventHandler
+    public void onPlayerMapInfoRequest(PlayerMapInfoRequestEvent  event) {
+        Player p = event.getPlayer();
+        ItemMap map = (ItemMap) event.getMap();
+        BufferedImage image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
+        try {
+        Graphics2D graphics = image.createGraphics();
+        for (int x = 0; x < 128; x++) {
+        for (int y = 0; y < 128; y++) {
+        graphics.setColor(new Color(MapColor.getColorAt(p.getLevel(), p.getFloorX() - 64 + x, p.getFloorZ() - 64 + y)));
+        graphics.fillRect(x, y, x, y);
+        }
+        }
+        } catch (Exception ignored) {}
+        map.setImage(image);
     }
 }
