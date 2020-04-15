@@ -103,7 +103,7 @@ public class ZoneCommand extends CommandBase {
             args.add(new DatabaseArgs("i", ""+zi.z1));
             args.add(new DatabaseArgs("i", ""+zi.x2));
             args.add(new DatabaseArgs("i", ""+zi.z2));
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0056"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0056"), args);
             args.clear();
             args = null;
             if (ret <= 0) {

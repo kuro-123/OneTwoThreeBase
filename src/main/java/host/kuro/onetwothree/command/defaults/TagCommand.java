@@ -61,7 +61,7 @@ public class TagCommand extends CommandBase {
         // 現在のプレイヤー情報取得
         String tag = "";
         try {
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0009"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0009"));
             ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
             xargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
             ResultSet rs = api.getDB().ExecuteQuery(ps, xargs);
@@ -109,7 +109,7 @@ public class TagCommand extends CommandBase {
                 // プレイヤー表示情報へ登録(UPSERT)
                 StringBuilder sb_upd = new StringBuilder();
                 ArrayList<DatabaseArgs> uargs = new ArrayList<DatabaseArgs>();
-                sb_upd.append(cfg.getString("SqlStatement.Sql0035"));
+                sb_upd.append(Language.translate("Sql0035"));
                 uargs.add(new DatabaseArgs("c", targetPlayer.getLoginChainData().getXUID()));       // xuid
                 uargs.add(new DatabaseArgs("c", upd_tag));       // tag
                 uargs.add(new DatabaseArgs("c", upd_tag));       // tag

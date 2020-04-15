@@ -47,6 +47,8 @@ public class OneTwoThreeAPI {
     private LogError log_err;
     private LogBlock log_block;
     private LogPay log_pay;
+    private LogSign log_sign;
+
     private static final MtRand random = new MtRand(System.currentTimeMillis());
 
     // 各種メモリデータ
@@ -87,6 +89,7 @@ public class OneTwoThreeAPI {
         this.log_err = new LogError(this);
         this.log_block = new LogBlock(this);
         this.log_pay = new LogPay(this);
+        this.log_sign = new LogSign(this);
 
         task_afk = new AfkTask(this);
         getServer().getScheduler().scheduleRepeatingTask(task_afk, 20 * 60 * 10);
@@ -119,6 +122,7 @@ public class OneTwoThreeAPI {
     public LogError getLogErr() { return log_err; }
     public LogBlock getLogBlock() { return log_block; }
     public LogPay getLogPay() { return log_pay; }
+    public LogSign getLogSign() { return log_sign; }
 
     // タップモード
     public static enum TAP_MODE {
@@ -199,7 +203,7 @@ public class OneTwoThreeAPI {
     public Player GetPlayerEx(String name) {
         Player ret = null;
         try {
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0053"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0053"));
             ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
             pargs.add(new DatabaseArgs("c", name.toLowerCase()));
             pargs.add(new DatabaseArgs("c", name.toLowerCase()));
@@ -231,7 +235,7 @@ public class OneTwoThreeAPI {
     public String GetAmbiguousXuid(String name) {
         String ret = "";
         try {
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0060"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0060"));
             ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
             pargs.add(new DatabaseArgs("c", "%" + name.toLowerCase() + "%"));
             pargs.add(new DatabaseArgs("c", "%" + name.toLowerCase() + "%"));
@@ -269,7 +273,7 @@ public class OneTwoThreeAPI {
             }
             if (ret.length() <= 0) {
                 // データあいまい検索
-                PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0042"));
+                PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0042"));
                 ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
                 pargs.add(new DatabaseArgs("c", name.toLowerCase() + "%"));
                 ResultSet rs = getDB().ExecuteQuery(ps, pargs);
@@ -365,7 +369,7 @@ public class OneTwoThreeAPI {
             args.add(new DatabaseArgs("i", ""+block.getFloorX()));
             args.add(new DatabaseArgs("i", ""+block.getFloorY()));
             args.add(new DatabaseArgs("i", ""+block.getFloorZ()));
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0036"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0036"));
             ResultSet rs = getDB().ExecuteQuery(ps, args);
             args.clear();
             args = null;
@@ -463,13 +467,13 @@ public class OneTwoThreeAPI {
                         args.add(new DatabaseArgs("i", ""+id));
                         args.add(new DatabaseArgs("c", name));
                         args.add(new DatabaseArgs("c", name));
-                        int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0022"), args);
+                        int ret = getDB().ExecuteUpdate(Language.translate("Sql0022"), args);
                         args.clear();
                         args = null;
                     }
                 }
             }
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0023"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0023"));
             ResultSet rs = getDB().ExecuteQuery(ps, null);
             if (rs != null) {
                 while(rs.next()){
@@ -495,7 +499,7 @@ public class OneTwoThreeAPI {
 
     public void SetupZoneInfo() {
         try {
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0055"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0055"));
             ResultSet rs = getDB().ExecuteQuery(ps, null);
             if (rs != null) {
                 int i = 0;
@@ -540,7 +544,7 @@ public class OneTwoThreeAPI {
         try {
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0028"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0028"));
             ResultSet rs = getDB().ExecuteQuery(ps, args);
             args.clear();
             args = null;
@@ -935,7 +939,7 @@ public class OneTwoThreeAPI {
         try {
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0049"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0049"));
             ResultSet rs = getDB().ExecuteQuery(ps, args);
             args.clear();
             args = null;
@@ -965,7 +969,7 @@ public class OneTwoThreeAPI {
         try {
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0049"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0049"));
             ResultSet rs = getDB().ExecuteQuery(ps, args);
             args.clear();
             args = null;
@@ -996,7 +1000,7 @@ public class OneTwoThreeAPI {
         try {
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-            PreparedStatement ps = getDB().getConnection().prepareStatement(getConfig().getString("SqlStatement.Sql0050"));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0050"));
             ResultSet rs = getDB().ExecuteQuery(ps, args);
             args.clear();
             args = null;
@@ -1026,7 +1030,7 @@ public class OneTwoThreeAPI {
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("i", ""+pay));
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-            ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0051"), args);
+            ret = getDB().ExecuteUpdate(Language.translate("Sql0051"), args);
             args.clear();
             args = null;
 
@@ -1043,7 +1047,7 @@ public class OneTwoThreeAPI {
             ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
             args.add(new DatabaseArgs("i", ""+add));
             args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
-            ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0052"), args);
+            ret = getDB().ExecuteUpdate(Language.translate("Sql0052"), args);
             args.clear();
             args = null;
 
@@ -1155,7 +1159,7 @@ public class OneTwoThreeAPI {
                 args.add(new DatabaseArgs("c", rank_name));
                 args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
                 args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
-                int ret = getDB().ExecuteUpdate(getConfig().getString("SqlStatement.Sql0054"), args);
+                int ret = getDB().ExecuteUpdate(Language.translate("Sql0054"), args);
                 args.clear();
                 args = null;
                 if (ret <= 0) {

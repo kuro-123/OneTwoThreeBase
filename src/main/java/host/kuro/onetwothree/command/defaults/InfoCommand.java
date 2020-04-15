@@ -74,7 +74,7 @@ public class InfoCommand extends CommandBase {
             String s_death = "";
             String s_kill = "";
             String s_chat = "";
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0046"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0046"));
             ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
             pargs.add(new DatabaseArgs("c", xuid));
             ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);

@@ -98,7 +98,7 @@ public class WorldCommand extends CommandBase {
             boolean b_boss = false;
             String s_updater = "";
 
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0047"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0047"));
             ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
             pargs.add(new DatabaseArgs("c", levelname));
             ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);
@@ -256,7 +256,7 @@ public class WorldCommand extends CommandBase {
                     args.add(new DatabaseArgs("b", ""+mob));
                     args.add(new DatabaseArgs("b", ""+boss));
                     args.add(new DatabaseArgs("c", targetPlayer.getDisplayName()));
-                    int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0048"), args);
+                    int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0048"), args);
                     args.clear();
                     args = null;
 

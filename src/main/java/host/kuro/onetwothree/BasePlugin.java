@@ -125,7 +125,7 @@ public class BasePlugin extends PluginBase {
         if (!debug) {
             // ステータスクリア
             this.getLogger().info(Language.translate("onetwothree.unload_status"));
-            api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0044"), null);
+            api.getDB().ExecuteUpdate(Language.translate("Sql0044"), null);
         }
 
         this.getLogger().info(Language.translate("onetwothree.unload_database"));
@@ -144,7 +144,7 @@ public class BasePlugin extends PluginBase {
 
     private boolean InitWorld() {
         try {
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0047"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0047"));
             for (Level lv : api.getServer().getLevels().values()) {
                 String levelname = lv.getName();
                 WorldInfo worldinfo = new WorldInfo();

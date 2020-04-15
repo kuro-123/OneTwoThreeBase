@@ -52,7 +52,7 @@ public class NameCommand extends CommandBase {
         String nickname = "";
         Timestamp ts = null;
         try {
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0009"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0009"));
             ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
             xargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
             ResultSet rs = api.getDB().ExecuteQuery(ps, xargs);
@@ -128,7 +128,7 @@ public class NameCommand extends CommandBase {
                 // プレイヤー表示情報へ登録(UPSERT)
                 StringBuilder sb_upd = new StringBuilder();
                 ArrayList<DatabaseArgs> uargs = new ArrayList<DatabaseArgs>();
-                sb_upd.append(cfg.getString("SqlStatement.Sql0002"));
+                sb_upd.append(Language.translate("Sql0002"));
                 uargs.add(new DatabaseArgs("c", targetPlayer.getLoginChainData().getXUID()));       // xuid
                 uargs.add(new DatabaseArgs("c", name));       // name
                 uargs.add(new DatabaseArgs("c", name));       // name
@@ -181,7 +181,7 @@ public class NameCommand extends CommandBase {
         boolean hit = false;
         try {
             PreparedStatement ps = null;
-            ps = api.getDB().getConnection().prepareStatement(cfg.getString("SqlStatement.Sql0003"));
+            ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0003"));
             ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
             xargs.add(new DatabaseArgs("c", target.toLowerCase()));
             ResultSet rs_name = api.getDB().ExecuteQuery(ps, xargs);

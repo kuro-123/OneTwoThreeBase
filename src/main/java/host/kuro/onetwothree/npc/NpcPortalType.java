@@ -10,6 +10,7 @@ import cn.nukkit.level.Position;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.*;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.datatype.ItemInfo;
 import host.kuro.onetwothree.forms.elements.CustomForm;
@@ -81,7 +82,7 @@ public class NpcPortalType extends NpcType {
                 String splayer = data.get(2).toString();
                 if (!splayer.equals("指定なし")) {
                     try {
-                        PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0021"));
+                        PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0021"));
                         ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
                         pargs.add(new DatabaseArgs("c", splayer.toLowerCase()));
                         ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);

@@ -32,7 +32,7 @@ public class LogWindow {
         args.add(new DatabaseArgs("c", res5));
         args.add(new DatabaseArgs("c", res6));
         args.add(new DatabaseArgs("c", message));
-        api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0031"), args);
+        api.getDB().ExecuteUpdate(Language.translate("Sql0031"), args);
         args.clear();
         args = null;
     }

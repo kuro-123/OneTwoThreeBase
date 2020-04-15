@@ -7,6 +7,7 @@ import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -110,7 +111,7 @@ public class SellCommand extends CommandBase {
                     margs.add(new DatabaseArgs("c", targetPlayer.getLoginChainData().getXUID()));
                     margs.add(new DatabaseArgs("i", ""+sell_kingaku));
                     //margs.add(new DatabaseArgs("i", ""+sell_kingaku));
-                    int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0029"), margs);
+                    int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0029"), margs);
                     margs.clear();
                     margs = null;
                     if (ret <= 0) {

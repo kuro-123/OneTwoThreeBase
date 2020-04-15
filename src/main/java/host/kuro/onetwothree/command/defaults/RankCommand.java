@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -55,7 +56,7 @@ public class RankCommand extends CommandBase {
                 rank_list.add("4:鯖主");
             }
             // プレイヤー一覧
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0025"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0025"));
             ResultSet rs = api.getDB().ExecuteQuery(ps, null);
             api.player_list.put(0, "指定なし");
             int i = 1;
@@ -102,7 +103,7 @@ public class RankCommand extends CommandBase {
                     String moto_name = "";
                     ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
                     args.add(new DatabaseArgs("c", pname));
-                    PreparedStatement ps_name = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0026"));
+                    PreparedStatement ps_name = api.getDB().getConnection().prepareStatement(Language.translate("Sql0026"));
                     ResultSet rs_name = api.getDB().ExecuteQuery(ps_name, args);
                     args.clear();
                     args = null;
@@ -126,7 +127,7 @@ public class RankCommand extends CommandBase {
                         ArrayList<DatabaseArgs> rargs = new ArrayList<DatabaseArgs>();
                         rargs.add(new DatabaseArgs("i", ""+iRank));
                         rargs.add(new DatabaseArgs("c", moto_name));
-                        int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0027"), rargs);
+                        int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0027"), rargs);
                         rargs.clear();
                         rargs = null;
                         if (ret > 0) {

@@ -11,11 +11,13 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.block.ItemFrameDropItemEvent;
+import cn.nukkit.event.block.SignChangeEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDeathEvent;
 import cn.nukkit.event.entity.EntityShootBowEvent;
 import cn.nukkit.event.inventory.CraftItemEvent;
+import cn.nukkit.event.inventory.InventoryOpenEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseCustom;
@@ -25,8 +27,7 @@ import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowModal;
 import cn.nukkit.form.window.FormWindowSimple;
-import cn.nukkit.inventory.PlayerInventory;
-import cn.nukkit.inventory.Recipe;
+import cn.nukkit.inventory.*;
 import cn.nukkit.inventory.transaction.CraftingTransaction;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.GameRule;
@@ -99,7 +100,7 @@ public class EventListener implements Listener {
             args.add(new DatabaseArgs("i", "" + player.getLoginChainData().getDeviceOS()));   // devos
             args.add(new DatabaseArgs("c", player.getLoginChainData().getGameVersion()));       // version
             args.add(new DatabaseArgs("c", ""));  // play_status
-            int ret = api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0004"), args);
+            int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0004"), args);
             args.clear();
             args = null;
             if (ret == DatabaseManager.DUPLICATE) {
@@ -1170,5 +1171,103 @@ public class EventListener implements Listener {
         }
         player.sendTip(TextFormat.LIGHT_PURPLE + "物件情報 - [ " + TextFormat.YELLOW + zi.rank + "ランク" + TextFormat.LIGHT_PURPLE + " ] - 価格: " + api.comma_format.format(price) + "p");
         api.tip_wait.put(player, System.currentTimeMillis());
+    }
+
+    @EventHandler
+    public void onSignChange(SignChangeEvent event) {
+        String[] lines = event.getLines();
+        api.getLogSign().Write(event.getPlayer(), event.getBlock(), lines);
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        Player player = event.getPlayer();
+        Inventory inv = event.getInventory();
+        try {
+            String lv,kind;
+            int x,y,z,ret;
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            if (inv instanceof ChestInventory) {
+                lv = ((ChestInventory)inv).getHolder().getLevel().getName();
+                x = ((ChestInventory)inv).getHolder().getFloorX();
+                y = ((ChestInventory)inv).getHolder().getFloorY();
+                z = ((ChestInventory)inv).getHolder().getFloorZ();
+                args.add(new DatabaseArgs("c", lv));
+                args.add(new DatabaseArgs("i", ""+x));
+                args.add(new DatabaseArgs("i", ""+y));
+                args.add(new DatabaseArgs("i", ""+z));
+                ret = api.getDB().ExecuteUpdate(Language.translate("Sql0062"), args);
+                kind = "ChestInventory";
+
+            } else if (inv instanceof DoubleChestInventory) {
+                lv = ((DoubleChestInventory)inv).getHolder().getLevel().getName();
+                x = ((DoubleChestInventory)inv).getHolder().getFloorX();
+                y = ((DoubleChestInventory)inv).getHolder().getFloorY();
+                z = ((DoubleChestInventory)inv).getHolder().getFloorZ();
+                args.add(new DatabaseArgs("c", lv));
+                args.add(new DatabaseArgs("i", ""+x));
+                args.add(new DatabaseArgs("i", ""+y));
+                args.add(new DatabaseArgs("i", ""+z));
+                ret = api.getDB().ExecuteUpdate(Language.translate("Sql0062"), args);
+                kind = "DoubleChestInventory";
+
+            } else if (inv instanceof ShulkerBoxInventory) {
+                lv = ((ShulkerBoxInventory)inv).getHolder().getLevel().getName();
+                x = ((ShulkerBoxInventory)inv).getHolder().getFloorX();
+                y = ((ShulkerBoxInventory)inv).getHolder().getFloorY();
+                z = ((ShulkerBoxInventory)inv).getHolder().getFloorZ();
+                args.add(new DatabaseArgs("c", lv));
+                args.add(new DatabaseArgs("i", ""+x));
+                args.add(new DatabaseArgs("i", ""+y));
+                args.add(new DatabaseArgs("i", ""+z));
+                ret = api.getDB().ExecuteUpdate(Language.translate("Sql0062"), args);
+                kind = "ShulkerBoxInventory";
+
+            } else if (inv instanceof PlayerInventory) {
+                lv = "NONE";
+                x = 0;
+                y = 0;
+                z = 0;
+                args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+                ret = api.getDB().ExecuteUpdate(Language.translate("Sql0063"), args);
+                kind = "PlayerInventory";
+            } else {
+                lv = "NONE";
+                x = 0;
+                y = 0;
+                z = 0;
+                kind = "NONE";
+            }
+            args.clear();
+            args = null;
+
+            ArrayList<DatabaseArgs> iargs = new ArrayList<DatabaseArgs>();
+
+            int max = inv.getSize();
+            for (int i=0; i<=max; i++) {
+                Item item = inv.getItem(i);
+                if (item.getId() != Item.AIR) {
+                    iargs.add(new DatabaseArgs("c", lv));
+                    iargs.add(new DatabaseArgs("i", ""+x));
+                    iargs.add(new DatabaseArgs("i", ""+y));
+                    iargs.add(new DatabaseArgs("i", ""+z));
+                    iargs.add(new DatabaseArgs("c", kind));
+                    iargs.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+                    iargs.add(new DatabaseArgs("c", ""+i));
+                    iargs.add(new DatabaseArgs("i", ""+item.getId()));
+                    iargs.add(new DatabaseArgs("i", ""+item.getDamage()));
+                    iargs.add(new DatabaseArgs("c", ""+item.getName()));
+                    iargs.add(new DatabaseArgs("c", ""+item.getCustomName()));
+                    iargs.add(new DatabaseArgs("i", ""+item.getCount()));
+                    ret = api.getDB().ExecuteUpdate(Language.translate("Sql0064"), iargs);
+                    iargs.clear();
+                }
+            }
+            iargs = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            api.getLogErr().Write(null, "onInventoryOpen : " + e.getStackTrace()[1].getMethodName(), e.getMessage() + " " + e.getStackTrace(), "");
+        }
     }
 }

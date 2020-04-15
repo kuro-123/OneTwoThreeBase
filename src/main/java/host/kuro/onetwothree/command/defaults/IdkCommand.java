@@ -7,6 +7,7 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -40,7 +41,7 @@ public class IdkCommand extends CommandBase {
         try {
             String xuid = player.getLoginChainData().getXUID();
             long play_time = -1;
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(api.getConfig().getString("SqlStatement.Sql0043"));
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0043"));
             ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
             pargs.add(new DatabaseArgs("c", xuid));
             ResultSet rs = api.getDB().ExecuteQuery(ps, pargs);

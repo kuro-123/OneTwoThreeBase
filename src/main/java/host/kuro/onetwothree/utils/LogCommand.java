@@ -32,7 +32,7 @@ public class LogCommand {
         args.add(new DatabaseArgs("c", arg5));
         args.add(new DatabaseArgs("c", arg6));
         args.add(new DatabaseArgs("c", message));
-        api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0030"), args);
+        api.getDB().ExecuteUpdate(Language.translate("Sql0030"), args);
         args.clear();
         args = null;
     }

@@ -21,10 +21,10 @@ public class LogPay {
         args.add(new DatabaseArgs("i", ""+api.GetRank(player)));
         args.add(new DatabaseArgs("c", action));
         args.add(new DatabaseArgs("c", kind));
-        args.add(new DatabaseArgs("c", amount));
-        api.getDB().ExecuteUpdate(api.getConfig().getString("SqlStatement.Sql0057"), args);
+        args.add(new DatabaseArgs("i", amount));
+        api.getDB().ExecuteUpdate(Language.translate("Sql0057"), args);
         args.clear();
         args = null;
     }
-
+//Sql0057=INSERT INTO log_pay (log_date, xuid, rank, action, kind, amount) VALUES (current_timestamp,?,?,?,?,?)
 }

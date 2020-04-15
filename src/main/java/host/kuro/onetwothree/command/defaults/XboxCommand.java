@@ -6,6 +6,7 @@ import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -53,7 +54,7 @@ public class XboxCommand extends CommandBase {
             // XUIDチェック
             String xuid = "";
             PreparedStatement ps = null;
-            ps = api.getDB().getConnection().prepareStatement(cfg.getString("SqlStatement.Sql0011"));
+            ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0011"));
             ArrayList<DatabaseArgs> xargs = new ArrayList<DatabaseArgs>();
             xargs.add(new DatabaseArgs("c", name.toLowerCase()));
             ResultSet rs = api.getDB().ExecuteQuery(ps, xargs);
