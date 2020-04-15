@@ -1342,6 +1342,17 @@ public class OneTwoThreeAPI {
 
     public String GetErrorMessage(Exception ex) {
         StackTraceElement[] ste = ex.getStackTrace();
-        return "[ " + ste[ste.length-1] + "] " + ex.getClass().getName() + ": "+ ex.getMessage();
+        String buff = "";
+        StringBuilder sb = new StringBuilder();
+        for (StackTraceElement element: ste) {
+            sb.append("[");
+            sb.append(element);
+            sb.append("]\n");
+        }
+        buff = (ex.getClass().getName() + ": "+ ex.getMessage() + " -> " + new String(sb));
+        if (buff.length() > 2000) {
+            buff = buff.substring(0, 2000);
+        }
+        return buff;
     }
 }
