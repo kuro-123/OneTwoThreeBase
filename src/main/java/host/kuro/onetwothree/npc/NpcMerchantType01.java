@@ -2,13 +2,10 @@ package host.kuro.onetwothree.npc;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.BlockAir;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
-import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.*;
-import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.datatype.ItemInfo;
@@ -36,14 +33,14 @@ public class NpcMerchantType01 extends NpcType {
         if (item == null) {
             // 手持ちなしはエラー
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin021, 0, false); // 失敗
-            SimpleForm form = new SimpleForm(this.getName(), "手にアイテムを持っていませんよ");
+            SimpleForm form = new SimpleForm(this.getName(), Language.translate("npc.merchant.type01.message01"));
             form.send(player, (targetPlayer, targetForm, data) -> {});
             return;
         }
         if (!api.IsTagItem(item)) {
             // タグアイテム以外はエラー
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin021, 0, false); // 失敗
-            SimpleForm form = new SimpleForm(this.getName(), "そのアイテムは買えないアイテムですね");
+            SimpleForm form = new SimpleForm(this.getName(), Language.translate("npc.merchant.type01.message02"));
             form.send(player, (targetPlayer, targetForm, data) -> {});
             return;
         }
@@ -51,7 +48,7 @@ public class NpcMerchantType01 extends NpcType {
         if (ip == null) {
             // 価格が0以下はエラー
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin021, 0, false); // 失敗
-            SimpleForm form = new SimpleForm(this.getName(), "そのアイテムは価格設定されていないみたいです");
+            SimpleForm form = new SimpleForm(this.getName(), Language.translate("npc.merchant.type01.message03"));
             form.send(player, (targetPlayer, targetForm, data) -> {});
             return;
         }
@@ -59,33 +56,23 @@ public class NpcMerchantType01 extends NpcType {
         if (price <= 0) {
             // 価格が0以下はエラー
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin021, 0, false); // 失敗
-            SimpleForm form = new SimpleForm(this.getName(), "そのアイテムは価格設定されていないみたいです");
+            SimpleForm form = new SimpleForm(this.getName(), Language.translate("npc.merchant.type01.message03"));
             form.send(player, (targetPlayer, targetForm, data) -> {});
             return;
         }
 
-        String item_name = item.getName();
-        int suryo = item.getCount();
-        int kingaku = price * suryo;
-        StringBuilder sb = new StringBuilder();
-        sb.append("手持ちアイテム [ ");
-        sb.append(item_name);
-        sb.append(" ]\n\n");
-        sb.append("数量 : " + suryo + "個\n");
-        sb.append("金額 : " + kingaku + "p\n\n");
-        sb.append("売却しますか？");
-        ModalForm form = new ModalForm("アイテム売却", new String(sb),"はい","いいえ");
+        String message = api.getMessage().GetSellMessage(item, price);
+        ModalForm form = new ModalForm(Language.translate("npc.merchant.sell"), message,Language.translate("onetwothree.yes"),Language.translate("onetwothree.no"));
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.voi044, 0, false); // 男性
         form.send(player, (targetPlayer, targetForm, data) -> {
             try {
                 if (data != 0) {
                     // キャンセル
-                    targetPlayer.sendMessage(api.GetErrMessage("commands.sell.err_cansel"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_cansel"), targetPlayer);
                     return;
                 }
                 // ウィンドウログ
-                api.getLogWin().Write(targetPlayer, "アイテム売却", ""+data, "", "", "", "", "", targetPlayer.getDisplayName());
+                api.getLogWin().Write(targetPlayer, Language.translate("npc.merchant.sell"), ""+data, "", "", "", "", "", targetPlayer.getDisplayName());
 
                 Item sell_item = targetPlayer.getInventory().getItemInHand();
                 ItemInfo sell_ip = api.item_info.get(sell_item.getId());
@@ -103,8 +90,7 @@ public class NpcMerchantType01 extends NpcType {
                 margs = null;
                 if (ret <= 0) {
                     // 更新エラー
-                    targetPlayer.sendMessage(api.GetErrMessage("commands.sell.err_update"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_update"), targetPlayer);
                     return;
                 }
                 api.getLogPay().Write(targetPlayer, this.getName(), "plus", ""+sell_kingaku);
@@ -113,27 +99,11 @@ public class NpcMerchantType01 extends NpcType {
                 targetPlayer.getInventory().setItemInHand(new ItemBlock(new BlockAir()));
 
                 // メッセージ
-                StringBuilder ssb = new StringBuilder();
-                ssb.append("手持ちアイテム [ ");
-                ssb.append(TextFormat.YELLOW);
-                ssb.append(sell_item_name);
-                ssb.append(" ");
-                ssb.append(sell_suryo + "個 ");
-                ssb.append(TextFormat.WHITE);
-                ssb.append("] を [ ");
-                ssb.append(TextFormat.YELLOW);
-                ssb.append(sell_kingaku);
-                ssb.append("p ");
-                ssb.append(TextFormat.WHITE);
-                ssb.append("] で売却しました！");
-                targetPlayer.sendMessage(new String(ssb));
-                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin071, 0, false); // レジスタ
+                api.getMessage().SendSelledMessage(targetPlayer, sell_item_name, sell_suryo, sell_kingaku);
 
             } catch (Exception e) {
-                targetPlayer.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
-                return;
+                api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), targetPlayer);
+                api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
             }
         });
     }

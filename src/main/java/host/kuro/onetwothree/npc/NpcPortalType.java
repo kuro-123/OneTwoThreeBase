@@ -40,35 +40,33 @@ public class NpcPortalType extends NpcType {
     private boolean WarpWindow(Player player) {
         try {
             List<String> lvList = new ArrayList<String>();
-            lvList.add("指定なし");
+            lvList.add(Language.translate("onetwothree.selection.none"));
             for (Level lv : api.getServer().getLevels().values()) {
                 lvList.add(lv.getName());
             }
 
             List<String> pList = new ArrayList<String>();
-            pList.add("指定なし");
+            pList.add(Language.translate("onetwothree.selection.none"));
             for (Player p : api.getServer().getOnlinePlayers().values()) {
                 pList.add(p.getDisplayName());
             }
 
             CustomForm form = new CustomForm(this.getName())
-                    .addLabel("ワープする？")
-                    .addDropDown("ワールドリスト", lvList)
-                    .addDropDown("プレイヤーリスト", pList);
-
+                    .addLabel(Language.translate("npc.portal.type01.message01"))
+                    .addDropDown(Language.translate("npc.portal.wlist"), lvList)
+                    .addDropDown(Language.translate("npc.portal.plist"), pList);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
             form.send(player, (targetPlayer, targetForm, data) -> {
                 if(data == null) {
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    targetPlayer.sendMessage(api.GetWarningMessage("onetwothree.warp_err"));
+                    api.getMessage().SendWarningMessage(Language.translate("onetwothree.warp_err"), targetPlayer);
                     return;
                 }
                 // ウィンドウログ
-                api.getLogWin().Write(targetPlayer, "ワープ", data.get(1).toString(), data.get(2).toString(), "", "", "", "", targetPlayer.getDisplayName());
+                api.getLogWin().Write(targetPlayer, Language.translate("commands.warp.title"), data.get(1).toString(), data.get(2).toString(), "", "", "", "", targetPlayer.getDisplayName());
 
                 // ワールド指定
                 String sworld = data.get(1).toString();
-                if (!sworld.equals("指定なし")) {
+                if (!sworld.equals(Language.translate("onetwothree.selection.none"))) {
                     Position pos = api.getServer().getLevelByName(sworld).getSpawnLocation();
                     if (pos != null) {
                         if (targetPlayer.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
@@ -80,7 +78,7 @@ public class NpcPortalType extends NpcType {
 
                 // プレイヤー指定
                 String splayer = data.get(2).toString();
-                if (!splayer.equals("指定なし")) {
+                if (!splayer.equals(Language.translate("onetwothree.selection.none"))) {
                     try {
                         PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0021"));
                         ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
@@ -104,9 +102,7 @@ public class NpcPortalType extends NpcType {
                         }
 
                         Player target = api.getServer().getPlayerExact(splayer);
-                        if (target.getDisplayName().equalsIgnoreCase(targetPlayer.getDisplayName())) {
-                            targetPlayer.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
-                        } else {
+                        if (!target.getDisplayName().equalsIgnoreCase(targetPlayer.getDisplayName())) {
                             Position pos = target.getPosition();
                             if (pos != null) {
                                 if (targetPlayer.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
@@ -115,18 +111,18 @@ public class NpcPortalType extends NpcType {
                                 }
                             }
                         }
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getMessage().SendWarningMessage(Language.translate("commands.warp.err_self"), targetPlayer);
 
                     } catch (SQLException e){
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                        api.getMessage().SendErrorMessage(Language.translate("commands.warp.err"), targetPlayer);
+                        api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                     }
                 }
             });
 
         } catch (Exception e) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("commands.warp.err"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;
@@ -134,24 +130,7 @@ public class NpcPortalType extends NpcType {
 
     private void TeleportMessage(Player player, String target) {
         if (player.isSpectator()) return;
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append("[ﾜｰﾌﾟ] ");
-        sb.append("[ ");
-        sb.append(TextFormat.WHITE);
-        sb.append(player.getDisplayName());
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append(" ] -> [ ");
-        sb.append(TextFormat.WHITE);
-        sb.append(target);
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append(" ]");
-        String message = new String(sb);
-        api.getServer().broadcastMessage(message);
-        api.sendDiscordGreenMessage(message);
-
-        api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin020, 0, false); // WARP
+        api.getMessage().SendTeleportMessage(player, target);
     }
 
 }

@@ -25,7 +25,7 @@ public abstract class CommandBase extends Command {
         return api;
     }
 
-    protected void sendUsage(CommandSender sender) {
+    public void sendUsage(CommandSender sender) {
         sender.sendMessage(new TranslationContainer("commands.generic.usage", this.usageMessage));
     }
 

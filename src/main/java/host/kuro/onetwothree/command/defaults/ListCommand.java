@@ -43,7 +43,7 @@ public class ListCommand extends CommandBase {
                 }
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }
@@ -82,7 +82,7 @@ public class ListCommand extends CommandBase {
             sb.append(""+onlineCount);
             sb.append("人 ]");
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return "";
         }
         return new String(sb);

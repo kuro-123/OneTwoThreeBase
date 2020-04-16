@@ -34,8 +34,7 @@ public class IdkCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         try {
@@ -62,8 +61,7 @@ public class IdkCommand extends CommandBase {
                 rs = null;
             }
             if (play_time == -1) {
-                this.sendUsage(sender);
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendUsage(this, sender);
                 return false;
             }
            long keika = 0;
@@ -79,8 +77,7 @@ public class IdkCommand extends CommandBase {
             long ji = (keika / 60) / 60;
 
             if (hun <= 0) {
-                this.sendUsage(sender);
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendUsage(this, sender);
                 return false;
             }
 
@@ -89,9 +86,8 @@ public class IdkCommand extends CommandBase {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
 
         } catch (Exception e) {
-            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;

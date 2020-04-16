@@ -3,7 +3,6 @@ package host.kuro.onetwothree.npc;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.EntityHuman;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
@@ -12,8 +11,6 @@ import cn.nukkit.level.particle.SmokeParticle;
 import cn.nukkit.nbt.tag.*;
 import cn.nukkit.network.protocol.AddPlayerPacket;
 import host.kuro.onetwothree.OneTwoThreeAPI;
-import host.kuro.onetwothree.forms.elements.SimpleForm;
-import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.MtRand;
 
 import java.math.BigDecimal;
@@ -186,7 +183,7 @@ public class NpcType extends EntityHuman {
                 Float scale = Float.parseFloat(sscale);
                 this.setScale(scale);
             } catch (Exception e) {
-                //api.getLogErr().Write(player, api.GetErrorMessage(e));
+                //api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             }
         }
     }

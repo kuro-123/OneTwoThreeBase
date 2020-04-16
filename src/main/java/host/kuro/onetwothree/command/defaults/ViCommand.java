@@ -35,14 +35,12 @@ public class ViCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsGameMaster(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         return ViewInventoryWindow(player);
@@ -50,7 +48,7 @@ public class ViCommand extends CommandBase {
 
     private boolean ViewInventoryWindow(Player player) {
         ArrayList<String> rlist = new ArrayList<String>();
-        rlist.add("指定なし");
+        rlist.add(Language.translate("onetwothree.selection.none"));
         rlist.add("訪問");
         rlist.add("住民");
         rlist.add("ＧＭ");
@@ -77,7 +75,7 @@ public class ViCommand extends CommandBase {
                 String name = data.get(3).toString();
                 String item = data.get(4).toString();
 
-                if (rank.equals("指定なし")) {
+                if (rank.equals(Language.translate("onetwothree.selection.none"))) {
                     rank = "";
                 }
                 PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0067"));
@@ -112,9 +110,8 @@ public class ViCommand extends CommandBase {
                 result.send(targetPlayer, (targetPlayer2, targetForm2, data2) -> {});
 
             } catch (Exception e) {
-                this.sendUsage(targetPlayer);
-                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), targetPlayer);
+                api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
             }
         });
         return true;

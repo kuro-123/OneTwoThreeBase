@@ -35,14 +35,12 @@ public class NameCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsJyumin(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         // 現在のプレイヤー情報取得
@@ -71,7 +69,7 @@ public class NameCommand extends CommandBase {
                 rs = null;
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
 
         // 経過時間が設定値日数を超えていなければ変更不可
@@ -85,7 +83,7 @@ public class NameCommand extends CommandBase {
             diff = diff / 86400000; // 日数換算(1000 / 60 / 60 / 24)
             if (diff < allow_days) {
                 StringBuilder mes = new StringBuilder();
-                mes.append(api.GetWarningMessage("commands.name.err_days1"));
+                mes.append(Language.translate("commands.name.err_days1"));
                 mes.append(" (");
                 mes.append(Language.translate("commands.name.err_days2"));
                 mes.append(": ");
@@ -139,13 +137,11 @@ public class NameCommand extends CommandBase {
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return;
                 }
-                targetPlayer.sendMessage(api.GetInfoMessage("commands.name.success"));
-                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+                api.getMessage().SendInfoMessage(Language.translate("commands.name.success"), targetPlayer);
 
             } catch (Exception e) {
-                this.sendUsage(targetPlayer);
-                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                api.getMessage().SendWarningMessage(Language.translate("commands.name.fail"), targetPlayer);
+                api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
             }
         });
         return true;
@@ -155,8 +151,7 @@ public class NameCommand extends CommandBase {
         // 文字数チェック
         int len =target.length();
         if (len < 3 || len > 16) {
-            player.sendMessage(api.GetWarningMessage("commands.name.err_len"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendWarningMessage(Language.translate("commands.name.err_len"), player);
             return false;
         }
         return true;
@@ -165,8 +160,7 @@ public class NameCommand extends CommandBase {
     private boolean IsHankaku(Player player, String target) {
         // 半角英数チェック(_のみOK)
         if (!api.isHankakuEisu(target)) {
-            player.sendMessage(api.GetWarningMessage("commands.name.err_eisu"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendWarningMessage(Language.translate("commands.name.err_eisu"), player);
             return false;
         }
         return true;
@@ -198,14 +192,12 @@ public class NameCommand extends CommandBase {
                 rs_name = null;
             }
             if (hit) {
-                player.sendMessage(api.GetWarningMessage("commands.name.err_dupli"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendWarningMessage(Language.translate("commands.name.err_dupli"), player);
                 return false;
             }
         } catch (Exception e) {
-            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;

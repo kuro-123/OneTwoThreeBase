@@ -61,13 +61,10 @@ public class TwitterTask extends Task {
                 sb.append("\n");
                 count++;
             }
-            String message = new String(sb);
-            plugin.getServer().broadcastMessage(message);
-            api.sendDiscordYellowMessage(message);
-            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin015, 0, false); // INFO
+            api.getMessage().SendWarningMessage(new String(sb), true);
 
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
     }
 }

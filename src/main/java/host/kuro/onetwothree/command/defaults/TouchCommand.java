@@ -26,47 +26,41 @@ public class TouchCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsJyumin(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         // スキルチェック
         if (!api.IsGameMaster(player)) {
             int count = api.GetBreakPlaceCount(player);
             if (count < 50000) {
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                player.sendMessage(api.GetWarningMessage("onetwothree.skill_err"));
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.skill_err"), player);
                 return false;
             }
         }
         try {
             if (!OneTwoThreeAPI.mode.containsKey(player)) {
                 OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_TOUCH);
-                player.sendMessage(api.GetInfoMessage(Language.translate("commands.touch.modeon")));;
-
+                api.getMessage().SendInfoMessage(Language.translate("commands.touch.modeon"), player);
             } else {
                 if (OneTwoThreeAPI.mode.get(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
                     OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_NONE);
-                    player.sendMessage(api.GetInfoMessage(Language.translate("commands.touch.modeoff")));
+                    api.getMessage().SendInfoMessage(Language.translate("commands.touch.modeoff"), player);
                 } else {
                     OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_TOUCH);
-                    player.sendMessage(api.GetInfoMessage(Language.translate("commands.touch.modeon")));
+                    api.getMessage().SendInfoMessage(Language.translate("commands.touch.modeon"), player);
                 }
             }
 
         } catch (Exception e) {
-            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
-        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
         return true;
     }
 }

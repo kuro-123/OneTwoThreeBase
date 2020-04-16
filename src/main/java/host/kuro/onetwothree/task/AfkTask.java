@@ -33,17 +33,8 @@ public class AfkTask extends AsyncTask {
                 afk.put(p, value);
             }
             if (value > 2) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(TextFormat.YELLOW);
-                sb.append("【自動キック】 ");
-                sb.append(TextFormat.WHITE);
-                sb.append(p.getDisplayName());
-                sb.append(TextFormat.YELLOW);
-                sb.append(" さんは、長時間放置していたため自動キックされました");
-                String message = new String(sb);
-                api.getServer().broadcastMessage(message);
-                api.sendDiscordYellowMessage(message);
-                p.kick("長時間放置のため自動キックされました");
+                api.getMessage().SendAutoKick(p);
+                p.kick(Language.translate("onetwothree.kick.long"));
                 afk.remove(p);
                 kick = true;
             }

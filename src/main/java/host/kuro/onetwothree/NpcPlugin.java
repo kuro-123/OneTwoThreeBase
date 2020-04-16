@@ -258,7 +258,7 @@ public class NpcPlugin {
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;

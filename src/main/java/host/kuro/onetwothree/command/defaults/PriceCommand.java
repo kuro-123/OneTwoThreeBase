@@ -3,7 +3,6 @@ package host.kuro.onetwothree.command.defaults;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
-import cn.nukkit.utils.Config;
 import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
@@ -29,14 +28,12 @@ public class PriceCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsGameMaster(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         return PriceWindow(player);
@@ -45,7 +42,7 @@ public class PriceCommand extends CommandBase {
     private boolean PriceWindow(Player player) {
         try {
             ArrayList<String> ilist = new ArrayList<String>();
-            ilist.add("指定なし");
+            ilist.add(Language.translate("onetwothree.selection.none"));
             for(Iterator<ItemInfo> iterator = api.item_info.values().iterator(); iterator.hasNext(); ) {
                 ItemInfo value = iterator.next();
                 ilist.add("[ ID: " + value.id + " ] < " + value.name + " > 現価格: " + value.price);
@@ -72,14 +69,12 @@ public class PriceCommand extends CommandBase {
                             sprice = data.get(2).toString();
                             price = Integer.parseInt(sprice);
                             if (!(0 <= price && price <= 100)) {
-                                targetPlayer.sendMessage(api.GetWarningMessage("commands.price.price_err"));
-                                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                api.getMessage().SendWarningMessage(Language.translate("commands.price.price_err"), targetPlayer);
                                 return;
                             }
                         } catch (Exception e) {
-                            targetPlayer.sendMessage(api.GetWarningMessage("commands.price.price_err"));
-                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                            api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                            api.getMessage().SendErrorMessage(Language.translate("commands.price.price_err"), targetPlayer);
+                            api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                             return;
                         }
 
@@ -94,9 +89,8 @@ public class PriceCommand extends CommandBase {
                             id = Integer.parseInt(itemid);
 
                         } catch (Exception e) {
-                            targetPlayer.sendMessage(api.GetWarningMessage("commands.price.id_err"));
-                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                            api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                            api.getMessage().SendErrorMessage(Language.translate("commands.price.id_err"), targetPlayer);
+                            api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                             return;
                         }
 
@@ -118,25 +112,23 @@ public class PriceCommand extends CommandBase {
                                 iteminfo.price = Integer.parseInt(sprice);
                                 api.item_info.put(id, iteminfo);
 
-                                targetPlayer.sendMessage(api.GetWarningMessage("commands.price.success"));
-                                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+                                api.getMessage().SendInfoMessage(Language.translate("commands.price.success"), targetPlayer);
                             } else {
-                                targetPlayer.sendMessage(api.GetWarningMessage("commands.price.fail"));
-                                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                api.getMessage().SendWarningMessage(Language.translate("commands.price.fail"), targetPlayer);
                             }
                         }
 
                     } catch (Exception e) {
                         this.sendUsage(targetPlayer);
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        api.getLogErr().Write(player, api.GetErrorMessage(e));
+                        api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                     }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }

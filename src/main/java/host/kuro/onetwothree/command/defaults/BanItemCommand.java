@@ -3,7 +3,6 @@ package host.kuro.onetwothree.command.defaults;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
-import cn.nukkit.utils.Config;
 import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
@@ -29,14 +28,12 @@ public class BanItemCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsGameMaster(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         return BanItemWindow(player);
@@ -45,14 +42,14 @@ public class BanItemCommand extends CommandBase {
     private boolean BanItemWindow(Player player) {
         try {
             ArrayList<String> ilist = new ArrayList<String>();
-            ilist.add("指定なし");
+            ilist.add(Language.translate("onetwothree.selection.none"));
             for(Iterator<ItemInfo> iterator = api.item_info.values().iterator(); iterator.hasNext(); ) {
                 ItemInfo value = iterator.next();
                 ilist.add("[ ID: " + value.id + " ] < " + value.name + " > バン: " + value.ban);
             }
-            CustomForm form = new CustomForm("ＢＡＮアイテム設定")
-                    .addLabel("ＢＡＮアイテムの設定(ON/OFF)が行えます")
-                    .addDropDown("アイテムリスト", ilist);
+            CustomForm form = new CustomForm(Language.translate("commands.banitem.title"))
+                    .addLabel(Language.translate("commands.banitem.message01"))
+                    .addDropDown(Language.translate("commands.banitem.list"), ilist);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
             form.send(player, (targetPlayer, targetForm, data) -> {
                 try {
@@ -62,7 +59,7 @@ public class BanItemCommand extends CommandBase {
                         return;
                     }
                     // ウィンドウログ
-                    api.getLogWin().Write(targetPlayer, "ＢＡＮアイテム設定", data.get(1).toString(), "", "", "", "", "", targetPlayer.getDisplayName());
+                    api.getLogWin().Write(targetPlayer, Language.translate("commands.banitem.title"), data.get(1).toString(), "", "", "", "", "", targetPlayer.getDisplayName());
 
                     // ID
                     String sitem = "";
@@ -75,9 +72,8 @@ public class BanItemCommand extends CommandBase {
                         id = Integer.parseInt(itemid);
 
                     } catch (Exception e) {
-                        player.sendMessage(api.GetWarningMessage("commands.banitem.id_err"));
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                        api.getMessage().SendErrorMessage(Language.translate("commands.banitem.id_err"), targetPlayer);
+                        api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                         return;
                     }
 
@@ -108,25 +104,23 @@ public class BanItemCommand extends CommandBase {
                                 ip.ban = "〇";
                             }
                             api.item_info.put(id, ip);
-                            player.sendMessage(api.GetWarningMessage("commands.banitem.success"));
-                            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+
+                            api.getMessage().SendInfoMessage(Language.translate("commands.banitem.success"), targetPlayer);
                         } else {
-                            player.sendMessage(api.GetWarningMessage("commands.banitem.fail"));
-                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            api.getMessage().SendWarningMessage(Language.translate("commands.banitem.fail"), targetPlayer);
                         }
                     }
 
                 } catch (Exception e) {
-                    this.sendUsage(targetPlayer);
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                    api.getMessage().SendErrorMessage(Language.translate("commands.banitem.fail"), targetPlayer);
+                    api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }

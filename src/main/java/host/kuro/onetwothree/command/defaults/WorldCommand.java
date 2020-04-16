@@ -40,19 +40,16 @@ public class WorldCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         if (args.length != 1) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsGameMaster(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         return WorldWindow(player, args[0]);
@@ -302,21 +299,19 @@ public class WorldCommand extends CommandBase {
                     api.world_info.put(levelname, worldinfo);
 
                     String message = new String(sb);
-                    api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin011, 0, false); // SUCCESS
-                    api.getServer().broadcastMessage(message);
-                    api.sendDiscordYellowMessage(message);
+                    api.getMessage().SendInfoMessage(message, true);
 
                 } catch (Exception e) {
                     this.sendUsage(targetPlayer);
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                    api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }

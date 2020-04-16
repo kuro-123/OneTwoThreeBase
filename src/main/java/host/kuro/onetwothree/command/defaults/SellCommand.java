@@ -31,36 +31,31 @@ public class SellCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsJyumin(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         try {
             Item item = player.getInventory().getItemInHand();
             if (item == null) {
                 // 手持ちなしはエラー
-                player.sendMessage(api.GetErrMessage("commands.sell.err_itemnone"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_itemnone"), player);
                 return false;
             }
             if (!api.IsTagItem(item)) {
                 // タグアイテム以外はエラー
-                player.sendMessage(api.GetErrMessage("commands.sell.err_tagitem"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_tagitem"), player);
                 return false;
             }
             ItemInfo ip = api.item_info.get(item.getId());
             int price = ip.price;
             if (price <= 0) {
                 // 価格が0以下はエラー
-                player.sendMessage(api.GetErrMessage("commands.sell.err_price"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_price"), player);
                 return false;
             }
 
@@ -80,8 +75,7 @@ public class SellCommand extends CommandBase {
                 try {
                     if (data != 0) {
                         // キャンセル
-                        targetPlayer.sendMessage(api.GetErrMessage("commands.sell.err_cansel"));
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_cansel"), targetPlayer);
                         return;
                     }
                     // ウィンドウログ
@@ -90,16 +84,14 @@ public class SellCommand extends CommandBase {
                     Item sell_item = targetPlayer.getInventory().getItemInHand();
                     if (!api.IsTagItem(sell_item)) {
                         // タグアイテム以外はエラー
-                        targetPlayer.sendMessage(api.GetErrMessage("commands.sell.err_tagitem"));
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_tagitem"), targetPlayer);
                         return;
                     }
                     ItemInfo sell_ip = api.item_info.get(sell_item.getId());
                     int sell_price = sell_ip.price;
                     if (sell_price <= 0) {
                         // 価格が0以下はエラー
-                        targetPlayer.sendMessage(api.GetErrMessage("commands.sell.err_price"));
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_price"), targetPlayer);
                         return;
                     }
                     String sell_item_name = sell_item.getName();
@@ -116,8 +108,7 @@ public class SellCommand extends CommandBase {
                     margs = null;
                     if (ret <= 0) {
                         // 更新エラー
-                        targetPlayer.sendMessage(api.GetErrMessage("commands.sell.err_update"));
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_update"), targetPlayer);
                         return;
                     }
 
@@ -142,17 +133,15 @@ public class SellCommand extends CommandBase {
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin071, 0, false); // レジスタ
 
                 } catch (Exception e) {
-                    targetPlayer.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                    api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), targetPlayer);
+                    api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                     return;
                 }
             });
 
         } catch (Exception e) {
-            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;

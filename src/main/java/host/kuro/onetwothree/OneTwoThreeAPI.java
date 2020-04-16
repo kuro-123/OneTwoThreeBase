@@ -22,10 +22,7 @@ import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.datatype.ItemInfo;
 import host.kuro.onetwothree.task.AfkTask;
 import host.kuro.onetwothree.task.SoundTask;
-import host.kuro.onetwothree.task.TimingTask;
 import host.kuro.onetwothree.utils.*;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -40,6 +37,8 @@ import java.util.regex.Pattern;
 public class OneTwoThreeAPI {
 
     private static OneTwoThreeAPI instance = null;
+    private static Message mes = null;
+
     private BasePlugin plugin;
     private DatabaseManager db;
     private LogCommand log_cmd;
@@ -82,6 +81,8 @@ public class OneTwoThreeAPI {
     public OneTwoThreeAPI(BasePlugin plugin) {
         // インスタンス
     	instance = this;
+
+        this.mes = new Message(this);
         this.plugin = plugin;
         this.db = new DatabaseManager(instance);
         this.log_cmd = new LogCommand(this);
@@ -97,6 +98,10 @@ public class OneTwoThreeAPI {
     public static OneTwoThreeAPI getInstance() {
         return instance;
     }
+    public static Message getMessage() {
+        return mes;
+    }
+
     public BasePlugin getPlugin() { return plugin; }
     public Server getServer() { return plugin.getServer(); }
     public DatabaseManager getDB() {
@@ -156,42 +161,6 @@ public class OneTwoThreeAPI {
         }
     }
 
-    // プラグインタイトルメッセージ
-    public String GetMessageTitle() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.GREEN);
-        sb.append("[");
-        sb.append(Language.translate("onetwothree.name"));
-        sb.append("] ");
-        return new String(sb);
-    }
-
-    // 情報メッセージ
-    public String GetInfoMessage(String target) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(GetMessageTitle());
-        sb.append(TextFormat.WHITE);
-        sb.append(Language.translate(target));
-        return new String(sb);
-    }
-
-    // 警告メッセージ
-    public String GetWarningMessage(String target) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(GetMessageTitle());
-        sb.append(TextFormat.YELLOW);
-        sb.append(Language.translate(target));
-        return new String(sb);
-    }
-
-    // エラーメッセージ
-    public String GetErrMessage(String target) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(GetMessageTitle());
-        sb.append(TextFormat.RED);
-        sb.append(Language.translate(target));
-        return new String(sb);
-    }
 
     // 半角英数チェック
     public boolean isHankakuEisu(String target) {
@@ -300,7 +269,6 @@ public class OneTwoThreeAPI {
         return ret;
     }
 
-    // 一定期間スリープする
     public void Sleep(int millsec) {
         long startTime = System.currentTimeMillis();
         long endTime = startTime;
@@ -333,31 +301,6 @@ public class OneTwoThreeAPI {
             return TAP_MODE.MODE_NONE;
         }
         return mode.get(player);
-    }
-
-    public String GetBlockInfoMessage(Block block) {
-        if (block == null) return "";
-
-        String id = ((Integer)block.getId()).toString();
-        String meta = ((Integer)block.getDamage()).toString();
-        String name = block.getName();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.WHITE);
-        sb.append(name);
-        sb.append(" -> ");
-        sb.append(TextFormat.GREEN);
-        sb.append(id);
-        sb.append(":");
-        sb.append(meta);
-        sb.append(TextFormat.YELLOW);
-        sb.append(") - ");
-        sb.append("位置(");
-        sb.append(" X:" + block.getFloorX());
-        sb.append(" Y:" + block.getFloorY());
-        sb.append(" Z:" + block.getFloorZ());
-        sb.append(")");
-        return new String(sb);
     }
 
     public void OpenKuroView(Player player, Block block) {
@@ -421,8 +364,7 @@ public class OneTwoThreeAPI {
                     form.send(player, (targetPlayer, targetForm, data) -> {
                     });
                 } else {
-                    player.sendMessage(GetWarningMessage("commands.kv.none"));
-                    PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    getMessage().SendWarningMessage("commands.kv.none", player);
                 }
             }
             if (ps != null) {
@@ -434,7 +376,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
     }
 
@@ -492,7 +434,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
+            getLogErr().Write(null, getMessage().GetErrorMessage(e));
         }
     }
 
@@ -534,7 +476,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
+            getLogErr().Write(null, getMessage().GetErrorMessage(e));
         }
     }
 
@@ -561,7 +503,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
+            getLogErr().Write(null, getMessage().GetErrorMessage(e));
         }
         return ret;
     }
@@ -596,7 +538,7 @@ public class OneTwoThreeAPI {
             }
 
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
         return ""+TextFormat.GRAY;
     }
@@ -635,7 +577,7 @@ public class OneTwoThreeAPI {
             return true;
 
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
             return false;
         }
     }
@@ -672,183 +614,6 @@ public class OneTwoThreeAPI {
         return false;
     }
 
-    public void sendDiscordMessage(Player player, String message) {
-        if (getDebug()) return;
-        try {
-            JDA jda = getPlugin().getJDA();
-            if (jda == null) return;
-            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
-            if (channel != null) {
-                String chat_time = sdf_hms.format(new Date());
-                StringBuilder sb = new StringBuilder();
-                sb.append("```diff\n");
-                sb.append("  ");
-                sb.append(chat_time);
-                sb.append(" [鯖内] <");
-                sb.append(player.getDisplayName());
-                sb.append("> ");
-                sb.append(CutSection(message));
-                sb.append("\n```");
-                channel.sendMessage(new String(sb)).queue();
-            }
-        } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
-        }
-    }
-    public void sendDiscordRedMessage(String message) {
-        if (getDebug()) return;
-        try {
-            JDA jda = getPlugin().getJDA();
-            if (jda == null) return;
-            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
-            if (channel != null) {
-                String chat_time = sdf_hms.format(new Date());
-                StringBuilder sb = new StringBuilder();
-                sb.append("```diff\n");
-                sb.append("- ");
-                sb.append(chat_time);
-                sb.append(" [鯖内] ");
-                sb.append(CutSection(message));
-                sb.append("\n```");
-                channel.sendMessage(new String(sb)).queue();
-            }
-        } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
-        }
-    }
-    public void sendDiscordBlueMessage(String message) {
-        if (getDebug()) return;
-        try {
-            JDA jda = getPlugin().getJDA();
-            if (jda == null) return;
-            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
-            if (channel != null) {
-                String chat_time = sdf_hms.format(new Date());
-                StringBuilder sb = new StringBuilder();
-                sb.append("```md\n");
-                sb.append("# ");
-                sb.append(chat_time);
-                sb.append(" [鯖内] ");
-                sb.append(CutSection(message));
-                sb.append("\n```");
-                channel.sendMessage(new String(sb)).queue();
-            }
-        } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
-        }
-    }
-    public void sendDiscordGreenMessage(String message) {
-        if (getDebug()) return;
-        try {
-            JDA jda = getPlugin().getJDA();
-            if (jda == null) return;
-            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
-            if (channel != null) {
-                String chat_time = sdf_hms.format(new Date());
-                StringBuilder sb = new StringBuilder();
-                sb.append("```xl\n");
-                sb.append("' ");
-                sb.append(chat_time);
-                sb.append(" [鯖内] ");
-                sb.append(CutSection(message));
-                sb.append("\n```");
-                channel.sendMessage(new String(sb)).queue();
-            }
-        } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
-        }
-    }
-    public void sendDiscordYellowMessage(String message) {
-        if (getDebug()) return;
-        try {
-            JDA jda = getPlugin().getJDA();
-            if (jda == null) return;
-            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
-            if (channel != null) {
-                String chat_time = sdf_hms.format(new Date());
-                StringBuilder sb = new StringBuilder();
-                sb.append("```diff\n");
-                sb.append("+ ");
-                sb.append(chat_time);
-                sb.append(" [鯖内] ");
-                sb.append(CutSection(message));
-                sb.append("\n```");
-                channel.sendMessage(new String(sb)).queue();
-            }
-        } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
-        }
-    }
-    public void sendDiscordGrayMessage(String message) {
-        if (getDebug()) return;
-        try {
-            JDA jda = getPlugin().getJDA();
-            if (jda == null) return;
-            TextChannel channel = jda.getTextChannelById(getPlugin().getChannelID());
-            if (channel != null) {
-                String chat_time = sdf_hms.format(new Date());
-                StringBuilder sb = new StringBuilder();
-                sb.append("```py\n");
-                sb.append("# ");
-                sb.append(chat_time);
-                sb.append(" [鯖内] ");
-                sb.append(CutSection(message));
-                sb.append("\n```");
-                channel.sendMessage(new String(sb)).queue();
-            }
-        } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
-        }
-    }
-    public void sendDiscordBanMessage(String message) {
-        if (getDebug()) return;
-        try {
-            JDA jda = getPlugin().getJDA();
-            if (jda == null) return;
-            TextChannel channel = jda.getTextChannelById(getPlugin().getBanChannelID());
-            if (channel != null) {
-                String chat_time = sdf_hms.format(new Date());
-                StringBuilder sb = new StringBuilder();
-                sb.append("```diff\n");
-                sb.append("- ");
-                sb.append(chat_time);
-                sb.append(" [鯖内] ");
-                sb.append(CutSection(message));
-                sb.append("\n```");
-                channel.sendMessage(new String(sb)).queue();
-            }
-        } catch (Exception e) {
-            getLogErr().Write(null, GetErrorMessage(e));
-        }
-    }
-    public String CutSection(String message) {
-        String ret = message;
-        ret = ret.replace(""+TextFormat.BLACK, "");
-        ret = ret.replace(""+TextFormat.DARK_BLUE, "");
-        ret = ret.replace(""+TextFormat.DARK_GREEN, "");
-        ret = ret.replace(""+TextFormat.DARK_AQUA, "");
-        ret = ret.replace(""+TextFormat.DARK_RED, "");
-        ret = ret.replace(""+TextFormat.DARK_PURPLE, "");
-        ret = ret.replace(""+TextFormat.GOLD, "");
-        ret = ret.replace(""+TextFormat.GRAY, "");
-        ret = ret.replace(""+TextFormat.DARK_GRAY, "");
-        ret = ret.replace(""+TextFormat.BLUE, "");
-        ret = ret.replace(""+TextFormat.GREEN, "");
-        ret = ret.replace(""+TextFormat.AQUA, "");
-        ret = ret.replace(""+TextFormat.RED, "");
-        ret = ret.replace(""+TextFormat.LIGHT_PURPLE, "");
-        ret = ret.replace(""+TextFormat.YELLOW, "");
-        ret = ret.replace(""+TextFormat.WHITE, "");
-        ret = ret.replace(""+TextFormat.MINECOIN_GOLD, "");
-        ret = ret.replace(""+TextFormat.OBFUSCATED, "");
-        ret = ret.replace(""+TextFormat.BOLD, "");
-        ret = ret.replace(""+TextFormat.STRIKETHROUGH, "");
-        ret = ret.replace(""+TextFormat.UNDERLINE, "");
-        ret = ret.replace(""+TextFormat.ITALIC, "");
-        ret = ret.replace(""+TextFormat.RESET, "");
-        return ret;
-    }
-
     public boolean IsBanItem(Player player, Item item) {
         if (item == null) return false;
         if (item_info == null) return false;
@@ -863,36 +628,7 @@ public class OneTwoThreeAPI {
         if (ip.ban == null) return false;
         if (!ip.ban.equals("〇")) return false;
 
-        StringBuilder sb = new StringBuilder();
-        if (!IsNushi(player)) {
-            sb.append(TextFormat.RED);
-            sb.append("[BANアイテム警告] ");
-            sb.append(TextFormat.WHITE);
-            sb.append(" [ ");
-            sb.append(TextFormat.YELLOW);
-            sb.append(player.getDisplayName());
-            sb.append(" 位置:");
-            sb.append(player.getLevel().getName());
-            sb.append(" x:");
-            sb.append(player.getFloorX());
-            sb.append(" y:");
-            sb.append(player.getFloorY());
-            sb.append(" z:");
-            sb.append(player.getFloorZ());
-            sb.append(TextFormat.WHITE);
-            sb.append(" ] さんが [ ");
-            sb.append(TextFormat.YELLOW);
-            sb.append(ip.name);
-            sb.append(TextFormat.WHITE);
-            sb.append(" ] を使おうとしています！");
-            sb.append(TextFormat.RED);
-            sb.append(" ご注意ください！");
-            String message = new String(sb);
-            getServer().broadcastMessage(message);
-            sendDiscordRedMessage(message);
-            sendDiscordBanMessage(message);
-            PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
-        }
+        getMessage().SendBanMessage(player, ip.name);
         return true;
     }
 
@@ -955,7 +691,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
         return ret;
     }
@@ -985,7 +721,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
         return ret;
     }
@@ -1014,7 +750,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
         return ret;
     }
@@ -1029,7 +765,7 @@ public class OneTwoThreeAPI {
             args = null;
 
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
             return false;
         }
         return true;
@@ -1045,7 +781,7 @@ public class OneTwoThreeAPI {
             args = null;
 
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
             return false;
         }
         return true;
@@ -1055,32 +791,32 @@ public class OneTwoThreeAPI {
         if (select_seq == null) {
             select_seq.put(player, 1);
             select_one.put(player, loc);
-            player.sendMessage(TextFormat.YELLOW + "ポイント１を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+            getMessage().SendInfoMessage(Language.translate("onetwothree.selection.one") + " [ x:" + loc.getFloorX() + " z:" + loc.getFloorZ() + " ]", player);
             return 1;
         } else {
             if (!select_seq.containsKey(player)) {
                 select_seq.put(player, 1);
                 select_one.put(player, loc);
-                player.sendMessage(TextFormat.YELLOW + "ポイント１を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+                getMessage().SendInfoMessage(Language.translate("onetwothree.selection.one") + " [ x:" + loc.getFloorX() + " z:" + loc.getFloorZ() + " ]", player);
                 return 1;
             } else {
                 int seq = select_seq.get(player);
                 if (seq == 1) {
                     select_seq.put(player, 2);
                     select_two.put(player, loc);
-                    player.sendMessage(TextFormat.YELLOW + "ポイント２を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+                    getMessage().SendInfoMessage(Language.translate("onetwothree.selection.two") + " [ x:" + loc.getFloorX() + " z:" + loc.getFloorZ() + " ]", player);
                     return 2;
                 } else if (seq == 2) {
                     select_seq.put(player, 1);
                     select_one.put(player, loc);
-                    player.sendMessage(TextFormat.YELLOW + "ポイント１を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+                    getMessage().SendInfoMessage(Language.translate("onetwothree.selection.one") + " [ x:" + loc.getFloorX() + " z:" + loc.getFloorZ() + " ]", player);
                     return 1;
                 }
             }
         }
         select_seq.put(player, 1);
         select_one.put(player, loc);
-        player.sendMessage(TextFormat.YELLOW + "ポイント１を設定しました [ x:" + loc.getFloorX() + " y:" + loc.getFloorZ() + " ]");
+        getMessage().SendInfoMessage(Language.translate("onetwothree.selection.one") + " [ x:" + loc.getFloorX() + " z:" + loc.getFloorZ() + " ]", player);
         return 1;
     }
 
@@ -1088,20 +824,18 @@ public class OneTwoThreeAPI {
         // 隣接チェック
         Location loc1 = select_one.get(player);
         if (!IsInside(loc1)) {
-            PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(GetWarningMessage("onetwothree.zone.err_colision"));
+            getMessage().SendWarningMessage(Language.translate("onetwothree.zone.err_colision"), player);
             return;
         }
         Location loc2 = select_two.get(player);
         if (!IsInside(loc2)) {
-            PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(GetWarningMessage("onetwothree.zone.err_colision"));
+            getMessage().SendWarningMessage(Language.translate("onetwothree.zone.err_colision"), player);
             return;
         }
 
         // ゾーン設定ウィンドウ
         List<String> zList = new ArrayList<String>();
-        zList.add("指定なし");
+        zList.add(Language.translate("onetwothree.selection.none"));
         zList.add("土地の価値： Aﾗﾝｸ ﾌﾞﾛｯｸ単価： 960p");
         zList.add("土地の価値： Bﾗﾝｸ ﾌﾞﾛｯｸ単価： 640p");
         zList.add("土地の価値： Cﾗﾝｸ ﾌﾞﾛｯｸ単価： 320p");
@@ -1115,8 +849,7 @@ public class OneTwoThreeAPI {
         form.send(player, (targetPlayer, targetForm, data) -> {
             try {
                 if (data == null) {
-                    PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_window"));
+                    getMessage().SendWarningMessage(Language.translate("onetwothree.zone.err_window"), targetPlayer);
                     return;
                 }
                 // ウィンドウログ
@@ -1143,8 +876,7 @@ public class OneTwoThreeAPI {
                     rank_name = "F";
                     rank_meta = 8;
                 } else {
-                    PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_choise"));
+                    getMessage().SendWarningMessage(Language.translate("onetwothree.zone.err_choise"), targetPlayer);
                     return;
                 }
                 Location l1 = select_one.get(targetPlayer);
@@ -1163,8 +895,7 @@ public class OneTwoThreeAPI {
                 args.clear();
                 args = null;
                 if (ret <= 0) {
-                    PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_regist"));
+                    getMessage().SendWarningMessage(Language.translate("onetwothree.zone.err_regist"), targetPlayer);
                     return;
                 }
 
@@ -1195,27 +926,12 @@ public class OneTwoThreeAPI {
                 targetPlayer.getLevel().setBlock(new Position(x4, y, z4), new BlockConcrete(rank_meta));
 
                 // ブロードキャスト通知
-                StringBuilder sb = new StringBuilder();
-                sb.append(TextFormat.YELLOW);
-                sb.append("[ ");
-                sb.append(TextFormat.WHITE);
-                sb.append(targetPlayer.getDisplayName());
-                sb.append(TextFormat.YELLOW);
-                sb.append(" ] により、 [ ");
-                sb.append(TextFormat.RED);
-                sb.append(rank_name);
-                sb.append(TextFormat.YELLOW);
-                sb.append(" ] ランクゾーンが設定されました！");
-                String message = new String(sb);
-                PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin011, 0, false); // SUCCESS
-                getServer().broadcastMessage(message);
-                sendDiscordYellowMessage(message);
+                getMessage().SendZoneMessage(targetPlayer, rank_name);
                 targetPlayer.sendTitle("ゾーン設定完了", TextFormat.RED + rank_name + "ランクゾーン", 10,80, 10);
 
             } catch (Exception e) {
-                PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                targetPlayer.sendMessage(GetWarningMessage("onetwothree.zone.err_regist"));
-                getLogErr().Write(targetPlayer, GetErrorMessage(e));
+                getMessage().SendErrorMessage(Language.translate("onetwothree.zone.err_regist"), targetPlayer);
+                getLogErr().Write(targetPlayer, getMessage().GetErrorMessage(e));
             }
 
             OneTwoThreeAPI.mode.put(targetPlayer, OneTwoThreeAPI.TAP_MODE.MODE_NONE);
@@ -1282,10 +998,7 @@ public class OneTwoThreeAPI {
             int z = loc.getFloorZ() + getRand().Next(-2, 2);
             player.getLevel().dropItem(new Vector3(x, y, z), item);
 
-            String message = TextFormat.LIGHT_PURPLE + "[ " + TextFormat.WHITE + player.getDisplayName() + TextFormat.LIGHT_PURPLE + " ] さんの近くに [ " + TextFormat.GOLD + item.getName() + TextFormat.LIGHT_PURPLE + "] がドロップした！";
-            PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin019, 0, false); // DROP
-            getServer().broadcastMessage(message);
-            sendDiscordYellowMessage(message);
+            getMessage().SendDropMessage(player, item.getName());
             return;
         }
     }
@@ -1314,7 +1027,7 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
         return ret;
     }
@@ -1343,24 +1056,8 @@ public class OneTwoThreeAPI {
                 rs = null;
             }
         } catch (Exception e) {
-            getLogErr().Write(player, GetErrorMessage(e));
+            getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
         return ret;
-    }
-
-    public String GetErrorMessage(Exception ex) {
-        StackTraceElement[] ste = ex.getStackTrace();
-        String buff = "";
-        StringBuilder sb = new StringBuilder();
-        for (StackTraceElement element: ste) {
-            sb.append("[");
-            sb.append(element);
-            sb.append("]\n");
-        }
-        buff = (ex.getClass().getName() + ": "+ ex.getMessage() + " -> " + new String(sb));
-        if (buff.length() > 2000) {
-            buff = buff.substring(0, 2000);
-        }
-        return buff;
     }
 }

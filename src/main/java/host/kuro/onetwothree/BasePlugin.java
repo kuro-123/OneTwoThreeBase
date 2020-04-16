@@ -29,7 +29,6 @@ public class BasePlugin extends PluginBase {
     private JDA jda;
     private String channelId;
     private String ban_channelId;
-
     public JDA getJDA() { return jda; }
     public String getChannelID() { return channelId; }
     public String getBanChannelID() { return ban_channelId; }
@@ -89,9 +88,9 @@ public class BasePlugin extends PluginBase {
                 if (!config.getString("botStatus").isEmpty()) {
                     jda.getPresence().setActivity(Activity.of(Activity.ActivityType.DEFAULT, config.getString("botStatus")));
                 }
-                api.sendDiscordGreenMessage("【123鯖情報】 起動しました！");
+                api.getMessage().SendDiscordBlueMessage("【123鯖情報】 起動しました！");
             } catch (InterruptedException | LoginException e) {
-                api.getLogErr().Write(null, api.GetErrorMessage(e));
+                api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
             }
         }
 
@@ -196,7 +195,7 @@ public class BasePlugin extends PluginBase {
             }
 
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }
@@ -223,7 +222,7 @@ public class BasePlugin extends PluginBase {
                 f.setWritable(true);
             }
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }

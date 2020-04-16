@@ -34,26 +34,22 @@ public class NpcCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         if (args.length != 1) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsGameMaster(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         // モードチェック
         if (OneTwoThreeAPI.mode.containsKey(player)) {
             if (OneTwoThreeAPI.mode.get(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
-                player.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.othermode")));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendWarningMessage(Language.translate("commands.npc.othermode"), player);
                 return false;
             }
         }
@@ -100,16 +96,15 @@ public class NpcCommand extends CommandBase {
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
 
                 } catch (Exception e) {
-                    this.sendUsage(targetPlayer);
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                    api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), targetPlayer);
+                    api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }
@@ -117,7 +112,7 @@ public class NpcCommand extends CommandBase {
     private boolean NpcWindow(Player player) {
         try {
             ArrayList<String> tlist = new ArrayList<String>();
-            tlist.add("指定なし");
+            tlist.add(Language.translate("onetwothree.selection.none"));
             tlist.add("一般NPC-男性");
             tlist.add("一般NPC-女性");
             tlist.add("商人NPC-男性");
@@ -126,7 +121,7 @@ public class NpcCommand extends CommandBase {
             tlist.add("ポータルNPC-女性");
 
             ArrayList<String> slist = new ArrayList<String>();
-            slist.add("指定なし");
+            slist.add(Language.translate("onetwothree.selection.none"));
             slist.add("スキン01");
             slist.add("スキン02");
             slist.add("スキン03");
@@ -193,8 +188,7 @@ public class NpcCommand extends CommandBase {
                             kind = NpcPlugin.NPC_KIND.KIND_PORTAL_TYPE02;
                             break;
                         default:
-                            targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.err_choise")));
-                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            api.getMessage().SendWarningMessage(Language.translate("commands.npc.err_choise"), targetPlayer);
                             return;
                     }
 
@@ -228,8 +222,7 @@ public class NpcCommand extends CommandBase {
                         case "スキン23": url = path + "skin/npc/skin23.png"; break;
                         case "スキン24": url = path + "skin/npc/skin24.png"; break;
                         default:
-                            targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.err_choise")));
-                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            api.getMessage().SendWarningMessage(Language.translate("commands.npc.err_choise"), targetPlayer);
                             return;
                     }
 
@@ -248,14 +241,12 @@ public class NpcCommand extends CommandBase {
                     try {
                         scale = Float.parseFloat(buff);
                     } catch (Exception e) {
-                        targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.err_scale")));
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        api.getLogErr().Write(player, api.GetErrorMessage(e));
+                        api.getMessage().SendErrorMessage(Language.translate("commands.npc.err_scale"), targetPlayer);
+                        api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
                         return;
                     }
                     if (!(0.5F <= scale && scale <= 1.5F)) {
-                        targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.err_scale")));
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getMessage().SendWarningMessage(Language.translate("commands.npc.err_scale"), targetPlayer);
                         return;
                     }
 
@@ -265,20 +256,18 @@ public class NpcCommand extends CommandBase {
 
                     // モードON
                     OneTwoThreeAPI.mode.put(targetPlayer, OneTwoThreeAPI.TAP_MODE.MODE_NPC);
-                    targetPlayer.sendMessage(api.GetInfoMessage(Language.translate("commands.npc.modeon")));;
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+                    api.getMessage().SendInfoMessage(Language.translate("commands.npc.modeon"), targetPlayer);
 
                 } catch (Exception e) {
-                    this.sendUsage(targetPlayer);
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                    api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), targetPlayer);
+                    api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }
@@ -287,8 +276,7 @@ public class NpcCommand extends CommandBase {
         // 文字数チェック
         int len =target.length();
         if (len < 2 || len > 16) {
-            player.sendMessage(api.GetWarningMessage("commands.npc.err_len"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendWarningMessage(Language.translate("commands.npc.err_len"), player);
             return false;
         }
         return true;

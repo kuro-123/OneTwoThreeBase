@@ -4,15 +4,9 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.inventory.Inventory;
-import cn.nukkit.utils.Config;
-import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
-import host.kuro.onetwothree.forms.elements.SimpleForm;
-import host.kuro.onetwothree.task.SoundTask;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class RiCommand extends CommandBase {
 
@@ -27,23 +21,18 @@ public class RiCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
-
         Inventory inv = player.getInventory();
         if (inv != null) {
             player.getInventory().clearAll();
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
-            player.sendMessage(api.GetErrMessage("commands.ri.success"));
+            api.getMessage().SendInfoMessage(Language.translate("commands.ri.success"), player);
 
         } else {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetErrMessage("commands.ri.err"));
+            api.getMessage().SendWarningMessage(Language.translate("commands.ri.err"), player);
             return false;
         }
-
         return true;
     }
 }

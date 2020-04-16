@@ -3,23 +3,13 @@ package host.kuro.onetwothree.command.defaults;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
-import cn.nukkit.command.data.CommandParamType;
-import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.event.player.PlayerTeleportEvent;
-import cn.nukkit.level.Level;
-import cn.nukkit.level.Location;
-import cn.nukkit.level.Position;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
-import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.forms.elements.CustomForm;
 import host.kuro.onetwothree.task.SoundTask;
-import org.jline.terminal.impl.ExecPty;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -36,14 +26,12 @@ public class PayCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsJyumin(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         return PayWindow(player);
@@ -52,7 +40,7 @@ public class PayCommand extends CommandBase {
     private boolean PayWindow(Player player) {
         try {
             List<String> pList = new ArrayList<String>();
-            pList.add("指定なし");
+            pList.add(Language.translate("onetwothree.selection.none"));
             for (Player p : api.getServer().getOnlinePlayers().values()) {
                 pList.add(p.getDisplayName());
             }
@@ -75,13 +63,11 @@ public class PayCommand extends CommandBase {
                 String pname = data.get(1).toString();
                 Player responser = api.GetPlayerEx(pname);
                 if (responser == null) {
-                    targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_01"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.pay.err_01"), targetPlayer);
                     return;
                 }
                 if (targetPlayer.getName().equals(responser.getName())) {
-                    targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_00"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.pay.err_00"), targetPlayer);
                     return;
                 }
 
@@ -93,29 +79,25 @@ public class PayCommand extends CommandBase {
                 } catch (Exception e) {
                 }
                 if (imoney <= 0) {
-                    targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_02"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.pay.err_02"), targetPlayer);
                     return;
                 }
 
                 // 所持金取得
                 int money = api.GetMoney(targetPlayer);
                 if (money == -1) {
-                    targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_03"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.pay.err_03"), targetPlayer);
                     return;
                 }
                 if (money < imoney) {
-                    targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_04"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.pay.err_04"), targetPlayer);
                     return;
                 }
 
                 // 支払処理
                 boolean ret = api.PayMoney(targetPlayer, imoney);
                 if (!ret) {
-                    targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_05"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.pay.err_05"), targetPlayer);
                     return;
                 }
                 api.getLogPay().Write(targetPlayer, "WarpCommand", "minus", ""+imoney);
@@ -147,8 +129,7 @@ public class PayCommand extends CommandBase {
                 // 加算処理
                 ret = api.AddMoney(responser, imoney);
                 if (!ret) {
-                    targetPlayer.sendMessage(api.GetWarningMessage("commands.pay.err_06"));
-                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.pay.err_06"), targetPlayer);
                     return;
                 }
                 api.getLogPay().Write(responser, "PayCommand", "plus", ""+imoney);
@@ -179,31 +160,9 @@ public class PayCommand extends CommandBase {
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;
-    }
-
-    private void TeleportMessage(Player player, String target) {
-        if (player.isSpectator()) return;
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append("[ﾜｰﾌﾟ] ");
-        sb.append("[ ");
-        sb.append(TextFormat.WHITE);
-        sb.append(player.getDisplayName());
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append(" ] -> [ ");
-        sb.append(TextFormat.WHITE);
-        sb.append(target);
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append(" ]");
-        String message = new String(sb);
-        api.getServer().broadcastMessage(message);
-        api.sendDiscordGreenMessage(message);
-
-        api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin020, 0, false); // WARP
     }
 }

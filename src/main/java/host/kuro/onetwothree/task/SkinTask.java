@@ -98,7 +98,7 @@ public class SkinTask extends Thread {
                 }
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 }

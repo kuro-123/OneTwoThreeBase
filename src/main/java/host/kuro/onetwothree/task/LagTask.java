@@ -5,6 +5,7 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.level.Level;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.npc.NpcType;
 
@@ -24,10 +25,10 @@ public class LagTask extends AsyncTask {
         LAG_SEQ++;
         switch(LAG_SEQ) {
             case 1:
-                message = TextFormat.LIGHT_PURPLE + "【ラグ除去】 ラグ要因の除去を行います！20秒後に実施されます！";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.lag.one");
                 break;
             case 2:
-                message = TextFormat.LIGHT_PURPLE + "【ラグ除去】 10秒前です！ご注意ください！";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.lag.two");
                 break;
             case 3:
                 int i = 0;
@@ -39,7 +40,7 @@ public class LagTask extends AsyncTask {
                         }
                     }
                 }
-                message = TextFormat.LIGHT_PURPLE + String.format("【ラグ除去】 除去が完了しました <除去数 : %d個>", i);
+                message = TextFormat.LIGHT_PURPLE + String.format(Language.translate("onetwothree.lag.three") + " <除去数 : %d個>", i);
                 break;
             case 4:
                 message = "";
@@ -50,7 +51,6 @@ public class LagTask extends AsyncTask {
                 break;
         }
         if (message.length() <= 0) return;
-        api.getServer().broadcastMessage(message);
-        api.sendDiscordGreenMessage(message);
+        api.getMessage().SendWarningMessage(message, true);
     }
 }

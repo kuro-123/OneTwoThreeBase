@@ -36,8 +36,7 @@ public class InfoCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
 
@@ -46,8 +45,7 @@ public class InfoCommand extends CommandBase {
             if (args.length == 1) {
                 xuid = api.GetAmbiguousXuid(args[0]);
                 if (xuid.length() <= 0) {
-                    player.sendMessage(api.GetInfoMessage(Language.translate("commands.info.nothing")));
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("commands.info.nothing"), player);
                     return false;
                 }
             }
@@ -144,9 +142,8 @@ public class InfoCommand extends CommandBase {
             form.send(player, (targetPlayer, targetForm, data) -> {});
 
         } catch (Exception e) {
-            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;

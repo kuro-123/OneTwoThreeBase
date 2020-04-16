@@ -57,7 +57,7 @@ public class TwitterPlugin {
             plugin.getServer().getScheduler().scheduleRepeatingTask(plugin, new TwitterTask(plugin, api, twitter), 20*60*60); // 1時間おき
 
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }
@@ -67,7 +67,7 @@ public class TwitterPlugin {
             twitter.updateStatus(message);
 
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }
@@ -94,8 +94,6 @@ class TweetListener extends StatusAdapter {
         }
         sb.append(mes);
         String message = new String(sb);
-        plugin.getServer().broadcastMessage(message);
-        api.sendDiscordYellowMessage(message);
-        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin015, 0, false); // INFO
+        api.getMessage().SendInfoMessage(message);
     }
 }

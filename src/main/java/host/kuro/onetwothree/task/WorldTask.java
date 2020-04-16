@@ -7,6 +7,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 
 import java.io.File;
@@ -32,14 +33,14 @@ public class WorldTask extends AsyncTask {
                 int rand_value = api.getRand().Next(1, 3);
                 level = api.getServer().getLevelByName("nature" + rand_value);
                 level_name = level.getName();
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> の再構築が3分後に実施されます！";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.one");
                 break;
             case 2:
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + ">  2分前です！ご注意ください！";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.two");
                 level.save(true);
                 break;
             case 3:
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + ">  1分前です！ご注意ください！";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.three");
                 level.save(true);
                 break;
             case 4:
@@ -49,27 +50,26 @@ public class WorldTask extends AsyncTask {
                         if (entity instanceof Player) {
                             Player player = (Player)entity;
                             player.teleport(city.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                            message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + player.getDisplayName() + "> さんは city へ強制転送された！";
-                            api.getServer().broadcastMessage(message);
-                            api.sendDiscordGreenMessage(message);
+                            message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.four");
+                            api.getMessage().SendWarningMessage(message, true);
                         }
                     }
                 }
                 // ワールドUNLOAD
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> をアンロード…";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.five");
                 if (!api.getServer().unloadLevel(level)) {
-                    message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> をアンロードに失敗しました";
+                    message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.six");
                     WORLD_SEQ = 7;
                 }
                 break;
             case 5:
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> を削除中…";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.seven");
                 try {
                     String path = api.getServer().getDataPath() + "worlds/" + level_name;
                     deleteDir(path);
                 } catch (Exception e) {
-                    api.getLogErr().Write(null, api.GetErrorMessage(e));
-                    message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> の削除に失敗しました";
+                    api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
+                    message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.eight");
                     WORLD_SEQ = 7;
                 }
                 break;
@@ -79,18 +79,18 @@ public class WorldTask extends AsyncTask {
                 generator = Generator.getGenerator("normal");
 
                 // ワールド生成
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> を生成中…";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.nine");
                 if (!api.getServer().generateLevel(level_name, seed, generator)) {
-                    message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> の生成に失敗しました";
+                    message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.ten");
                     WORLD_SEQ = 7;
                 }
                 break;
 
             case 7:
                 // ワールドLOAD
-                message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> をロード完了です！移動できます！";
+                message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.eleven");
                 if (!api.getServer().loadLevel(level_name)) {
-                    message = TextFormat.LIGHT_PURPLE + "【ワールド再構築】 <" + level_name + "> のロードに失敗しました";
+                    message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.twelve");
                 } else {
                     api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin010, 0, false);
                 }
@@ -109,8 +109,7 @@ public class WorldTask extends AsyncTask {
                 break;
         }
         if (message.length() <= 0) return;
-        api.getServer().broadcastMessage(message);
-        api.sendDiscordGreenMessage(message);
+        api.getMessage().SendWarningMessage(message, true);
     }
 
     private void deleteDir(String path) {

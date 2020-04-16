@@ -6,7 +6,6 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
-import cn.nukkit.event.HandlerList;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
@@ -16,7 +15,6 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityDeathEvent;
 import cn.nukkit.event.entity.EntityShootBowEvent;
-import cn.nukkit.event.inventory.CraftItemEvent;
 import cn.nukkit.event.inventory.InventoryOpenEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.form.response.FormResponse;
@@ -28,10 +26,8 @@ import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowModal;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.inventory.*;
-import cn.nukkit.inventory.transaction.CraftingTransaction;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemMap;
-import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Level;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -42,9 +38,6 @@ import host.kuro.onetwothree.forms.CustomFormResponse;
 import host.kuro.onetwothree.forms.Form;
 import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
-import host.kuro.onetwothree.forms.elements.CustomForm;
-import host.kuro.onetwothree.npc.NpcMerchantType01;
-import host.kuro.onetwothree.npc.NpcMerchantType02;
 import host.kuro.onetwothree.npc.NpcType;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
@@ -77,7 +70,7 @@ public class EventListener implements Listener {
                 return;
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -86,14 +79,14 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         try {
             if (!api.CheckCid(player)) {
-                api.getServer().getLogger().info("過去バン:" + player.getDisplayName());
-                player.close("", "過去にバンされているためログインできません", true);
+                api.getServer().getLogger().info(Language.translate("onetwothree.ban.title") + ":" + player.getDisplayName());
+                player.close("", Language.translate("onetwothree.ban.close"), true);
                 event.setCancelled();
                 return;
             }
             if (!api.CheckXuid(player)) {
-                api.getServer().getLogger().info("過去バン:" + player.getDisplayName());
-                player.close("", "過去にバンされているためログインできません", true);
+                api.getServer().getLogger().info(Language.translate("onetwothree.ban.title") + ":" + player.getDisplayName());
+                player.close("", Language.translate("onetwothree.ban.close"), true);
                 event.setCancelled();
                 return;
             }
@@ -208,7 +201,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -286,7 +279,7 @@ public class EventListener implements Listener {
             }
         } catch (Exception e) {
             event.setCancelled();
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
         player.setDisplayName(player.getName());
         if (nickname != null) {
@@ -319,19 +312,8 @@ public class EventListener implements Listener {
         task.start();
 
         // 参加メッセージ
-        StringBuilder sb_join = new StringBuilder();
-        sb_join.append(TextFormat.YELLOW);
-        sb_join.append(player.getDisplayName());
-        sb_join.append("さん ");
-        sb_join.append(api.GetRankColor(player));
-        sb_join.append("<");
-        sb_join.append(api.GetRankName(player));
-        sb_join.append("> ");
-        sb_join.append(TextFormat.YELLOW);
-        sb_join.append("が参加しました");
-        String message = new String(sb_join);
+        String message = api.getMessage().SendJoinMessage(player);
         event.setJoinMessage(message);
-        api.sendDiscordBlueMessage(message);
 
         // 経過時間計測開始
         api.play_time.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());
@@ -366,19 +348,8 @@ public class EventListener implements Listener {
         args = null;
 
         // 退出メッセージ
-        StringBuilder sb_quit = new StringBuilder();
-        sb_quit.append(TextFormat.YELLOW);
-        sb_quit.append(player.getDisplayName());
-        sb_quit.append("さん ");
-        sb_quit.append(api.GetRankColor(player));
-        sb_quit.append("<");
-        sb_quit.append(api.GetRankName(player));
-        sb_quit.append("> ");
-        sb_quit.append(TextFormat.YELLOW);
-        sb_quit.append("が退出しました");
-        String message = new String(sb_quit);
+        String message = api.getMessage().SendQuitMessage(player);
         event.setQuitMessage(message);
-        api.sendDiscordGrayMessage(message);
 
         // メモリ関連削除
         Form.playersForm.remove(player.getName());
@@ -413,7 +384,7 @@ public class EventListener implements Listener {
                 if (OneTwoThreeAPI.mode.containsKey(player)) {
                     if (OneTwoThreeAPI.mode.get(player) == OneTwoThreeAPI.TAP_MODE.MODE_TOUCH) {
                         Block block = event.getBlock();
-                        player.sendMessage(api.GetInfoMessage(api.GetBlockInfoMessage(block)));
+                        api.getMessage().SendBlockInfoMessage(player, block);
                         event.setCancelled();
                         return;
                     }
@@ -463,7 +434,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -473,7 +444,7 @@ public class EventListener implements Listener {
         api.getAfk().ResetAfk(player);
         try {
             if (api.IsTouchmode(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
-                api.GetWarningMessage(Language.translate("onetwothree.othermode"));
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.othermode"), player);
                 event.setCancelled();
                 return;
             }
@@ -482,8 +453,7 @@ public class EventListener implements Listener {
             WorldInfo worldinfo = api.GetWorldInfo(player);
             if (!api.IsGameMaster(player)) {
                 if (!worldinfo.bbreak) {
-                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
                     event.setCancelled();
                     return;
                 }
@@ -522,7 +492,7 @@ public class EventListener implements Listener {
             args = null;
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -532,7 +502,7 @@ public class EventListener implements Listener {
         api.getAfk().ResetAfk(player);
         try {
             if (api.IsTouchmode(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
-                api.GetWarningMessage(Language.translate("onetwothree.othermode"));
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.othermode"), player);
                 event.setCancelled();
                 return;
             }
@@ -549,8 +519,7 @@ public class EventListener implements Listener {
             if (!api.IsGameMaster(player)) {
                 WorldInfo worldinfo = api.GetWorldInfo(player);
                 if (!worldinfo.bplace) {
-                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                    api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
                     event.setCancelled();
                     return;
                 }
@@ -575,7 +544,7 @@ public class EventListener implements Listener {
             args = null;
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -591,7 +560,7 @@ public class EventListener implements Listener {
             args = null;
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -608,8 +577,7 @@ public class EventListener implements Listener {
         if (!api.IsGameMaster(player)) {
             WorldInfo worldinfo = api.GetWorldInfo(player);
             if (!worldinfo.pvp) {
-                player.sendMessage(api.GetWarningMessage("onetwothree.not_pvp"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.not_pvp"), player);
                 event.setCancelled();
             }
         }
@@ -663,62 +631,12 @@ public class EventListener implements Listener {
                 }
             }
 
-            String cause_name = "";
-            if (cause != null) {
-                EntityDamageEvent.DamageCause causeid = cause.getCause();
-                switch (causeid) {
-                    case ENTITY_ATTACK: cause_name = "死因: 攻撃"; break;
-                    case PROJECTILE: cause_name = "死因: 射抜"; break;
-                    case SUICIDE: cause_name = "死因: 自殺"; break;
-                    case VOID: cause_name = "死因: 奈落"; break;
-                    case FALL: cause_name = "死因: 落下"; break;
-                    case SUFFOCATION: cause_name = "死因: 窒息"; break;
-                    case LAVA: cause_name = "死因: 溶岩"; break;
-                    case FIRE: cause_name = "死因: 焼死"; break;
-                    case FIRE_TICK: cause_name = "死因: 炎"; break;
-                    case DROWNING: cause_name = "死因: 溺死"; break;
-                    case CONTACT: cause_name = "死因: サボテン"; break;
-                    case BLOCK_EXPLOSION: cause_name = "死因: 爆発"; break;
-                    case ENTITY_EXPLOSION: cause_name = "死因: 爆発"; break;
-                    case MAGIC: cause_name = "死因: 魔法"; break;
-                    case LIGHTNING: cause_name = "死因: 雷"; break;
-                    default: cause_name = "死因: 不明"; break;
-                }
-                StringBuilder sb = new StringBuilder();
-                sb.append(TextFormat.YELLOW);
-                sb.append("[ ");
-                sb.append(player.getDisplayName());
-                sb.append(" さん ] が あひ～！ [ ");
-                sb.append(TextFormat.RED);
-                sb.append(cause_name);
-                sb.append(TextFormat.YELLOW);
-                sb.append(" ]");
-                if (killername.length() > 0) {
-                    sb.append(TextFormat.YELLOW);
-                    sb.append(" [ 殺害者: ");
-                    sb.append(TextFormat.RED);
-                    sb.append(killername);
-                    sb.append(TextFormat.YELLOW);
-                    sb.append(" ]");
-                }
-                if (killitem.length() > 0) {
-                    sb.append(TextFormat.YELLOW);
-                    sb.append(" [ ｱｲﾃﾑ: ");
-                    sb.append(TextFormat.RED);
-                    sb.append(killitem);
-                    sb.append(TextFormat.YELLOW);
-                    sb.append(" ]");
-                }
-                String message = new String(sb);
-                api.getServer().broadcastMessage(message);
-                api.sendDiscordYellowMessage(message);
-            }
-
-            Particle.SpiralFlame(player, player.getLevel(), player.getX(), player.getY(), player.getZ());
-            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin002, 0, false); // ボンッ
+            // デスメッセージ
+            String message = api.getMessage().SendDeathMessage(player, cause, killername, killitem);
+            event.setDeathMessage(message);
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -738,7 +656,7 @@ public class EventListener implements Listener {
                 }
             }
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -751,7 +669,7 @@ public class EventListener implements Listener {
 
             // Discord連携
             if (api.getConfig().getString("Discord.botToken").length() > 0) {
-                api.sendDiscordMessage(player, message);
+                api.getMessage().SendDiscordMessage(player, message);
             }
 
             // 権限カラー
@@ -776,7 +694,7 @@ public class EventListener implements Listener {
             args = null;
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -830,7 +748,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -877,7 +795,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -892,61 +810,41 @@ public class EventListener implements Listener {
             WorldInfo worldinfo = api.GetWorldInfo(player);
             if (worldinfo == null) return;
 
-            StringBuilder sb = new StringBuilder();
-            sb.append(TextFormat.RED);
-            sb.append("【強制ログアウト】 [");
-            sb.append(TextFormat.WHITE);
-            sb.append(player.getDisplayName());
-            sb.append(TextFormat.RED);
-            sb.append("] さんがゲームモードを変更しようとしたため強制的にログアウトされました");
-
             int newmode = event.getNewGamemode();
             switch (newmode) {
                 case Player.SURVIVAL:
                     if (!worldinfo.survival) {
-                        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
+                        api.getMessage().SendForceLogout(player);
                         event.setCancelled();
-                        player.close("", "ゲームモードの変更は許可されていないため閉じられました。リログしてください", true);
-                        String message = new String(sb);
-                        api.getServer().broadcastMessage(message);
-                        api.sendDiscordRedMessage(message);
+                        player.close("", Language.translate("onetwothree.logout.gamemode"), true);
                         return;
                     }
                     break;
                 case Player.CREATIVE:
                     if (!worldinfo.creative) {
-                        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
+                        api.getMessage().SendForceLogout(player);
                         event.setCancelled();
-                        player.close("", "ゲームモードの変更は許可されていないため閉じられました。リログしてください", true);
-                        String message = new String(sb);
-                        api.getServer().broadcastMessage(message);
-                        api.sendDiscordRedMessage(message);
+                        player.close("", Language.translate("onetwothree.logout.gamemode"), true);
                         return;
                     }
                     break;
                 case Player.SPECTATOR:
                     if (!worldinfo.spectator) {
-                        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
+                        api.getMessage().SendForceLogout(player);
                         event.setCancelled();
-                        player.close("", "ゲームモードの変更は許可されていないため閉じられました。リログしてください", true);
-                        String message = new String(sb);
-                        api.getServer().broadcastMessage(message);
-                        api.sendDiscordRedMessage(message);
+                        player.close("", Language.translate("onetwothree.logout.gamemode"), true);
                         return;
                     }
                     break;
                 case Player.ADVENTURE:
-                    api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin001, 0, false); // ブブー
+                    api.getMessage().SendForceLogout(player);
                     event.setCancelled();
-                    player.close("", "ゲームモードの変更は許可されていないため閉じられました。リログしてください", true);
-                    String message = new String(sb);
-                    api.getServer().broadcastMessage(message);
-                    api.sendDiscordRedMessage(message);
+                    player.close("", Language.translate("onetwothree.logout.gamemode"), true);
                     return;
             }
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -995,7 +893,7 @@ public class EventListener implements Listener {
             }
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -1148,8 +1046,7 @@ public class EventListener implements Listener {
             (cmd.equals("/status")) ||
             (cmd.equals("/timings"))) {
             if (!api.IsGameMaster(player)) {
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
                 event.setCancelled();
                 return;
             }
@@ -1283,7 +1180,7 @@ public class EventListener implements Listener {
             iargs = null;
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 

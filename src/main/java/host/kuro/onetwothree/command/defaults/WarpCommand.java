@@ -41,14 +41,12 @@ public class WarpCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsJyumin(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         if (args.length != 1) {
@@ -68,7 +66,7 @@ public class WarpCommand extends CommandBase {
         }
         target = api.AmbiguousSearch(target);
         if (target.equalsIgnoreCase(player.getDisplayName())) {
-            player.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
+            api.getMessage().SendWarningMessage(Language.translate("commands.warp.err_self"), player);
         } else {
             for (Player p : api.getServer().getOnlinePlayers().values()) {
                 if (target.equals(p.getDisplayName().toLowerCase()) || target.equals(p.getName().toLowerCase())) {
@@ -87,13 +85,13 @@ public class WarpCommand extends CommandBase {
     private boolean WarpWindow(Player player) {
         try {
             List<String> lvList = new ArrayList<String>();
-            lvList.add("指定なし");
+            lvList.add(Language.translate("onetwothree.selection.none"));
             for (Level lv : api.getServer().getLevels().values()) {
                 lvList.add(lv.getName());
             }
 
             List<String> pList = new ArrayList<String>();
-            pList.add("指定なし");
+            pList.add(Language.translate("onetwothree.selection.none"));
             for (Player p : api.getServer().getOnlinePlayers().values()) {
                 pList.add(p.getDisplayName());
             }
@@ -115,13 +113,12 @@ public class WarpCommand extends CommandBase {
 
                 // ワールド指定
                 String sworld = data.get(1).toString();
-                if (!sworld.equals("指定なし")) {
+                if (!sworld.equals(Language.translate("onetwothree.selection.none"))) {
                     Position pos = api.getServer().getLevelByName(sworld).getSpawnLocation();
                     if (pos != null) {
                         int money = api.GetMoney(targetPlayer);
                         if (money == -1) {
-                            targetPlayer.sendMessage(api.GetWarningMessage("commands.warp.err_money_01"));
-                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            api.getMessage().SendWarningMessage(Language.translate("commands.warp.err_money_01"), targetPlayer);
                             return;
                         }
                         //if (money < 150) {
@@ -133,8 +130,7 @@ public class WarpCommand extends CommandBase {
                         if (targetPlayer.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
                             boolean ret = api.PayMoney(targetPlayer, 150);
                             if (!ret) {
-                                targetPlayer.sendMessage(api.GetWarningMessage("commands.warp.err_money_03"));
-                                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                api.getMessage().SendWarningMessage(Language.translate("commands.warp.err_money_03"), targetPlayer);
                                 return;
                             } else {
                                 TeleportMessage(targetPlayer, sworld);
@@ -149,7 +145,7 @@ public class WarpCommand extends CommandBase {
 
                 // プレイヤー指定
                 String splayer = data.get(2).toString();
-                if (!splayer.equals("指定なし")) {
+                if (!splayer.equals(Language.translate("onetwothree.selection.none"))) {
                     try {
                         PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0021"));
                         ArrayList<DatabaseArgs> pargs = new ArrayList<DatabaseArgs>();
@@ -174,14 +170,13 @@ public class WarpCommand extends CommandBase {
 
                         Player target = api.getServer().getPlayerExact(splayer);
                         if (target.getDisplayName().equalsIgnoreCase(targetPlayer.getDisplayName())) {
-                            targetPlayer.sendMessage(api.GetWarningMessage("commands.warp.err_self"));
+                            api.getMessage().SendWarningMessage(Language.translate("commands.warp.err_self"), targetPlayer);
                         } else {
                             Position pos = target.getPosition();
                             if (pos != null) {
                                 int money = api.GetMoney(targetPlayer);
                                 if (money == -1) {
-                                    targetPlayer.sendMessage(api.GetWarningMessage("commands.warp.err_money_01"));
-                                    api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                    api.getMessage().SendWarningMessage(Language.translate("commands.warp.err_money_01"), targetPlayer);
                                     return;
                                 }
                                 //if (money < 150) {
@@ -193,8 +188,7 @@ public class WarpCommand extends CommandBase {
                                 if (targetPlayer.teleport(pos, PlayerTeleportEvent.TeleportCause.COMMAND)) {
                                     boolean ret = api.PayMoney(targetPlayer, 150);
                                     if (!ret) {
-                                        targetPlayer.sendMessage(api.GetWarningMessage("commands.warp.err_money_03"));
-                                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                                        api.getMessage().SendWarningMessage(Language.translate("commands.warp.err_money_03"), targetPlayer);
                                         return;
                                     } else {
                                         TeleportMessage(targetPlayer, target.getDisplayName());
@@ -210,14 +204,14 @@ public class WarpCommand extends CommandBase {
 
                     } catch (SQLException e){
                         api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                        api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                        api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                     }
                 }
             });
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;
@@ -225,23 +219,6 @@ public class WarpCommand extends CommandBase {
 
     private void TeleportMessage(Player player, String target) {
         if (player.isSpectator()) return;
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append("[ﾜｰﾌﾟ] ");
-        sb.append("[ ");
-        sb.append(TextFormat.WHITE);
-        sb.append(player.getDisplayName());
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append(" ] -> [ ");
-        sb.append(TextFormat.WHITE);
-        sb.append(target);
-        sb.append(TextFormat.LIGHT_PURPLE);
-        sb.append(" ]");
-        String message = new String(sb);
-        api.getServer().broadcastMessage(message);
-        api.sendDiscordGreenMessage(message);
-
-        api.PlaySound(player, SoundTask.MODE_BROADCAST, SoundTask.jin020, 0, false); // WARP
+        api.getMessage().SendTeleportMessage(player, target);
     }
 }

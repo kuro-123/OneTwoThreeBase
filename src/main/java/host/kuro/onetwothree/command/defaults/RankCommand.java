@@ -28,15 +28,13 @@ public class RankCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         int rank = api.GetRank(player);
         if (rank < 2) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         return RankWindow(player, rank);
@@ -58,7 +56,7 @@ public class RankCommand extends CommandBase {
             // プレイヤー一覧
             PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0025"));
             ResultSet rs = api.getDB().ExecuteQuery(ps, null);
-            api.player_list.put(0, "指定なし");
+            api.player_list.put(0, Language.translate("onetwothree.selection.none"));
             int i = 1;
             if (rs != null) {
                 while (rs.next()) {
@@ -152,30 +150,27 @@ public class RankCommand extends CommandBase {
                             sb.append(TextFormat.YELLOW);
                             sb.append(" ] へ更新しました！");
                             String message = new String(sb);
-                            api.getServer().broadcastMessage(message);
-                            api.sendDiscordGreenMessage(message);
 
+                            api.getMessage().SendInfoMessage(message, true);
                             api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin016, 0, false); // ハープ
 
                         } else {
-                            player.sendMessage(api.GetWarningMessage("commands.rank.fail"));
-                            api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                            api.getMessage().SendWarningMessage(Language.translate("commands.rank.fail"), targetPlayer);
                         }
                     } else {
-                        player.sendMessage(api.GetWarningMessage("commands.rank.fail"));
-                        api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                        api.getMessage().SendWarningMessage(Language.translate("commands.rank.fail"), targetPlayer);
                     }
 
                 } catch (Exception e) {
                     this.sendUsage(targetPlayer);
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                    api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
                 }
             });
 
         } catch (Exception e) {
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;

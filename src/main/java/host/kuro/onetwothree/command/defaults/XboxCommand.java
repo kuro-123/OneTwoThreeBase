@@ -33,12 +33,11 @@ public class XboxCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         if (args.length != 1) {
-            this.sendUsage(sender);
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         try {
@@ -72,17 +71,15 @@ public class XboxCommand extends CommandBase {
                 rs = null;
             }
             if (xuid.length() <= 0) {
-                player.sendMessage(api.GetWarningMessage("commands.xbox.err_nothing"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendWarningMessage(Language.translate("commands.xbox.err_nothing"), player);
                 return false;
             } else {
                 player.showXboxProfile(xuid);
             }
 
         } catch (Exception e) {
-            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS

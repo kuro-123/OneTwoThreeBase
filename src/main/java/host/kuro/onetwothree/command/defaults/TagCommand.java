@@ -35,22 +35,19 @@ public class TagCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsJyumin(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         // スキルチェック
         if (!api.IsGameMaster(player)) {
             int count = api.GetChatCount(player);
             if (count < 1000) {
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                player.sendMessage(api.GetWarningMessage("onetwothree.skill_err"));
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.skill_err"), player);
                 return false;
             }
         }
@@ -79,7 +76,7 @@ public class TagCommand extends CommandBase {
                 rs = null;
             }
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
 
         // 設定ウィンドウ
@@ -120,13 +117,12 @@ public class TagCommand extends CommandBase {
                     api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
                     return;
                 }
-                targetPlayer.sendMessage(api.GetInfoMessage("commands.tag.success"));
-                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
+
+                api.getMessage().SendInfoMessage(Language.translate("commands.tag.success"), targetPlayer);
 
             } catch (Exception e) {
-                this.sendUsage(targetPlayer);
-                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                api.getLogErr().Write(targetPlayer, api.GetErrorMessage(e));
+                api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), targetPlayer);
+                api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
             }
         });
         return true;
@@ -136,8 +132,7 @@ public class TagCommand extends CommandBase {
         // 文字数チェック
         int len =target.length();
         if (len < 3 || len > 16) {
-            player.sendMessage(api.GetWarningMessage("commands.tag.err_len"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendWarningMessage(Language.translate("commands.tag.err_len"), player);
             return false;
         }
         return true;

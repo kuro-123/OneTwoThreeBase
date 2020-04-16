@@ -5,6 +5,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.task.SoundTask;
@@ -29,18 +30,14 @@ public class KcCommand extends CommandBase {
             player = (Player) sender;
         }
         if (args.length < 1) {
-            this.sendUsage(sender);
-            if (player != null) {
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            }
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         try {
             // 権限チェック
             if (player != null) {
                 if (!api.IsGameMaster(player)) {
-                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                    player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                    api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
                     return false;
                 }
             }
@@ -75,9 +72,8 @@ public class KcCommand extends CommandBase {
 
         } catch (Exception e) {
             if (player != null) {
-                player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                api.getLogErr().Write(player, api.GetErrorMessage(e));
+                api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+                api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             }
             return false;
         }

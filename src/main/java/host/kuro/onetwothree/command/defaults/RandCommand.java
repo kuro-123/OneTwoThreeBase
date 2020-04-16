@@ -7,6 +7,7 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
@@ -32,28 +33,24 @@ public class RandCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsJyumin(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             return false;
         }
         // スキルチェック
         if (!api.IsGameMaster(player)) {
             int count = api.GetChatCount(player);
             if (count < 5000) {
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                player.sendMessage(api.GetWarningMessage("onetwothree.skill_err"));
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.skill_err"), player);
                 return false;
             }
         }
         if (args.length != 2) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         try {
@@ -95,14 +92,14 @@ public class RandCommand extends CommandBase {
             sb.append(kisu_gusu);
             sb.append(") です");
             String message = new String(sb);
-            api.getServer().broadcastMessage(message);
-            api.sendDiscordGreenMessage(message);
+
+            api.getMessage().SendInfoMessage(message, true);
             api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin052, 0, false); // ﾋﾟｭｳ
 
         } catch (Exception e) {
             this.sendUsage(player);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
         return true;
     }

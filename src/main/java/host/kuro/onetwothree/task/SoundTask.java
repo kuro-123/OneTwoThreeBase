@@ -78,7 +78,7 @@ public class SoundTask extends Thread {
 
         } catch (Exception e) {
             volume = 0.9F;
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 
@@ -102,7 +102,7 @@ public class SoundTask extends Thread {
             }
 
         } catch (Exception e) {
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
         }
     }
 

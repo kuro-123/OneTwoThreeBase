@@ -48,7 +48,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new ViCommand(api));
 
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
     }
 }

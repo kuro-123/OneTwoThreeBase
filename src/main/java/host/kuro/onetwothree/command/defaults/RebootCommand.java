@@ -41,8 +41,7 @@ public class RebootCommand extends CommandBase {
             sb.append("==== [鯖主再起動] ====");
             sb.append(TextFormat.GOLD);
             String message = new String(sb);
-            api.getServer().broadcastMessage(message);
-            api.sendDiscordRedMessage(message);
+            api.getMessage().SendErrorMessage(message, true);
 
             // リブートタスク起動
             api.getServer().getScheduler().scheduleRepeatingTask(new RebootTask(api), 200);

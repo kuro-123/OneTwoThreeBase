@@ -5,13 +5,11 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
 import host.kuro.onetwothree.database.DatabaseArgs;
-import host.kuro.onetwothree.datatype.WorldInfo;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.task.SoundTask;
 
@@ -39,16 +37,14 @@ public class AliasCommand extends CommandBase {
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
 
         if (args.length != 1) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
 
         // 権限チェック
         if (player != null) {
             if (!api.IsGameMaster(player)) {
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-                player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
                 return false;
             }
         }
@@ -57,8 +53,7 @@ public class AliasCommand extends CommandBase {
         String name = api.AmbiguousSearch(args[0]);
         String message = GetAliasString(name);
         if (message.length() <= 0) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
 
@@ -66,9 +61,8 @@ public class AliasCommand extends CommandBase {
             // ウィンドウ
             if (message.length() > 0) {
                 api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
-                SimpleForm form = new SimpleForm("エイリアス情報", message);
-                form.send(player, (targetPlayer, targetForm, data) -> {
-                });
+                SimpleForm form = new SimpleForm(Language.translate("commands.alias.title"), message);
+                form.send(player, (targetPlayer, targetForm, data) -> {});
             }
         } else {
             // コンソール
@@ -129,7 +123,7 @@ public class AliasCommand extends CommandBase {
                 sb.append(format);
             }
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
         info.clear();
         info = null;
@@ -195,7 +189,7 @@ public class AliasCommand extends CommandBase {
                 rs = null;
             }
         } catch (Exception e) {
-            api.getLogErr().Write(null, api.GetErrorMessage(e));
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
         }
     }
 }

@@ -39,22 +39,19 @@ public class ZoneCommand extends CommandBase {
         Player player = null;
         if(!(sender instanceof ConsoleCommandSender)) player = (Player) sender;
         if (player == null) {
-            this.sendUsage(sender);
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+            api.getMessage().SendUsage(this, sender);
             return false;
         }
         // 権限チェック
         if (!api.IsGameMaster(player)) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage("onetwothree.rank_err"));
+            api.getMessage().SendWarningMessage(Language.translate("onetwothree.rank_err"), player);
             player.sendTitle("");
             return false;
         }
         // ゾーン許可設定
         WorldInfo worldinfo = api.GetWorldInfo(player);
         if (!worldinfo.zone) {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            player.sendMessage(api.GetWarningMessage(Language.translate("commands.zone.allow")));
+            api.getMessage().SendWarningMessage(Language.translate("commands.zone.allow"), player);
             player.sendTitle("");
             return false;
         }
@@ -66,35 +63,33 @@ public class ZoneCommand extends CommandBase {
         try {
             if (!OneTwoThreeAPI.mode.containsKey(player)) {
                 OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_ZONE);
-                player.sendMessage(api.GetWarningMessage(Language.translate("commands.zone.modeon")));;
+                api.getMessage().SendInfoMessage(Language.translate("commands.zone.modeon"), player);
                 player.sendTitle("ゾーンモード", TextFormat.YELLOW + "ポイント１を選択してください", 10, 100, 10);
 
             } else {
                 if (OneTwoThreeAPI.mode.get(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
                     OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_NONE);
-                    player.sendMessage(api.GetWarningMessage(Language.translate("commands.zone.modeoff")));
+                    api.getMessage().SendInfoMessage(Language.translate("commands.zone.modeoff"), player);
                     player.sendTitle("");
                 } else {
                     OneTwoThreeAPI.mode.put(player, OneTwoThreeAPI.TAP_MODE.MODE_ZONE);
-                    player.sendMessage(api.GetWarningMessage(Language.translate("commands.zone.modeon")));
+                    api.getMessage().SendInfoMessage(Language.translate("commands.zone.modeon"), player);
                     player.sendTitle("ゾーンモード", TextFormat.YELLOW + "ポイント１を選択してください", 10, 100, 10);
                 }
             }
 
         } catch (Exception e) {
-            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
-        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin008, 0, false); // SUCCESS
         return true;
     }
 
     private boolean DeleteZone(Player player) {
         ZoneInfo zi = api.IsInsideInfo(player.getLocation());
         if (zi == null) {
-            player.sendMessage(api.GetWarningMessage(Language.translate("commands.zone.inside")));
+            api.getMessage().SendWarningMessage(Language.translate("commands.zone.inside"), player);
             return false;
         }
         try {
@@ -108,8 +103,7 @@ public class ZoneCommand extends CommandBase {
             args.clear();
             args = null;
             if (ret <= 0) {
-                player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
+                api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
                 return false;
             }
             String key = zi.level+zi.x1+zi.z1+zi.x2+zi.z2;
@@ -124,14 +118,11 @@ public class ZoneCommand extends CommandBase {
             sb.append(TextFormat.YELLOW);
             sb.append(" ] さんがゾーン設定を削除しました");
             String message = new String(sb);
-            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin011, 0, false); // SUCCESS
-            api.getServer().broadcastMessage(message);
-            api.sendDiscordYellowMessage(message);
+            api.getMessage().SendInfoMessage(message, true);
 
         } catch (Exception e) {
-            player.sendMessage(api.GetErrMessage("onetwothree.cmderror"));
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin007, 0, false); // FAIL
-            api.getLogErr().Write(player, api.GetErrorMessage(e));
+            api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);
+            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             return false;
         }
         return true;

@@ -12,13 +12,11 @@ public class DiscordChatListener extends ListenerAdapter {
     private final OneTwoThreeAPI api;
     private JDA jda;
     private String channelId;
-    private Config config;
 
     public DiscordChatListener(OneTwoThreeAPI api) {
         this.api = api;
         jda = this.api.getPlugin().getJDA();
         channelId = this.api.getPlugin().getChannelID();
-        config = this.api.getConfig();
     }
 
     @Override
@@ -70,7 +68,7 @@ public class DiscordChatListener extends ListenerAdapter {
     private void CommnadExecuteFromDiscord(String message) {
         if (message.startsWith("/list")) {
             String buff = ListCommand.GetListString(null);
-            api.sendDiscordGreenMessage("\n" + buff);
+            api.getMessage().SendDiscordBlueMessage("\n" + buff);
         }
     }
 }
