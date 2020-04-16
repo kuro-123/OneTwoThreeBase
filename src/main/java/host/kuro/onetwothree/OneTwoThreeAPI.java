@@ -364,7 +364,7 @@ public class OneTwoThreeAPI {
                     form.send(player, (targetPlayer, targetForm, data) -> {
                     });
                 } else {
-                    getMessage().SendWarningMessage("commands.kv.none", player);
+                    getMessage().SendWarningMessage(Language.translate("commands.kv.none"), player);
                 }
             }
             if (ps != null) {
