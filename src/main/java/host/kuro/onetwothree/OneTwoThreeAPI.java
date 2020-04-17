@@ -975,7 +975,7 @@ public class OneTwoThreeAPI {
     }
 
     public void RandomPresent(Player player, String symbol) {
-        int value = getRand().Next(0, 10000);
+        int value = getRand().Next(0, 3000);
         if (value != 1) return;
 
         int count = 0;
@@ -989,7 +989,7 @@ public class OneTwoThreeAPI {
             if (ii.ban.equals("1")) continue;
             if (ii.price <= 0) continue;
 
-            Item item = Item.get(ii.id, 0 , 1);
+            Item item = Item.get(ii.id, 0 , getRand().Next(1, 3));
             item.setCustomName(item.getName()+symbol);
 
             Location loc = player.getLocation();

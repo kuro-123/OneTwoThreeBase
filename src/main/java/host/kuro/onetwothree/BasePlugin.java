@@ -29,6 +29,7 @@ public class BasePlugin extends PluginBase {
     private JDA jda;
     private String channelId;
     private String ban_channelId;
+
     public JDA getJDA() { return jda; }
     public String getChannelID() { return channelId; }
     public String getBanChannelID() { return ban_channelId; }

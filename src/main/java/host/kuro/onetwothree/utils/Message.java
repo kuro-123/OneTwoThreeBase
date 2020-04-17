@@ -6,6 +6,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Sound;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
@@ -296,6 +297,14 @@ public class Message {
         return ret;
     }
 
+    public void SendBroadcastTip(String message, String sound) {
+        for (Player player : api.getServer().getOnlinePlayers().values()) {
+            player.sendTip(message);
+        }
+        api.PlaySound(null, SoundTask.MODE_BROADCAST, sound, 0, false); // SUCCESS
+        SendDiscordGreenMessage(message);
+    }
+
     public void SendBlockInfoMessage(Player player, Block block) {
         if (block == null) return;
         String id = ((Integer)block.getId()).toString();
@@ -549,8 +558,7 @@ public class Message {
         sb.append(target);
         sb.append(TextFormat.LIGHT_PURPLE);
         sb.append(" ]");
-        String message = new String(sb);
-        api.getMessage().SendBroadcastInfoMessage(message, SoundTask.jin020);
+        SendBroadcastTip(new String(sb), SoundTask.jin020);
     }
 
     public void SendUsage(CommandBase base, CommandSender sender) {

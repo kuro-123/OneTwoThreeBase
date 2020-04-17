@@ -42,7 +42,6 @@ import host.kuro.onetwothree.npc.NpcType;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.MapColor;
-import host.kuro.onetwothree.utils.Particle;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -1051,6 +1050,15 @@ public class EventListener implements Listener {
                 return;
             }
         }
+
+        if (OneTwoThreeAPI.mode.containsKey(player)) {
+            if (OneTwoThreeAPI.mode.get(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
+                api.getMessage().SendWarningMessage(Language.translate("onetwothree.touch_mode"), player);
+                event.setCancelled();
+                return;
+            }
+        }
+
         api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
     }
 
