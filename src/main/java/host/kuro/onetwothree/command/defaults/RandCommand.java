@@ -93,8 +93,7 @@ public class RandCommand extends CommandBase {
             sb.append(") です");
             String message = new String(sb);
 
-            api.getMessage().SendInfoMessage(message, true);
-            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin052, 0, false); // ﾋﾟｭｳ
+            api.getMessage().SendBroadcastInfoMessage(message, SoundTask.jin052);
 
         } catch (Exception e) {
             this.sendUsage(player);

@@ -118,7 +118,7 @@ public class ZoneCommand extends CommandBase {
             sb.append(TextFormat.YELLOW);
             sb.append(" ] さんがゾーン設定を削除しました");
             String message = new String(sb);
-            api.getMessage().SendInfoMessage(message, true);
+            api.getMessage().SendBroadcastInfoMessage(message);
 
         } catch (Exception e) {
             api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), player);

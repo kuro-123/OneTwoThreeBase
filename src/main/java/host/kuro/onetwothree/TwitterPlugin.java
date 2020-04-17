@@ -94,6 +94,6 @@ class TweetListener extends StatusAdapter {
         }
         sb.append(mes);
         String message = new String(sb);
-        api.getMessage().SendInfoMessage(message, true);
+        api.getMessage().SendBroadcastInfoMessage(message);
     }
 }

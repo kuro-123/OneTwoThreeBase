@@ -35,41 +35,28 @@ public class Message {
     }
 
     // 情報メッセージ
-    public void SendInfoMessage(String target) {
-        SendInfoMessage(target, null, false);
-    }
-    public void SendInfoMessage(String target, boolean withDiscord) {
-        SendInfoMessage(target, null, withDiscord);
-    }
     public void SendInfoMessage(String target, Player player) {
-        SendInfoMessage(target, player, false);
+        SendInfoMessage(target, player, SoundTask.jin054);
     }
-    private void SendInfoMessage(String target, Player player, boolean withDiscord) {
+    public void SendInfoMessage(String target, Player player, String sound) {
         StringBuilder sb = new StringBuilder();
         sb.append(GetMessageTitle());
         sb.append(TextFormat.WHITE);
         sb.append(target);
         String message = new String(sb);
-        if (player == null) {
-            // BROADCAST
-            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin055, 0, false); // SUCCESS
-            api.getServer().broadcastMessage(message);
-            if (withDiscord) {
-                SendDiscordGreenMessage(message);
-            }
-        } else {
-            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin054, 0, false); // SUCCESS
-            player.sendMessage(message);
-        }
+        api.PlaySound(player, SoundTask.MODE_PLAYER, sound, 0, false); // SUCCESS
+        player.sendMessage(message);
     }
-    private void SendWarpMessage(String target) {
+    public void SendBroadcastInfoMessage(String target) {
+        SendBroadcastInfoMessage(target, SoundTask.jin055);
+    }
+    public void SendBroadcastInfoMessage(String target, String sound) {
         StringBuilder sb = new StringBuilder();
         sb.append(GetMessageTitle());
         sb.append(TextFormat.WHITE);
         sb.append(target);
         String message = new String(sb);
-        // BROADCAST
-        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin020, 0, false); // SUCCESS
+        api.PlaySound(null, SoundTask.MODE_BROADCAST, sound, 0, false); // SUCCESS
         api.getServer().broadcastMessage(message);
         SendDiscordGreenMessage(message);
     }
@@ -373,7 +360,7 @@ public class Message {
         sb.append(rank);
         sb.append(TextFormat.YELLOW);
         sb.append(" ] ランクゾーンが設定されました！");
-        SendInfoMessage(new String(sb), true);
+        SendBroadcastInfoMessage(new String(sb));
     }
 
     public void SendDropMessage(Player player, String item) {
@@ -388,7 +375,7 @@ public class Message {
         sb.append(item);
         sb.append(TextFormat.YELLOW);
         sb.append(" ] がドロップした！");
-        SendInfoMessage(new String(sb), true);
+        SendBroadcastInfoMessage(new String(sb));
     }
 
     public String GetErrorMessage(Exception ex) {
@@ -563,7 +550,7 @@ public class Message {
         sb.append(TextFormat.LIGHT_PURPLE);
         sb.append(" ]");
         String message = new String(sb);
-        api.getMessage().SendWarpMessage(message);
+        api.getMessage().SendBroadcastInfoMessage(message, SoundTask.jin020);
     }
 
     public void SendUsage(CommandBase base, CommandSender sender) {
@@ -589,6 +576,48 @@ public class Message {
         sb_b.append(TextFormat.YELLOW);
         sb_b.append(player.getDisplayName());
         sb_b.append("さんがシステムコールしました！ (公式ツイート ※クールタイム15分)");
-        api.getMessage().SendInfoMessage(new String(sb_b), true);
+        api.getMessage().SendBroadcastInfoMessage(new String(sb_b));
+    }
+
+    public void SendPayMessage(Player player, Player responser, int money, int pay) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(TextFormat.YELLOW);
+        sb.append("[ ");
+        sb.append(TextFormat.WHITE);
+        sb.append(responser.getDisplayName());
+        sb.append(TextFormat.YELLOW);
+        sb.append(" ] さんに [ ");
+        sb.append(TextFormat.WHITE);
+        sb.append(api.comma_format.format(pay));
+        sb.append("p ");
+        sb.append(TextFormat.YELLOW);
+        sb.append("] 支払いました。現在の所持金は [ ");
+        sb.append(TextFormat.WHITE);
+        sb.append(api.comma_format.format(money-pay));
+        sb.append("p ");
+        sb.append(TextFormat.YELLOW);
+        sb.append("] です");
+        api.getMessage().SendInfoMessage(new String(sb), player, SoundTask.jin071);
+    }
+    public void SendPayFromMessage(Player player, Player responser, int pay) {
+        int nowmoney = api.GetMoney(responser);
+        StringBuilder sb = new StringBuilder();
+        sb.append(TextFormat.AQUA);
+        sb.append("[ ");
+        sb.append(TextFormat.WHITE);
+        sb.append(player.getDisplayName());
+        sb.append(TextFormat.AQUA);
+        sb.append(" ] さんから [ ");
+        sb.append(TextFormat.WHITE);
+        sb.append(api.comma_format.format(pay));
+        sb.append("p ");
+        sb.append(TextFormat.AQUA);
+        sb.append("] が支払われました。現在の所持金は [ ");
+        sb.append(TextFormat.WHITE);
+        sb.append(api.comma_format.format(nowmoney));
+        sb.append("p ");
+        sb.append(TextFormat.AQUA);
+        sb.append("] です");
+        api.getMessage().SendInfoMessage(new String(sb), responser, SoundTask.jin071);
     }
 }

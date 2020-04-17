@@ -101,30 +101,7 @@ public class PayCommand extends CommandBase {
                     return;
                 }
                 api.getLogPay().Write(targetPlayer, "WarpCommand", "minus", ""+imoney);
-
-                NumberFormat nfNum = NumberFormat.getNumberInstance();
-
-                StringBuilder sb = new StringBuilder();
-                sb.append(TextFormat.YELLOW);
-                sb.append("[ ");
-                sb.append(TextFormat.WHITE);
-                sb.append(responser.getDisplayName());
-                sb.append(TextFormat.YELLOW);
-                sb.append(" ] さんに [ ");
-                sb.append(TextFormat.WHITE);
-                sb.append(nfNum.format(imoney));
-                sb.append("p ");
-                sb.append(TextFormat.YELLOW);
-                sb.append("] 支払いました。現在の所持金は [ ");
-                sb.append(TextFormat.WHITE);
-                sb.append(nfNum.format(money-imoney));
-                sb.append("p ");
-                sb.append(TextFormat.YELLOW);
-                sb.append("] です");
-                String m1 = new String(sb);
-                targetPlayer.sendMessage(m1);
-                api.getServer().getLogger().info(m1);
-                api.PlaySound(targetPlayer, SoundTask.MODE_PLAYER, SoundTask.jin071, 0, false); // レジスター
+                api.getMessage().SendPayMessage(targetPlayer, responser, money, imoney);
 
                 // 加算処理
                 ret = api.AddMoney(responser, imoney);
@@ -133,29 +110,7 @@ public class PayCommand extends CommandBase {
                     return;
                 }
                 api.getLogPay().Write(responser, "PayCommand", "plus", ""+imoney);
-
-                int nowmoney = api.GetMoney(responser);
-                StringBuilder sb2 = new StringBuilder();
-                sb2.append(TextFormat.AQUA);
-                sb2.append("[ ");
-                sb2.append(TextFormat.WHITE);
-                sb2.append(targetPlayer.getDisplayName());
-                sb2.append(TextFormat.AQUA);
-                sb2.append(" ] さんから [ ");
-                sb2.append(TextFormat.WHITE);
-                sb2.append(nfNum.format(imoney));
-                sb2.append("p ");
-                sb2.append(TextFormat.AQUA);
-                sb2.append("] が支払われました。現在の所持金は [ ");
-                sb2.append(TextFormat.WHITE);
-                sb2.append(nfNum.format(nowmoney));
-                sb2.append("p ");
-                sb2.append(TextFormat.AQUA);
-                sb2.append("] です");
-                String m2 = new String(sb2);
-                responser.sendMessage(m2);
-                api.getServer().getLogger().info(m2);
-                api.PlaySound(responser, SoundTask.MODE_PLAYER, SoundTask.jin071, 0, false); // レジスター
+                api.getMessage().SendPayFromMessage(targetPlayer, responser, imoney);
             });
 
         } catch (Exception e) {

@@ -70,9 +70,9 @@ public class NpcCommand extends CommandBase {
                     npc_list.add(entity.getName());
                 }
             }
-            CustomForm form = new CustomForm("NPC削除")
-                    .addLabel("選択したNPCを削除します")
-                    .addDropDown("NPCリスト", npc_list);
+            CustomForm form = new CustomForm(Language.translate("commands.npc.title"))
+                    .addLabel(Language.translate("commands.npc.message"))
+                    .addDropDown(Language.translate("commands.npc.list"), npc_list);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
             form.send(player, (targetPlayer, targetForm, data) -> {
                 try {
@@ -82,7 +82,7 @@ public class NpcCommand extends CommandBase {
                         return;
                     }
                     // ウィンドウログ
-                    api.getLogWin().Write(targetPlayer, "NPC削除", data.get(1).toString(), "","","","", "", targetPlayer.getDisplayName());
+                    api.getLogWin().Write(targetPlayer, Language.translate("commands.npc.title"), data.get(1).toString(), "","","","", "", targetPlayer.getDisplayName());
 
                     // タイプ
                     String entity_name = data.get(1).toString();
@@ -113,12 +113,12 @@ public class NpcCommand extends CommandBase {
         try {
             ArrayList<String> tlist = new ArrayList<String>();
             tlist.add(Language.translate("onetwothree.selection.none"));
-            tlist.add("一般NPC-男性");
-            tlist.add("一般NPC-女性");
-            tlist.add("商人NPC-男性");
-            tlist.add("商人NPC-女性");
-            tlist.add("ポータルNPC-男性");
-            tlist.add("ポータルNPC-女性");
+            tlist.add(Language.translate("commands.npc.type01"));
+            tlist.add(Language.translate("commands.npc.type02"));
+            tlist.add(Language.translate("commands.npc.type03"));
+            tlist.add(Language.translate("commands.npc.type04"));
+            tlist.add(Language.translate("commands.npc.type05"));
+            tlist.add(Language.translate("commands.npc.type06"));
 
             ArrayList<String> slist = new ArrayList<String>();
             slist.add(Language.translate("onetwothree.selection.none"));

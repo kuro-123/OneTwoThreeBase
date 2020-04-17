@@ -299,7 +299,7 @@ public class WorldCommand extends CommandBase {
                     api.world_info.put(levelname, worldinfo);
 
                     String message = new String(sb);
-                    api.getMessage().SendInfoMessage(message, true);
+                    api.getMessage().SendBroadcastInfoMessage(message);
 
                 } catch (Exception e) {
                     this.sendUsage(targetPlayer);

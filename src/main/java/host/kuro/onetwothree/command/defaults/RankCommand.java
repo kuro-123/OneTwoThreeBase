@@ -151,9 +151,7 @@ public class RankCommand extends CommandBase {
                             sb.append(" ] へ更新しました！");
                             String message = new String(sb);
 
-                            api.getMessage().SendInfoMessage(message, true);
-                            api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin016, 0, false); // ハープ
-
+                            api.getMessage().SendBroadcastInfoMessage(message, SoundTask.jin016);
                         } else {
                             api.getMessage().SendWarningMessage(Language.translate("commands.rank.fail"), targetPlayer);
                         }
