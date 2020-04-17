@@ -1,5 +1,6 @@
 package host.kuro.onetwothree;
 
+import cn.nukkit.Player;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
@@ -7,6 +8,11 @@ import cn.nukkit.utils.Config;
 import host.kuro.onetwothree.command.CommandManager;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.datatype.WorldInfo;
+import host.kuro.onetwothree.scoreboard.Criteria;
+import host.kuro.onetwothree.scoreboard.DisplaySlot;
+import host.kuro.onetwothree.scoreboard.Scoreboard;
+import host.kuro.onetwothree.scoreboard.ScoreboardObjective;
+import host.kuro.onetwothree.task.ScoreTask;
 import host.kuro.onetwothree.task.TimingTask;
 import host.kuro.onetwothree.utils.Particle;
 import net.dv8tion.jda.api.JDA;
@@ -19,6 +25,7 @@ import java.lang.management.ManagementFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BasePlugin extends PluginBase {
 
@@ -109,6 +116,9 @@ public class BasePlugin extends PluginBase {
         api.getServer().getScheduler().scheduleRepeatingTask(task, 20 * 60 * 60);
         // パーティクル設定
         Particle.SetAPI(api);
+
+        // スコアボードタスク起動
+        api.getServer().getScheduler().scheduleRepeatingTask(new ScoreTask(api), 20);
 
         // 起動
         this.getLogger().info(Language.translate("onetwothree.loaded"));

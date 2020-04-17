@@ -39,6 +39,10 @@ import host.kuro.onetwothree.forms.Form;
 import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
 import host.kuro.onetwothree.npc.NpcType;
+import host.kuro.onetwothree.scoreboard.Criteria;
+import host.kuro.onetwothree.scoreboard.DisplaySlot;
+import host.kuro.onetwothree.scoreboard.Scoreboard;
+import host.kuro.onetwothree.scoreboard.ScoreboardObjective;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.MapColor;
@@ -314,6 +318,17 @@ public class EventListener implements Listener {
         String message = api.getMessage().SendJoinMessage(player);
         event.setJoinMessage(message);
 
+        /*
+        Scoreboard scoreboard = new Scoreboard();
+        ScoreboardObjective objective = scoreboard.registerNewObjective("showhealth", Criteria.DUMMY);
+        objective.setDisplaySlot(DisplaySlot.BELOWNAME);
+        objective.setDisplayName("aiueo");
+        objective.registerScore("1", "level", 0);
+        objective.registerScore("2", "fake", 50);
+        objective.setScoreText("1", player.getLevel().getName());
+        api.sendScoreboard(player, scoreboard);
+        */
+
         // 経過時間計測開始
         api.play_time.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());
     }
@@ -358,6 +373,7 @@ public class EventListener implements Listener {
         OneTwoThreeAPI.select_one.remove(player);
         OneTwoThreeAPI.select_two.remove(player);
         OneTwoThreeAPI.tip_wait.remove(player);
+        OneTwoThreeAPI.boards.remove(player);
         api.play_time.remove(player);
         api.play_rank.remove(player);
 
@@ -624,7 +640,7 @@ public class EventListener implements Listener {
             }
             if (killer != null) {
                 if (killer instanceof Player) {
-                    killername = ((Player)killer).getName();
+                    killername = ((Player)killer).getDisplayName();
                     PlayerInventory inv = ((Player)killer).getInventory();
                     killitem = inv.getItemInHand().getName();
                 }

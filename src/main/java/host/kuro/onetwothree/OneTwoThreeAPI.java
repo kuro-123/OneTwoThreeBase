@@ -20,6 +20,8 @@ import host.kuro.onetwothree.datatype.ZoneInfo;
 import host.kuro.onetwothree.forms.elements.CustomForm;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.datatype.ItemInfo;
+import host.kuro.onetwothree.protocol.RemoveObjectivePacket;
+import host.kuro.onetwothree.scoreboard.Scoreboard;
 import host.kuro.onetwothree.task.AfkTask;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.*;
@@ -49,6 +51,9 @@ public class OneTwoThreeAPI {
     private LogSign log_sign;
 
     private static final MtRand random = new MtRand(System.currentTimeMillis());
+    public String packetToHex(byte packet) {
+        return Integer.toString(packet, 16);
+    }
 
     // 各種メモリデータ
     public SimpleDateFormat sdf_ymdhms = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
@@ -75,6 +80,8 @@ public class OneTwoThreeAPI {
 
     public static HashMap<String, String> black_cid = new HashMap<>();
     public static HashMap<String, String> black_xuid = new HashMap<>();
+
+    public static HashMap<Player, Scoreboard> boards = new HashMap<Player, Scoreboard>();
 
     private AfkTask task_afk = null;
 
@@ -1059,5 +1066,33 @@ public class OneTwoThreeAPI {
             getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
         return ret;
+    }
+
+    public void sendScoreboard(Player player, Scoreboard scoreboard) {
+        if(!boards.containsKey(player)) {
+            scoreboard.player = player;
+            boards.put(player, scoreboard);
+        } else {
+            boards.remove(player);
+            scoreboard.player = player;
+            boards.put(player, scoreboard);
+        }
+    }
+
+    public void removeScoreboard(Player player) {
+        if(boards.containsKey(player)) {
+            RemoveObjectivePacket packet = new RemoveObjectivePacket();
+            packet.objectiveName = getScoreboard(player).getObjective().objectiveName;
+            player.dataPacket(packet);
+            boards.remove(player);
+        }
+    }
+
+    public Scoreboard getScoreboard(Player player) {
+        try {
+            return boards.get(player);
+        } catch(NullPointerException e) {
+            return null;
+        }
     }
 }
