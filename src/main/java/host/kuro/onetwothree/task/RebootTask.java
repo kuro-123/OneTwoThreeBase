@@ -35,6 +35,6 @@ public class RebootTask extends AsyncTask {
                 break;
         }
         if (message.length() <= 0) return;
-        api.getMessage().SendErrorMessage(message, true);
+        api.getMessage().SendBroadcastActionBar(message, true);
     }
 }

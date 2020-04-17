@@ -70,5 +70,9 @@ public class DiscordChatListener extends ListenerAdapter {
             String buff = ListCommand.GetListString(null);
             api.getMessage().SendDiscordBlueMessage("\n" + buff);
         }
+        else if (message.startsWith("/ver")) {
+            String buff = api.getMessage().GetVersionInfo();
+            api.getMessage().SendDiscordBlueMessage("\n" + buff);
+        }
     }
 }

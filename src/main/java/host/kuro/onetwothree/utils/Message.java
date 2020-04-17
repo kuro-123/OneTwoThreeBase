@@ -11,10 +11,13 @@ import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
+import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.task.SoundTask;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Date;
 
 public class Message {
@@ -303,6 +306,16 @@ public class Message {
         }
         api.PlaySound(null, SoundTask.MODE_BROADCAST, sound, 0, false); // SUCCESS
         SendDiscordGreenMessage(message);
+    }
+
+    public void SendBroadcastActionBar(String message, boolean withdiscord) {
+        for (Player player : api.getServer().getOnlinePlayers().values()) {
+            player.sendActionBar(message, 20, 200, 20);
+        }
+        api.PlaySound(null, SoundTask.MODE_BROADCAST, SoundTask.jin002, 0, false); // ボンッ
+        if (withdiscord) {
+            SendDiscordYellowMessage(message);
+        }
     }
 
     public void SendBlockInfoMessage(Player player, Block block) {
@@ -627,5 +640,38 @@ public class Message {
         sb.append(TextFormat.AQUA);
         sb.append("] です");
         api.getMessage().SendInfoMessage(new String(sb), responser, SoundTask.jin071);
+    }
+
+    public String GetVersionInfo() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0010"));
+            ResultSet rs = api.getDB().ExecuteQuery(ps, null);
+            if (rs != null) {
+                while(rs.next()){
+                    sb.append(TextFormat.GOLD);
+                    sb.append("VER: ");
+                    sb.append(rs.getString("version"));
+                    sb.append(" (");
+                    sb.append(rs.getString("add_date"));
+                    sb.append(" ) -> ");
+                    sb.append(TextFormat.WHITE);
+                    sb.append(rs.getString("name"));
+                    sb.append("\n");
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+            return new String(sb);
+        } catch (Exception e) {
+            api.getLogErr().Write(null, GetErrorMessage(e));
+        }
+        return "";
     }
 }

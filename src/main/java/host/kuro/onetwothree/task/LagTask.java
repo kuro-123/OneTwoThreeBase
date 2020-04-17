@@ -51,6 +51,6 @@ public class LagTask extends AsyncTask {
                 break;
         }
         if (message.length() <= 0) return;
-        api.getMessage().SendWarningMessage(message, true);
+        api.getMessage().SendBroadcastActionBar(message, true);
     }
 }

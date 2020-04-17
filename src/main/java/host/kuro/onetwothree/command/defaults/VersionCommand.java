@@ -31,40 +31,12 @@ public class VersionCommand extends CommandBase {
             api.getMessage().SendUsage(this, sender);
             return false;
         }
-        StringBuilder sb = new StringBuilder();
-        try {
-            PreparedStatement ps = api.getDB().getConnection().prepareStatement(Language.translate("Sql0010"));
-            ResultSet rs = api.getDB().ExecuteQuery(ps, null);
-            if (rs != null) {
-                while(rs.next()){
-                    sb.append(TextFormat.GOLD);
-                    sb.append("VER: ");
-                    sb.append(rs.getString("version"));
-                    sb.append(" (");
-                    sb.append(rs.getString("add_date"));
-                    sb.append(" ) -> ");
-                    sb.append(TextFormat.WHITE);
-                    sb.append(rs.getString("name"));
-                    sb.append("\n");
-                }
-            }
-            if (ps != null) {
-                ps.close();
-                ps = null;
-            }
-            if (rs != null) {
-                rs.close();
-                rs = null;
-            }
 
-            if (sb.length() > 0) {
-                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
-                SimpleForm form = new SimpleForm("更新情報", new String(sb));
-                form.send(player, (targetPlayer, targetForm, data) -> {
-                });
-            }
-        } catch (Exception e) {
-            api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
+        String info = api.getMessage().GetVersionInfo();
+        if (info.length() > 0) {
+            api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
+            SimpleForm form = new SimpleForm("更新情報", info);
+            form.send(player, (targetPlayer, targetForm, data) -> {});
         }
         return true;
     }
