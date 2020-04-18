@@ -11,6 +11,8 @@ import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.Language;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.command.CommandBase;
+import host.kuro.onetwothree.database.DatabaseArgs;
+import host.kuro.onetwothree.forms.elements.ModalForm;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
 import host.kuro.onetwothree.task.SoundTask;
 import net.dv8tion.jda.api.JDA;
@@ -18,6 +20,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Message {
@@ -673,5 +676,108 @@ public class Message {
             api.getLogErr().Write(null, GetErrorMessage(e));
         }
         return "";
+    }
+
+    public void SendAgreementMessage(Player player) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(TextFormat.WHITE);
+        sb.append("123鯖では皆様に快適に楽しんで頂くために幾つかのルールがあります。");
+        sb.append("ルール違反が認められた場合はBAN対処されることがありますので、予めご了承ください。\n");
+        sb.append("\n");
+        sb.append(TextFormat.RED);
+        sb.append("下記ルール同意書を読んでいただき、");
+        sb.append("同意できる方のみ  「同意する」  を押してください。\n");
+        sb.append("\n");
+        sb.append(TextFormat.YELLOW);
+        sb.append("同意後はlobby内にいるNPC達の説明を受けてください。\n");
+        sb.append("全NPCの説明後に権限が「訪問」から「住民」へ昇格しメッセージが出ます。");
+        sb.append("その後、ゲームをいったん落としてログインし直してください。\n");
+        sb.append("街での生活や冒険を楽しんで頂ければ幸甚です。\n");
+        sb.append(TextFormat.RED);
+        sb.append("※現在NPCはまだ開発中でいません\n");
+        sb.append("\n");
+        sb.append(TextFormat.YELLOW);
+        sb.append("それでは楽しい鯖ライフを！！\n");
+        sb.append("\n");
+        sb.append(TextFormat.WHITE);
+        sb.append("-------------------------\n");
+        sb.append("ルールリスト\n");
+        sb.append("-------------------------\n");
+        sb.append(TextFormat.BOLD);
+        sb.append("ルール①\n");
+        sb.append(TextFormat.RESET);
+        sb.append("・鯖や鯖民への迷惑行為 (荒らし行為等) は禁止です。\n");
+        sb.append("相手に不快感を与える発言や行為は控えてください。\n");
+        sb.append("\n");
+        sb.append(TextFormat.BOLD);
+        sb.append("ルール②\n");
+        sb.append(TextFormat.RESET);
+        sb.append("・他人のチェストをむやみに見たりしないでください。\n");
+        sb.append("もちろん盗んだり破壊したりはルール①にも抵触します。\n");
+        sb.append("\n");
+        sb.append(TextFormat.BOLD);
+        sb.append("ルール③\n");
+        sb.append(TextFormat.RESET);
+        sb.append("・アイテムや権限のクレクレは禁止です。\n");
+        sb.append("鯖開発の流れで生じた問題に対しても補填は行いません。\n");
+        sb.append("常に発展途上で進化している事にご理解ください。\n");
+        sb.append("\n");
+        sb.append(TextFormat.BOLD);
+        sb.append("ルール④\n");
+        sb.append(TextFormat.RESET);
+        sb.append("・ハックツールの使用は禁止しています。\n");
+        sb.append("他鯖民と気持ちよい関係を築くため公平なプレーをお願いします。\n");
+        sb.append("\n");
+        sb.append(TextFormat.BOLD);
+        sb.append("ルール⑤\n");
+        sb.append(TextFormat.RESET);
+        sb.append("・ワープ移動先の直下堀り等を行うと他のプレイヤーへ迷惑が掛かります。\n");
+        sb.append("自分本位な行動で他人に迷惑をかけないようにしてください。\n");
+        sb.append("\n");
+        sb.append(TextFormat.BOLD);
+        sb.append("ルール⑥\n");
+        sb.append(TextFormat.RESET);
+        sb.append("・個人間の問題に鯖側はタッチしません。\n");
+        sb.append("あくまで個人間で問題解決してください。\n");
+        sb.append("他鯖民が不快に感じ通告があった場合は内容関係なく両成敗になることもあります。\n");
+        sb.append("\n");
+        sb.append(TextFormat.BOLD);
+        sb.append("ルール⑦\n");
+        sb.append(TextFormat.RESET);
+        sb.append("・鯖内外問わずですが鯖に被害の与えるような発言や行動はご遠慮願います。\n");
+        sb.append("間接的でも鯖存続の価値を著しく低下させた場合は対処されることもあります。\n");
+        sb.append("\n");
+        sb.append(TextFormat.BOLD);
+        sb.append("ルール⑧\n");
+        sb.append(TextFormat.RESET);
+        sb.append("・ルールになくても迷惑に準ずる事があれば警告されます。\n");
+        sb.append("警告に対して効果がない場合は対処されルールに追加されます。\n");
+        ModalForm form = new ModalForm("１２３鯖ルール 同意書", new String(sb), "同意する", "同意しない");
+        api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW
+        form.send(player, (targetPlayer, targetForm, data) -> {
+            try {
+                if (data != 0) {
+                    // キャンセル
+                    api.getMessage().SendWarningMessage(Language.translate("commands.sell.err_cansel"), targetPlayer);
+                    targetPlayer.close("", Language.translate("onetwothree.agree.non"), true);
+                    return;
+                }
+                // ウィンドウログ
+                api.getLogWin().Write(targetPlayer, "１２３鯖ルール 同意書", "" + data, "", "", "", "", "", targetPlayer.getDisplayName());
+
+                // 同意書更新
+                ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+                args.add(new DatabaseArgs("c", targetPlayer.getLoginChainData().getXUID()));          // xuid
+                int ret = api.getDB().ExecuteUpdate(Language.translate("Sql0078"), args);
+                args.clear();
+                args = null;
+                api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin005, 0, false); // フェードイン
+
+            } catch (Exception e) {
+                api.getMessage().SendErrorMessage(Language.translate("onetwothree.cmderror"), targetPlayer);
+                api.getLogErr().Write(targetPlayer, api.getMessage().GetErrorMessage(e));
+                return;
+            }
+        });
     }
 }

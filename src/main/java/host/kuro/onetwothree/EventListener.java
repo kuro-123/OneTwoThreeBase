@@ -1,6 +1,7 @@
 package host.kuro.onetwothree;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.StringEntityData;
@@ -41,6 +42,7 @@ import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
 import host.kuro.onetwothree.npc.NpcType;
 import host.kuro.onetwothree.scoreboard.*;
+import host.kuro.onetwothree.task.AgreeTask;
 import host.kuro.onetwothree.task.ScoreTask;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
@@ -219,6 +221,10 @@ public class EventListener implements Listener {
         if (worldinfo.viewdistance > 0) {
             player.setViewDistance(worldinfo.viewdistance);
         }
+
+        // 同意書
+        boolean agree = api.GetAgree(player);
+        if (!agree) api.getServer().getScheduler().scheduleDelayedTask(new AgreeTask(api, player), 100);
 
         // 権限設定
         player.setOp(false);
@@ -1064,7 +1070,7 @@ public class EventListener implements Listener {
                 return;
             }
         }
-
+/* 一時的停止
         if (OneTwoThreeAPI.mode.containsKey(player)) {
             if (OneTwoThreeAPI.mode.get(player) != OneTwoThreeAPI.TAP_MODE.MODE_NONE) {
                 api.getMessage().SendWarningMessage(Language.translate("onetwothree.touch_mode"), player);
@@ -1072,7 +1078,7 @@ public class EventListener implements Listener {
                 return;
             }
         }
-
+*/
         api.getLogCmd().Write(player, cmd, arg1, arg2, arg3, arg4, arg5, arg6, player.getDisplayName());
     }
 

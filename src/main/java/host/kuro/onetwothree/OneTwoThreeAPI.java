@@ -482,6 +482,34 @@ public class OneTwoThreeAPI {
         }
     }
 
+    public boolean GetAgree(Player player) {
+        boolean ret = false;
+        try {
+            ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
+            args.add(new DatabaseArgs("c", player.getLoginChainData().getXUID()));
+            PreparedStatement ps = getDB().getConnection().prepareStatement(Language.translate("Sql0077"));
+            ResultSet rs = getDB().ExecuteQuery(ps, args);
+            args.clear();
+            args = null;
+            if (rs != null) {
+                while(rs.next()){
+                    ret = rs.getBoolean("agree");
+                }
+            }
+            if (ps != null) {
+                ps.close();
+                ps = null;
+            }
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (Exception e) {
+            getLogErr().Write(null, getMessage().GetErrorMessage(e));
+        }
+        return ret;
+    }
+
     public int GetRank(Player player) {
         int ret = -1;
         try {

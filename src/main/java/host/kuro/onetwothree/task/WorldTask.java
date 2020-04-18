@@ -50,7 +50,7 @@ public class WorldTask extends AsyncTask {
                         if (entity instanceof Player) {
                             Player player = (Player)entity;
                             player.teleport(city.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                            message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + level_name + "> " + Language.translate("onetwothree.world.four");
+                            message = TextFormat.LIGHT_PURPLE + Language.translate("onetwothree.world.remake") + " <" + player.getDisplayName() + "> " + Language.translate("onetwothree.world.four");
                             api.getMessage().SendWarningMessage(message, true);
                         }
                     }
