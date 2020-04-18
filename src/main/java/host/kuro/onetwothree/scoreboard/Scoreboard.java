@@ -74,8 +74,14 @@ public class Scoreboard {
 			return null;
 		}
 	}
-	
-	public void onUpdate() {
+
+	public void onRemove() {
+		RemoveObjectivePacket pk = new RemoveObjectivePacket();
+		pk.objectiveName = getObjective().objectiveName;
+		player.dataPacket(pk);
+	}
+
+	public void onUpdate(int sortOrder) {
 		RemoveObjectivePacket pk = new RemoveObjectivePacket();
 		pk.objectiveName = getObjective().objectiveName;
 		player.dataPacket(pk);
@@ -85,7 +91,7 @@ public class Scoreboard {
 		pk1.displayName = getObjective().displayName;
 		pk1.criteriaName = getObjective().criteriaToString();
 		pk1.displaySlot = getObjective().slotToString();
-		pk1.sortOrder = 1;
+		pk1.sortOrder = sortOrder;
 		player.dataPacket(pk1);
 		
 		HashMap<String, Score> fakeMap = new HashMap<String, Score>();

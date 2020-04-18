@@ -1,6 +1,5 @@
 package host.kuro.onetwothree;
 
-import cn.nukkit.Player;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
@@ -25,7 +24,6 @@ import java.lang.management.ManagementFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class BasePlugin extends PluginBase {
 
@@ -36,6 +34,8 @@ public class BasePlugin extends PluginBase {
     private JDA jda;
     private String channelId;
     private String ban_channelId;
+    private Scoreboard scoreboard;
+    private ScoreboardObjective side_obj;
 
     public JDA getJDA() { return jda; }
     public String getChannelID() { return channelId; }
@@ -117,8 +117,9 @@ public class BasePlugin extends PluginBase {
         // パーティクル設定
         Particle.SetAPI(api);
 
-        // スコアボードタスク起動
-        api.getServer().getScheduler().scheduleRepeatingTask(new ScoreTask(api), 20);
+        // スコアボード起動
+        ScoreTask score = new ScoreTask(api);
+        api.getServer().getScheduler().scheduleRepeatingTask(score, 20 * 5);
 
         // 起動
         this.getLogger().info(Language.translate("onetwothree.loaded"));

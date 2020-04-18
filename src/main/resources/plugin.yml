@@ -56,3 +56,5 @@ permissions:
     default: op
   onetwothree.vi:
     default: op
+  onetwothree.score:
+    default: op

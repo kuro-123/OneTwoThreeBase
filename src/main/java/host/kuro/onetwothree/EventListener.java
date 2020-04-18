@@ -32,6 +32,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
+import host.kuro.onetwothree.datatype.ScoreInfo;
 import host.kuro.onetwothree.datatype.WorldInfo;
 import host.kuro.onetwothree.datatype.ZoneInfo;
 import host.kuro.onetwothree.forms.CustomFormResponse;
@@ -39,10 +40,8 @@ import host.kuro.onetwothree.forms.Form;
 import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
 import host.kuro.onetwothree.npc.NpcType;
-import host.kuro.onetwothree.scoreboard.Criteria;
-import host.kuro.onetwothree.scoreboard.DisplaySlot;
-import host.kuro.onetwothree.scoreboard.Scoreboard;
-import host.kuro.onetwothree.scoreboard.ScoreboardObjective;
+import host.kuro.onetwothree.scoreboard.*;
+import host.kuro.onetwothree.task.ScoreTask;
 import host.kuro.onetwothree.task.SkinTask;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.MapColor;
@@ -318,16 +317,9 @@ public class EventListener implements Listener {
         String message = api.getMessage().SendJoinMessage(player);
         event.setJoinMessage(message);
 
-        /*
-        Scoreboard scoreboard = new Scoreboard();
-        ScoreboardObjective objective = scoreboard.registerNewObjective("showhealth", Criteria.DUMMY);
-        objective.setDisplaySlot(DisplaySlot.BELOWNAME);
-        objective.setDisplayName("aiueo");
-        objective.registerScore("1", "level", 0);
-        objective.registerScore("2", "fake", 50);
-        objective.setScoreText("1", player.getLevel().getName());
-        api.sendScoreboard(player, scoreboard);
-        */
+        ScoreInfo si = new ScoreInfo();
+        si.mode = ScoreTask.SCORE_MODE.MODE_SCORE_SELF;
+        api.score_info.put(player, si);
 
         // 経過時間計測開始
         api.play_time.put(player.getLoginChainData().getXUID(), System.currentTimeMillis());
@@ -373,7 +365,7 @@ public class EventListener implements Listener {
         OneTwoThreeAPI.select_one.remove(player);
         OneTwoThreeAPI.select_two.remove(player);
         OneTwoThreeAPI.tip_wait.remove(player);
-        OneTwoThreeAPI.boards.remove(player);
+        OneTwoThreeAPI.score_info.remove(player);
         api.play_time.remove(player);
         api.play_rank.remove(player);
 
@@ -755,9 +747,15 @@ public class EventListener implements Listener {
             // 入場曲設定
             if (!sFrom.equals(sTo)) {
                 if (sTo.indexOf("nature") >=0) {
+                    player.sendTitle(sTo, "～冒険エリア～", 60, 50, 10);
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin024, 2000, false); // 資源ワールドIN
                 }
                 else if (sTo.indexOf("city") >=0) {
+                    player.sendTitle(sTo, "～街エリア～", 60, 50, 10);
+                    api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin025, 2000, false); // 街ワールドIN
+                }
+                else if (sTo.indexOf("lobby") >=0) {
+                    player.sendTitle(sTo, "～初期エリア～", 60, 50, 10);
                     api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin025, 2000, false); // 街ワールドIN
                 }
             }

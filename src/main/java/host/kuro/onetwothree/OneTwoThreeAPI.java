@@ -14,14 +14,9 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
-import host.kuro.onetwothree.datatype.NpcInfo;
-import host.kuro.onetwothree.datatype.WorldInfo;
-import host.kuro.onetwothree.datatype.ZoneInfo;
+import host.kuro.onetwothree.datatype.*;
 import host.kuro.onetwothree.forms.elements.CustomForm;
 import host.kuro.onetwothree.forms.elements.SimpleForm;
-import host.kuro.onetwothree.datatype.ItemInfo;
-import host.kuro.onetwothree.protocol.RemoveObjectivePacket;
-import host.kuro.onetwothree.scoreboard.Scoreboard;
 import host.kuro.onetwothree.task.AfkTask;
 import host.kuro.onetwothree.task.SoundTask;
 import host.kuro.onetwothree.utils.*;
@@ -71,6 +66,7 @@ public class OneTwoThreeAPI {
     public static HashMap<Player, NpcInfo> npc_info = new HashMap<>();
     public static HashMap<String, WorldInfo> world_info = new HashMap<>();
     public static HashMap<String, ZoneInfo> zone_info = new HashMap<>();
+    public static HashMap<Player, ScoreInfo> score_info = new HashMap<>();
 
     public static HashMap<Player, Integer> select_seq = new HashMap<>();
     public static HashMap<Player, Location> select_one = new HashMap<>();
@@ -81,7 +77,6 @@ public class OneTwoThreeAPI {
     public static HashMap<String, String> black_cid = new HashMap<>();
     public static HashMap<String, String> black_xuid = new HashMap<>();
 
-    public static HashMap<Player, Scoreboard> boards = new HashMap<Player, Scoreboard>();
 
     private AfkTask task_afk = null;
 
@@ -1066,33 +1061,5 @@ public class OneTwoThreeAPI {
             getLogErr().Write(player, getMessage().GetErrorMessage(e));
         }
         return ret;
-    }
-
-    public void sendScoreboard(Player player, Scoreboard scoreboard) {
-        if(!boards.containsKey(player)) {
-            scoreboard.player = player;
-            boards.put(player, scoreboard);
-        } else {
-            boards.remove(player);
-            scoreboard.player = player;
-            boards.put(player, scoreboard);
-        }
-    }
-
-    public void removeScoreboard(Player player) {
-        if(boards.containsKey(player)) {
-            RemoveObjectivePacket packet = new RemoveObjectivePacket();
-            packet.objectiveName = getScoreboard(player).getObjective().objectiveName;
-            player.dataPacket(packet);
-            boards.remove(player);
-        }
-    }
-
-    public Scoreboard getScoreboard(Player player) {
-        try {
-            return boards.get(player);
-        } catch(NullPointerException e) {
-            return null;
-        }
     }
 }
