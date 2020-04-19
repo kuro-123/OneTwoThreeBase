@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.data.Skin;
 import cn.nukkit.entity.data.StringEntityData;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
@@ -12,12 +13,11 @@ import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.block.ItemFrameDropItemEvent;
 import cn.nukkit.event.block.SignChangeEvent;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
-import cn.nukkit.event.entity.EntityDamageEvent;
-import cn.nukkit.event.entity.EntityDeathEvent;
-import cn.nukkit.event.entity.EntityShootBowEvent;
+import cn.nukkit.event.entity.*;
+import cn.nukkit.event.inventory.CraftItemEvent;
 import cn.nukkit.event.inventory.InventoryOpenEvent;
 import cn.nukkit.event.player.*;
+import cn.nukkit.event.server.DataPacketSendEvent;
 import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseCustom;
 import cn.nukkit.form.response.FormResponseModal;
@@ -27,9 +27,14 @@ import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowModal;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.inventory.*;
+import cn.nukkit.inventory.transaction.CraftingTransaction;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemMap;
 import cn.nukkit.level.Level;
+import cn.nukkit.network.protocol.ChangeDimensionPacket;
+import cn.nukkit.network.protocol.DataPacket;
+import cn.nukkit.network.protocol.PlayStatusPacket;
+import cn.nukkit.network.protocol.StartGamePacket;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
@@ -42,14 +47,15 @@ import host.kuro.onetwothree.forms.ModalFormResponse;
 import host.kuro.onetwothree.forms.SimpleFormResponse;
 import host.kuro.onetwothree.npc.NpcType;
 import host.kuro.onetwothree.scoreboard.*;
-import host.kuro.onetwothree.task.AgreeTask;
-import host.kuro.onetwothree.task.ScoreTask;
-import host.kuro.onetwothree.task.SkinTask;
-import host.kuro.onetwothree.task.SoundTask;
+import host.kuro.onetwothree.task.*;
 import host.kuro.onetwothree.utils.MapColor;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
@@ -362,6 +368,11 @@ public class EventListener implements Listener {
         // 退出メッセージ
         String message = api.getMessage().SendQuitMessage(player);
         event.setQuitMessage(message);
+
+        // クリエのままログアウトするとクリエアイテム消去
+        if (player.isCreative()) {
+            player.getInventory().clearAll();
+        }
 
         // メモリ関連削除
         Form.playersForm.remove(player.getName());
@@ -1212,20 +1223,84 @@ public class EventListener implements Listener {
         }
     }
 
+
     @EventHandler
     public void onPlayerMapInfoRequest(PlayerMapInfoRequestEvent  event) {
         Player p = event.getPlayer();
         ItemMap map = (ItemMap) event.getMap();
+
         BufferedImage image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
         try {
-        Graphics2D graphics = image.createGraphics();
-        for (int x = 0; x < 128; x++) {
-        for (int y = 0; y < 128; y++) {
-        graphics.setColor(new Color(MapColor.getColorAt(p.getLevel(), p.getFloorX() - 64 + x, p.getFloorZ() - 64 + y)));
-        graphics.fillRect(x, y, x, y);
-        }
-        }
+            Graphics2D graphics = image.createGraphics();
+            for (int x = 0; x < 128; x++) {
+                for (int y = 0; y < 128; y++) {
+                    graphics.setColor(new Color(MapColor.getColorAt(p.getLevel(), p.getFloorX() - 64 + x, p.getFloorZ() - 64 + y)));
+                    graphics.fillRect(x, y, x, y);
+                }
+            }
         } catch (Exception ignored) {}
         map.setImage(image);
     }
+
+    @EventHandler
+    public void onCraftItem(CraftItemEvent event) {
+        String symbol = api.getConfig().getString("GameSettings.ItemTag");
+        if (symbol.length() <= 0) return;
+
+        Player player = event.getPlayer();
+        Item[] items = event.getInput();
+        boolean sysmbolcraft = true;
+        for (int i=0; i<items.length; i++) {
+            if (items[i].getId() == Item.AIR) continue;
+            String name = items[i].getCustomName();
+            if (name.indexOf(symbol) >= 0) continue;
+            sysmbolcraft = false;
+            break;
+        }
+        if (!sysmbolcraft) {
+            return;
+        }
+        PlayerInventory nowInventory = player.getInventory();
+        int max = nowInventory.getSize();
+        ArrayList<Item> itemlist = new ArrayList<Item>();
+        for (int i=0; i<max; i++) {
+            itemlist.add(nowInventory.getItem(i));
+        }
+        api.getServer().getScheduler().scheduleDelayedTask(new CraftTask(api, player, itemlist, event.getTransaction().getPrimaryOutput()), 15);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onDataPacketSend(DataPacketSendEvent event) {
+        DataPacket packet = event.getPacket();
+        Player player = event.getPlayer();
+
+        if (packet instanceof StartGamePacket) {
+            StartGamePacket startGamePacket = (StartGamePacket) packet;
+            startGamePacket.dimension = (byte) player.getLevel().getDimension();
+        }
+    }
+/*
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLevelChange(EntityLevelChangeEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+            ChangeDimensionPacket changeDimensionPacket = new ChangeDimensionPacket();
+            changeDimensionPacket.dimension = event.getTarget().getDimension();
+            changeDimensionPacket.respawn = true;
+
+            PlayStatusPacket playStatusPacket = new PlayStatusPacket();
+            playStatusPacket.status = PlayStatusPacket.PLAYER_SPAWN;
+
+            player.dataPacket(changeDimensionPacket);
+            player.directDataPacket(playStatusPacket);
+
+            PlayStatusPacket playStatusPacket2 = new PlayStatusPacket();
+            playStatusPacket2.status = PlayStatusPacket.LOGIN_SUCCESS;
+            player.directDataPacket(playStatusPacket2);
+
+        }
+    }
+ */
 }
