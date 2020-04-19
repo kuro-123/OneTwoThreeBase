@@ -24,12 +24,7 @@ public class NpcCommonType extends NpcType {
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin054, 0, false); // ウィンドウ
 
         String message = "";
-        String dat = getDataProperty(777).getData().toString();
-        if (dat.length() <= 0 || dat.equals("c01")) {
-            message = api.getConfig().getString("Npc.Type01");
-        } else if (dat.equals("c02")) {
-            message = api.getConfig().getString("Npc.Type02");
-        }
+        message = GetMessage();
         SimpleForm form = new SimpleForm(this.getName(), message);
         form.send(player, (targetPlayer, targetForm, data) -> {});
         return false;

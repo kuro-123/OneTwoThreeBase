@@ -13,6 +13,7 @@ import cn.nukkit.network.protocol.AddPlayerPacket;
 import host.kuro.onetwothree.OneTwoThreeAPI;
 import host.kuro.onetwothree.utils.MtRand;
 
+import java.io.*;
 import java.math.BigDecimal;
 
 public class NpcType extends EntityHuman {
@@ -186,6 +187,31 @@ public class NpcType extends EntityHuman {
                 //api.getLogErr().Write(player, api.getMessage().GetErrorMessage(e));
             }
         }
+    }
+
+    protected String GetMessage() {
+        String path = api.getDataFolderPath() + "/" + this.getName() + ".txt";
+        StringBuilder sb = new StringBuilder();
+        try{
+            File file = new File(path);
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
+            String buff;
+            while((buff = br.readLine()) != null){
+                sb.append(buff);
+                sb.append("\n");
+            }
+            br.close();
+        }catch(FileNotFoundException e){
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
+            return "現在設定中です";
+        }catch(IOException e){
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
+            return "現在設定中です";
+        }catch(Exception e){
+            api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));
+            return "現在設定中です";
+        }
+        return new String(sb);
     }
 
     public boolean interact(Player player, Item item) {

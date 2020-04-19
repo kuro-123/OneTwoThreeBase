@@ -11,8 +11,8 @@ public class SoundTask extends Thread {
     public static final String bgm007 = "music.bgm007"; // ガルちゃん
     public static final String jin001 = "music.jin001"; // ブブー
     public static final String jin002 = "music.jin002"; // ボンッ！
-    public static final String jin003 = "music.jin003"; // ドアクローズ
-    public static final String jin004 = "music.jin004"; // チュドーン！
+    //public static final String jin003 = "music.jin003"; // ドアクローズ
+    //public static final String jin004 = "music.jin004"; // チュドーン！
     public static final String jin005 = "music.jin005"; // フェードイン
     public static final String jin006 = "music.jin006"; // レベルアップ
     public static final String jin007 = "music.jin007"; // FAIL
@@ -21,7 +21,7 @@ public class SoundTask extends Thread {
     public static final String jin010 = "music.jin010"; // REGIST
     public static final String jin011 = "music.jin011"; // 水滴
     public static final String jin012 = "music.jin012"; // ピンポン
-    public static final String jin013 = "music.jin013"; // kuro音
+    //public static final String jin013 = "music.jin013"; // kuro音
     public static final String jin014 = "music.jin014"; // ドアノック
     public static final String jin015 = "music.jin015"; // INFO
     public static final String jin016 = "music.jin016"; // ハープ

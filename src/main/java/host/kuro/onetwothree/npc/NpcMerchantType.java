@@ -15,9 +15,9 @@ import host.kuro.onetwothree.task.SoundTask;
 
 import java.util.ArrayList;
 
-public class NpcMerchantType01 extends NpcType {
+public class NpcMerchantType extends NpcType {
 
-    public NpcMerchantType01(FullChunk chunk, CompoundTag nbt) {
+    public NpcMerchantType(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
     }
 
@@ -60,9 +60,9 @@ public class NpcMerchantType01 extends NpcType {
             form.send(player, (targetPlayer, targetForm, data) -> {});
             return;
         }
-
-        String message = api.getMessage().GetSellMessage(item, price);
-        ModalForm form = new ModalForm(Language.translate("npc.merchant.sell"), message,Language.translate("onetwothree.yes"),Language.translate("onetwothree.no"));
+        String message = GetMessage() + "\n";
+        message += api.getMessage().GetSellMessage(item, price);
+        ModalForm form = new ModalForm(Language.translate("npc.merchant.sell"), message, Language.translate("onetwothree.yes"),Language.translate("onetwothree.no"));
         api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.voi044, 0, false); // 男性
         form.send(player, (targetPlayer, targetForm, data) -> {
             try {

@@ -51,8 +51,9 @@ public class NpcPortalType extends NpcType {
                 pList.add(p.getDisplayName());
             }
 
+            String message = GetMessage();
             CustomForm form = new CustomForm(this.getName())
-                    .addLabel(Language.translate("npc.portal.type01.message01"))
+                    .addLabel(message)
                     .addDropDown(Language.translate("npc.portal.wlist"), lvList)
                     .addDropDown(Language.translate("npc.portal.plist"), pList);
             api.PlaySound(player, SoundTask.MODE_PLAYER, SoundTask.jin017, 0, false); // WINDOW

@@ -116,9 +116,6 @@ public class NpcCommand extends CommandBase {
             tlist.add(Language.translate("commands.npc.type01"));
             tlist.add(Language.translate("commands.npc.type02"));
             tlist.add(Language.translate("commands.npc.type03"));
-            tlist.add(Language.translate("commands.npc.type04"));
-            tlist.add(Language.translate("commands.npc.type05"));
-            tlist.add(Language.translate("commands.npc.type06"));
 
             ArrayList<String> slist = new ArrayList<String>();
             slist.add(Language.translate("onetwothree.selection.none"));
@@ -167,25 +164,16 @@ public class NpcCommand extends CommandBase {
 
                     // タイプ
                     String type = data.get(1).toString();
-                    NpcPlugin.NPC_KIND kind = NpcPlugin.NPC_KIND.KIND_COMMON_TYPE01;
+                    NpcPlugin.NPC_KIND kind = NpcPlugin.NPC_KIND.KIND_COMMON_TYPE;
                     switch (type) {
-                        case "一般NPC-男性":
-                            kind = NpcPlugin.NPC_KIND.KIND_COMMON_TYPE01;
+                        case "一般NPC":
+                            kind = NpcPlugin.NPC_KIND.KIND_COMMON_TYPE;
                             break;
-                        case "一般NPC-女性":
-                            kind = NpcPlugin.NPC_KIND.KIND_COMMON_TYPE02;
+                        case "商人NPC":
+                            kind = NpcPlugin.NPC_KIND.KIND_MERCHANT_TYPE;
                             break;
-                        case "商人NPC-男性":
-                            kind = NpcPlugin.NPC_KIND.KIND_MERCHANT_TYPE01;
-                            break;
-                        case "商人NPC-女性":
-                            kind = NpcPlugin.NPC_KIND.KIND_MERCHANT_TYPE02;
-                            break;
-                        case "ポータルNPC-男性":
-                            kind = NpcPlugin.NPC_KIND.KIND_PORTAL_TYPE01;
-                            break;
-                        case "ポータルNPC-女性":
-                            kind = NpcPlugin.NPC_KIND.KIND_PORTAL_TYPE02;
+                        case "ポータルNPC":
+                            kind = NpcPlugin.NPC_KIND.KIND_PORTAL_TYPE;
                             break;
                         default:
                             api.getMessage().SendWarningMessage(Language.translate("commands.npc.err_choise"), targetPlayer);
