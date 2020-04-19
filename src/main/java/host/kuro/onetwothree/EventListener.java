@@ -3,6 +3,7 @@ package host.kuro.onetwothree;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
+import cn.nukkit.blockentity.BlockEntityChest;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.data.Skin;
 import cn.nukkit.entity.data.StringEntityData;
@@ -15,7 +16,9 @@ import cn.nukkit.event.block.ItemFrameDropItemEvent;
 import cn.nukkit.event.block.SignChangeEvent;
 import cn.nukkit.event.entity.*;
 import cn.nukkit.event.inventory.CraftItemEvent;
+import cn.nukkit.event.inventory.InventoryClickEvent;
 import cn.nukkit.event.inventory.InventoryOpenEvent;
+import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.server.DataPacketSendEvent;
 import cn.nukkit.form.response.FormResponse;
@@ -28,6 +31,9 @@ import cn.nukkit.form.window.FormWindowModal;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.inventory.*;
 import cn.nukkit.inventory.transaction.CraftingTransaction;
+import cn.nukkit.inventory.transaction.InventoryTransaction;
+import cn.nukkit.inventory.transaction.action.InventoryAction;
+import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemMap;
 import cn.nukkit.level.Level;
@@ -239,6 +245,9 @@ public class EventListener implements Listener {
         api.play_rank.put(player, rank);
         if (rank >= 1) {
             player.setOp(true);
+        }
+        if (rank >= 3) {
+            player.setGamemode(Player.CREATIVE);
         }
 
         // 初期値設定
@@ -1279,28 +1288,86 @@ public class EventListener implements Listener {
             startGamePacket.dimension = (byte) player.getLevel().getDimension();
         }
     }
-/*
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onLevelChange(EntityLevelChangeEvent event) {
-        Entity entity = event.getEntity();
 
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
-            ChangeDimensionPacket changeDimensionPacket = new ChangeDimensionPacket();
-            changeDimensionPacket.dimension = event.getTarget().getDimension();
-            changeDimensionPacket.respawn = true;
+    @EventHandler
+    public void onInventoryTransaction(InventoryTransactionEvent event) {
+        InventoryTransaction transaction = event.getTransaction();
 
-            PlayStatusPacket playStatusPacket = new PlayStatusPacket();
-            playStatusPacket.status = PlayStatusPacket.PLAYER_SPAWN;
+        SlotChangeAction from = null;
+        SlotChangeAction to = null;
+        Player who = null;
+        for (InventoryAction action : transaction.getActions()) {
+            if (!(action instanceof SlotChangeAction)) {
+                continue;
+            }
+            SlotChangeAction slotChange = (SlotChangeAction) action;
 
-            player.dataPacket(changeDimensionPacket);
-            player.directDataPacket(playStatusPacket);
+            if (slotChange.getInventory() instanceof PlayerInventory) {
+                who = (Player) slotChange.getInventory().getHolder();
+            }
 
-            PlayStatusPacket playStatusPacket2 = new PlayStatusPacket();
-            playStatusPacket2.status = PlayStatusPacket.LOGIN_SUCCESS;
-            player.directDataPacket(playStatusPacket2);
+            if (from == null) {
+                from = slotChange;
+            } else {
+                to = slotChange;
+            }
+        }
+        if (who != null && from != null && to != null) {
+            if (to.getInventory() instanceof ChestInventory || to.getInventory() instanceof DoubleChestInventory) {
+                from = to;
+            }
+            Item sourceItem = from.getSourceItem();
+            Item targetItem = from.getTargetItem();
+            Inventory inv = from.getInventory();
+            if (inv == null) return;
 
+            String message = "";
+            String playername = "";
+            String itemname = "";
+            int count = 0;
+            if (inv instanceof ChestInventory || inv instanceof DoubleChestInventory) {
+                if ((targetItem.getId() != Item.AIR && sourceItem.getId() == Item.AIR) ||
+                    (targetItem.getId() == sourceItem.getId() && targetItem.getCount() > sourceItem.getCount())) {
+                    // チェストIN
+                    if (targetItem.getId() == sourceItem.getId()) {
+                        count = targetItem.getCount() - sourceItem.getCount();
+                    } else {
+                        count = targetItem.getCount();
+                    }
+                    playername = who.getDisplayName();
+                    itemname = targetItem.getCustomName();
+                    if (itemname.length() <= 0) itemname = targetItem.getName();
+
+                    // チェスト取得
+                    BlockEntityChest chest = (BlockEntityChest)inv.getHolder();
+                    int x = chest.getFloorX();
+                    int y = chest.getFloorY();
+                    int z = chest.getFloorZ();
+                    // ブロックログ
+                    api.getLogBlock().Write(who, who.getLevel().getName(), ""+x, ""+y, ""+z, "chestin", ""+targetItem.getId(), ""+targetItem.getDamage(), itemname, itemname);
+                }
+                else if ((targetItem.getId() == Item.AIR && sourceItem.getId() != Item.AIR) ||
+                    (targetItem.getId() == sourceItem.getId() && targetItem.getCount() < sourceItem.getCount())) {
+                    // チェストOUT
+                    if (sourceItem.getId() == targetItem.getId()) {
+                        count = sourceItem.getCount() - targetItem.getCount();
+                    } else {
+                        count = sourceItem.getCount();
+                    }
+
+                    playername = who.getDisplayName();
+                    itemname = sourceItem.getCustomName();
+                    if (itemname.length() <= 0) itemname = sourceItem.getName();
+
+                    // チェスト取得
+                    BlockEntityChest chest = (BlockEntityChest)inv.getHolder();
+                    int x = chest.getFloorX();
+                    int y = chest.getFloorY();
+                    int z = chest.getFloorZ();
+                    // ブロックログ
+                    api.getLogBlock().Write(who, who.getLevel().getName(), ""+x, ""+y, ""+z, "chestout", ""+targetItem.getId(), ""+targetItem.getDamage(), itemname, itemname);
+                }
+            }
         }
     }
- */
 }

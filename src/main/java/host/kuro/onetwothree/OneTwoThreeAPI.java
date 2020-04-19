@@ -336,6 +336,8 @@ public class OneTwoThreeAPI {
                     act = rs.getString("act");
                     act = act.replace("break", "破壊");
                     act = act.replace("place", "建築");
+                    act = act.replace("chestin", "チェスト格納");
+                    act = act.replace("chestout", "チェスト取出");
                     bname = rs.getString("block_name");
                     bid = rs.getString("block_id");
                     bmeta = rs.getString("block_meta");
@@ -403,9 +405,6 @@ public class OneTwoThreeAPI {
                         name = name.trim();
                         int id = item.getId();
                         int meta = item.getDamage();
-                        if (meta > 0) {
-                            int aaaa = 0;
-                        }
                         ArrayList<DatabaseArgs> args = new ArrayList<DatabaseArgs>();
                         args.add(new DatabaseArgs("i", ""+id));
                         args.add(new DatabaseArgs("c", name));
