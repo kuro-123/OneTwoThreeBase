@@ -136,8 +136,8 @@ public class ScoreTask extends AsyncTask {
                     objective.setScore("3", rs.getInt("break"));
                     objective.setScore("4", rs.getInt("place"));
                     objective.setScore("5", rs.getInt("kill"));
-                    objective.setScore("6", rs.getInt("death"));
-                    objective.setScore("7", rs.getInt("kick"));
+                    objective.setScore("6", rs.getInt("kick"));
+                    objective.setScore("7", rs.getInt("death"));
                     objective.setScore("8", rs.getInt("chat"));
                     break;
                 }
