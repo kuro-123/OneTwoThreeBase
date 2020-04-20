@@ -10,6 +10,7 @@ import cn.nukkit.level.Location;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginLogger;
+import cn.nukkit.resourcepacks.ResourcePack;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
@@ -67,6 +68,7 @@ public class OneTwoThreeAPI {
     public static HashMap<String, WorldInfo> world_info = new HashMap<>();
     public static HashMap<String, ZoneInfo> zone_info = new HashMap<>();
     public static HashMap<Player, ScoreInfo> score_info = new HashMap<>();
+    public static HashMap<Player, ResourcePack> pack_info = new HashMap<>();
 
     public static HashMap<Player, Integer> select_seq = new HashMap<>();
     public static HashMap<Player, Location> select_one = new HashMap<>();
@@ -76,7 +78,6 @@ public class OneTwoThreeAPI {
 
     public static HashMap<String, String> black_cid = new HashMap<>();
     public static HashMap<String, String> black_xuid = new HashMap<>();
-
 
     private AfkTask task_afk = null;
 

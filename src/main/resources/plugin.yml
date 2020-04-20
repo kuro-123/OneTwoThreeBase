@@ -58,3 +58,5 @@ permissions:
     default: op
   onetwothree.score:
     default: op
+  onetwothree.pack:
+    default: true

@@ -47,6 +47,7 @@ public class CommandManager {
             map.register("OneTwoThreeBase", new ZoneCommand(api));
             map.register("OneTwoThreeBase", new ViCommand(api));
             map.register("OneTwoThreeBase", new ScoreCommand(api));
+            //map.register("OneTwoThreeBase", new PackCommand(api));
 
         } catch (Exception e) {
             api.getLogErr().Write(null, api.getMessage().GetErrorMessage(e));

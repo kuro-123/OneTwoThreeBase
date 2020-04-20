@@ -3,7 +3,9 @@ package host.kuro.onetwothree;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.command.defaults.ListCommand;
+import host.kuro.onetwothree.task.RebootTask;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -47,7 +49,7 @@ public class DiscordChatListener extends ListenerAdapter {
 
         if (message.startsWith("/")) {
             // コマンド
-            CommnadExecuteFromDiscord(message);
+            CommnadExecuteFromDiscord(message, author);
         } else {
             // チャット
             StringBuilder sb = new StringBuilder();
@@ -65,7 +67,7 @@ public class DiscordChatListener extends ListenerAdapter {
         }
     }
 
-    private void CommnadExecuteFromDiscord(String message) {
+    private void CommnadExecuteFromDiscord(String message, String author) {
         if (message.startsWith("/list")) {
             String buff = ListCommand.GetListString(null);
             api.getMessage().SendDiscordBlueMessage("\n" + buff);
@@ -73,6 +75,21 @@ public class DiscordChatListener extends ListenerAdapter {
         else if (message.startsWith("/ver")) {
             String buff = api.getMessage().GetVersionInfo();
             api.getMessage().SendDiscordBlueMessage("\n" + buff);
+        }
+        else if (message.startsWith("/reboot")) {
+            if (author.equals("くろ")) { //　とりあえず、後々権限取得
+                // ブロードキャスト通知
+                StringBuilder sb = new StringBuilder();
+                sb.append(TextFormat.GOLD);
+                sb.append(TextFormat.BOLD);
+                sb.append("==== [再起動] ====");
+                sb.append(TextFormat.GOLD);
+                api.getMessage().SendErrorMessage(new String(sb), true);
+                // リブートタスク起動
+                api.getServer().getScheduler().scheduleRepeatingTask(new RebootTask(api), 200);
+            } else {
+                api.getMessage().SendErrorMessage("鯖主以外が/reboot命令はできません", true);
+            }
         }
     }
 }

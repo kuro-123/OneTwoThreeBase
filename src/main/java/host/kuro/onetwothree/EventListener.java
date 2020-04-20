@@ -20,6 +20,7 @@ import cn.nukkit.event.inventory.InventoryClickEvent;
 import cn.nukkit.event.inventory.InventoryOpenEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.event.player.*;
+import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.event.server.DataPacketSendEvent;
 import cn.nukkit.form.response.FormResponse;
 import cn.nukkit.form.response.FormResponseCustom;
@@ -37,10 +38,8 @@ import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemMap;
 import cn.nukkit.level.Level;
-import cn.nukkit.network.protocol.ChangeDimensionPacket;
-import cn.nukkit.network.protocol.DataPacket;
-import cn.nukkit.network.protocol.PlayStatusPacket;
-import cn.nukkit.network.protocol.StartGamePacket;
+import cn.nukkit.network.protocol.*;
+import cn.nukkit.resourcepacks.ResourcePack;
 import cn.nukkit.utils.TextFormat;
 import host.kuro.onetwothree.database.DatabaseArgs;
 import host.kuro.onetwothree.database.DatabaseManager;
@@ -392,6 +391,7 @@ public class EventListener implements Listener {
         OneTwoThreeAPI.select_two.remove(player);
         OneTwoThreeAPI.tip_wait.remove(player);
         OneTwoThreeAPI.score_info.remove(player);
+        OneTwoThreeAPI.pack_info.remove(player);
         api.play_time.remove(player);
         api.play_rank.remove(player);
 
@@ -1279,10 +1279,77 @@ public class EventListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void onDataPacketReceive(DataPacketReceiveEvent event) {
+        DataPacket packet = event.getPacket();
+        Player player = event.getPlayer();
+        api.getServer().getLogger().info("RCV:"+packet.pid());
+
+        if (packet instanceof ResourcePackClientResponsePacket) {
+            /*
+            if (!api.pack_info.containsKey(player)) return;
+            ResourcePackClientResponsePacket responsePacket = (ResourcePackClientResponsePacket) packet;
+            switch (responsePacket.responseStatus) {
+                case ResourcePackClientResponsePacket.STATUS_REFUSED:
+                    player.close("", "disconnectionScreen.noReason");
+                    break;
+                case ResourcePackClientResponsePacket.STATUS_SEND_PACKS:
+                    for (ResourcePackClientResponsePacket.Entry entry : responsePacket.packEntries) {
+                        ResourcePack resourcePack = api.pack_info.get(player);
+                        if (resourcePack == null) {
+                            player.close("", "disconnectionScreen.resourcePack");
+                            break;
+                        }
+                        ResourcePackDataInfoPacket dataInfoPacket = new ResourcePackDataInfoPacket();
+                        dataInfoPacket.packId = resourcePack.getPackId();
+                        dataInfoPacket.maxChunkSize = 524288; //megabyte
+                        dataInfoPacket.chunkCount = resourcePack.getPackSize() / dataInfoPacket.maxChunkSize;
+                        dataInfoPacket.compressedPackSize = resourcePack.getPackSize();
+                        dataInfoPacket.sha256 = resourcePack.getSha256();
+                        player.dataPacket(dataInfoPacket);
+                    }
+
+                    event.setCancelled();
+                    break;
+                case ResourcePackClientResponsePacket.STATUS_HAVE_ALL_PACKS:
+                    ResourcePackStackPacket stackPacket = new ResourcePackStackPacket();
+                    stackPacket.mustAccept = api.getServer().getForceResources();
+                    List<ResourcePack> loadedResourcePacks = new ArrayList<>();
+                    ResourcePack resourcePack = api.pack_info.get(player);
+                    loadedResourcePacks.add(resourcePack);
+                    ResourcePack[] resourcePackStack = loadedResourcePacks.toArray(new ResourcePack[loadedResourcePacks.size()]);
+                    stackPacket.resourcePackStack = resourcePackStack;
+                    player.dataPacket(stackPacket);
+
+                    event.setCancelled();
+                    break;
+                case ResourcePackClientResponsePacket.STATUS_COMPLETED:
+                    event.setCancelled();
+                    break;
+            }
+            */
+        } else if (packet instanceof ResourcePackChunkRequestPacket) {
+            /*
+            if (!api.pack_info.containsKey(player)) return;
+            ResourcePackChunkRequestPacket requestPacket = (ResourcePackChunkRequestPacket) packet;
+            ResourcePack resourcePack = api.pack_info.get(player);
+            if (resourcePack == null) return;
+
+            ResourcePackChunkDataPacket dataPacket = new ResourcePackChunkDataPacket();
+            dataPacket.packId = resourcePack.getPackId();
+            dataPacket.chunkIndex = requestPacket.chunkIndex;
+            dataPacket.data = resourcePack.getPackChunk(524288 * requestPacket.chunkIndex, 524288);
+            dataPacket.progress = 524288 * requestPacket.chunkIndex;
+            player.dataPacket(dataPacket);
+            event.setCancelled();
+            */
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDataPacketSend(DataPacketSendEvent event) {
         DataPacket packet = event.getPacket();
         Player player = event.getPlayer();
-
+        api.getServer().getLogger().info("SND:"+packet.pid());
         if (packet instanceof StartGamePacket) {
             StartGamePacket startGamePacket = (StartGamePacket) packet;
             startGamePacket.dimension = (byte) player.getLevel().getDimension();
