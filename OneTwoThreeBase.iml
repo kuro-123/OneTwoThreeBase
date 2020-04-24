@@ -11,7 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: cn.nukkit:nukkit:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.2.11" level="project" />
+    <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.2.12" level="project" />
     <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-stream:4.0.7" level="project" />
     <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-core:4.0.7" level="project" />
     <orderEntry type="library" name="Maven: net.dv8tion:JDA:4.1.1_101" level="project" />

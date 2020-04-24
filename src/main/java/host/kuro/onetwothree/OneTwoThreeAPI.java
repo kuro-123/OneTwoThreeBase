@@ -68,7 +68,6 @@ public class OneTwoThreeAPI {
     public static HashMap<String, WorldInfo> world_info = new HashMap<>();
     public static HashMap<String, ZoneInfo> zone_info = new HashMap<>();
     public static HashMap<Player, ScoreInfo> score_info = new HashMap<>();
-    public static HashMap<Player, ResourcePack> pack_info = new HashMap<>();
 
     public static HashMap<Player, Integer> select_seq = new HashMap<>();
     public static HashMap<Player, Location> select_one = new HashMap<>();
